@@ -35,12 +35,12 @@ int main() {
 		cout << endl;
 	} while ((row_count < 1 || row_count>9) || (columns_count < 1 || columns_count>9));
 
-	matrix = new int* [row_count], row, column;
+	matrix = new int* [row_count];
 	for (row = 0; row < row_count; row++) {
 		matrix[row] = new int[columns_count];
 	}
 
-	cout << "Random matrix or enter elements of matrix: 1 - random, 2 - enter";
+	cout << "Random matrix or enter elements of  matrix: 1 - random, 2 - enter";
 	while (true) {
 		char randomOrNot = _getch();
 		cout << " " << randomOrNot;

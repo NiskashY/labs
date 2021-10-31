@@ -22,7 +22,6 @@ int main() {
 	int row, column, row_count, columns_count, input_attempts = 1;
 	int** matrix;
 
-
 	do {
 		if (input_attempts > 1) {
 			cout << "Re-enter!" << "\n";
@@ -102,10 +101,16 @@ int inputMatrixColumns() {
 //Random matrix
 int randomMatrix(int row_count, int columns_count, int** matrix) {
 	int a, b;
-	cout << "\nset the interval for random numbers:\na: ";
-	a = checkNum();
-	cout << "b: ";
-	b = checkNum();
+	cout << "\nset the interval for random numbers( must be b > a):\n";
+	
+	do {
+		cout << "a: ";
+		a = checkNum();
+		cout << "b: ";
+		b = checkNum();
+	} while (b < a);
+
+
 	srand(time(0));
 	for (int row = 0; row < row_count; row++) {
 		for (int column = 0; column < columns_count; column++) {

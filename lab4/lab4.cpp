@@ -6,7 +6,7 @@ using namespace std;
 //Прототипы функций
 double calcResultFunctionS(int n, double x);
 double calcResultFunctionY(double x);
-void outRez(int n, double x, double a, int b, double h);
+void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double));
 double checkNum();
 
 int main() {
@@ -42,7 +42,7 @@ int main() {
 	n = checkNum();
 
 	for (double x = a; x <= b; x += h) {
-		outRez(n, x, a, b, h);
+		outRez(n, x, a, b, h, calcResultFunctionY, calcResultFunctionS);
 	}
 		
 }
@@ -68,8 +68,8 @@ double calcResultFunctionY(double x) {
 }
 
 //Функция для вывода результата
-void outRez(int n, double x, double a, int b, double h) {
-	cout << "x = " << x << "\t\tY(x) = " << calcResultFunctionY(x) << "\t\tS(x) = " << calcResultFunctionS(n, x) << "\t\t|Y(x) - S(x)| = " << fabs(calcResultFunctionS(n, x) - calcResultFunctionY(x)) << endl << endl;
+void outRez(int n, double x, double a, int b, double h, double (* calcResultFunctiony)(double), double(* calcResultFunctions)(int, double) )  {
+	cout << "x = " << x << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << fabs(calcResultFunctions(n, x) - calcResultFunctiony(x)) << endl << endl;
 }
 
 //Функция, чтобы вводить переменную и проверять на корректный ввод

@@ -64,6 +64,8 @@ int main() {
 	cout << countingSpecialNumbers(matrix, row_count, columns_count);
 	
 	delete[] matrix;
+	system("pause");
+	return 0;
 }
 
 

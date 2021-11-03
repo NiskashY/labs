@@ -60,6 +60,8 @@ int main()
 			sum += recurrence;
 		}
 		cout << "x = " << x << "\t\tY(x) = " << y << "\t\tS(x) = " << sum << "\t\t|Y(x) - S(x)| = " << fabs(y - sum) << endl << endl;
-
 	}
+
+	system("pause");
+	return 0;
 }

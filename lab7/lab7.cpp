@@ -23,6 +23,7 @@ int main()
 	countEvenGroups(str);
 
 	cout << endl;
+	system("pause");
 	return 0;
 }
 

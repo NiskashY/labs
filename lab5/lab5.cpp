@@ -38,7 +38,8 @@ int main() {
 		sumBetweenPositive(arr, first_positive, last_positive);
 	}
 
-	delete[] arr;	
+	delete[] arr;
+	system("pause");
 	return 0;
 }
 

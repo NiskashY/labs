@@ -1,69 +1,136 @@
+//4.	Сумму элементов массива, расположенных между первым и последним положительными элементами
+
 #include <iostream>
 
 using namespace std;
 
+int sizeInput();
+bool isInputOrRandom();
+
+int searchFirstPositiveElement(int*, int);
+int searchLastPositiveElement(int*, int);
+
+void randomArray(int*, int);
+void inputArray(int*, int);
+
+void sumBetweenPositive(int*, int, int);
+
 double enterAndCheckNum();
 
 int main() {
-	int a, b, i, j = 0, g = 0, n, sum = 0, choice;
+
+	int size = sizeInput();
+	int *arr = new int[size];
+
+
+	if (isInputOrRandom()) {
+		inputArray(arr, size);
+	}
+	else {
+		randomArray(arr, size);
+	}
+
+	int first_positive = searchFirstPositiveElement(arr, size);
+	int last_positive = searchLastPositiveElement(arr, size);
+
+	if (last_positive - first_positive <= 1) cout << "Error! No sum between positive elements";
+	else {
+		sumBetweenPositive(arr, first_positive, last_positive);
+	}
+
+	delete[] arr;	
+	return 0;
+}
+
+int sizeInput() {
+	int size;
 
 	do {
 		cout << "Enter array size from 1 to 100\t";
-		n = enterAndCheckNum();
-	} while (n < 1 || n>100);
+		size = enterAndCheckNum();
+	} while (size < 1 || size > 100);
 
-	int *arr = new int[n];
+	return size;
+}
 
-	do{
+bool isInputOrRandom() {
+	int choice;
+
+	do {
 		cout << "Do you want to use random numbers or enter them yourself ? \t 1 - random 2 - enter\n";
 		choice = enterAndCheckNum();
 	} while (choice != 1 && choice != 2);
 
-	if (choice == 2){
-		//Ввод своих чисел в массив
-		for (i = 0; i < n; ++i)
-			cin >> arr[i];
+	if (choice == 2) { 
+		return 1; 
 	}
-	else {
-		//Рандомные числа в массив
-		srand(time(0));
-		cout << "Enter range for random numbers [a;b]:\na - ";
-		cin >> a;
-		cout << "b - ";
-		cin >> b;
-		for (i = 0; i < n; ++i) {
-			arr[i] = rand() % (b - a + 1) + a;
-			cout << arr[i] << " ";
-		}
+	return 0;
+}
+
+void inputArray(int* arr, int size) {
+	cout << "Input Array:\n";
+	for (int i = 0; i < size; ++i) {
+		cin >> arr[i];
 	}
-	//Ищем первый положительный элемент
-	for (i = 0; i < n; i++) {
+	/* 
+	Этот код с проверкой, но есть минус в виде ввода только через enter иначе будет всегда выдавать ошибку!
+	for (int i = 0; i < size; ++i) {
+		arr[i] = enterAndCheckNum();
+	}*/
+}
+
+//Рандомный массив
+void randomArray(int* arr, int size) {
+	srand(time(0));
+	cout << "Enter range for random numbers [a;b]:\na - ";
+	int a = enterAndCheckNum();
+	cout << "b - ";
+	int b = enterAndCheckNum();
+	cout << "\nArray:	";
+	for (int i = 0; i < size; ++i) {
+		arr[i] = rand() % (b - a + 1) + a;
+		cout << arr[i] << " ";
+	}
+	cout << '\n';
+}
+
+//Сумма между положительными элементами
+void sumBetweenPositive(int* arr, int first, int last) {
+	int sum = 0;
+	for (int i = first + 1; i <= last - 1; i++) {
+		sum += arr[i];
+	}
+	cout << "Sum =  " << sum;
+}
+//Поиск первого положительного элемента
+int searchFirstPositiveElement(int* arr, int n) {
+	int j = 0;
+	for (int i = 0; i < n; i++) {
 		if (arr[i] > 0) {
-			j = i; 
+			j = i;
 			break;
 		}
 	}
-	//Ищем последний положительный элемент, начиная с конца
-	for(i = n-1; i>=j; i--){
+	return j;
+}
+
+//Поиск последнего положительного элемента
+int searchLastPositiveElement(int* arr, int n) {
+	int g = 0;
+	for (int i = n - 1; i >= 0; i--) {
 		if (arr[i] > 0) {
 			g = i;
 			break;
 		}
 	}
-	if (abs(g - j) <= 1) cout << "Error!";
-	else {
-		for (i = j+1; i <= g-1; i++) {
-			sum += arr[i];
-		}
-		cout << "Sum =  " << sum;
-	}
-	delete[] arr;	
-	return 0;
+	return g;
 }
 
-double enterAndCheckNum() {//Функция чтобы вводить переменную и проверять на корректный ввод
+//Функция чтобы вводить переменную и проверять на корректный ввод
+double enterAndCheckNum() {
 	double var;
 	bool local_check = 1;
+
 	while (local_check)
 	{
 		cin >> var;
@@ -75,5 +142,6 @@ double enterAndCheckNum() {//Функция чтобы вводить переменную и проверять на кор
 		}
 		else local_check = 0;
 	}
+
 	return var;
 }

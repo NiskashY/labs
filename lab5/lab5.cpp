@@ -39,6 +39,7 @@ int main() {
 	}
 
 	delete[] arr;
+	cout << '\n';
 	system("pause");
 	return 0;
 }

@@ -44,7 +44,8 @@ int main() {
 	for (double x = a; x <= b; x += h) {
 		outRez(n, x, a, b, h, calcResultFunctionY, calcResultFunctionS);
 	}
-	
+
+	cout << '\n';
 	system("pause");
 	return 0;
 }

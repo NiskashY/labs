@@ -10,60 +10,34 @@ using namespace std;
 
 //Прототипы функций
 double checkNum();
-int inputMatrixRows();
-int inputMatrixColumns();
-int initializeMatrix(int**, int, int);
+int inputRows();
+int inputColumns();
+void generateMatrix(int**, int, int);
+void randomMatrix(int** ,int, int);
+void inputMatrix(int**, int, int);
 void printMatrix(int**, int, int);
 int countingSpecialNumbers(int**, int, int);
-int randomMatrix(int, int, int**);
+
 
 int main() {
 
-	int row, column, row_count, columns_count, input_attempts = 1;
-	int** matrix;
+	int row_count, columns_count;
 
-	do {
-		if (input_attempts > 1) {
-			cout << "Re-enter!" << "\n";
-		}
-		input_attempts++;
+	row_count = inputRows();
+	columns_count = inputColumns();
 
-		row_count = inputMatrixRows();
-		columns_count = inputMatrixColumns();
-
-		cout << endl;
-	} while ((row_count < 1 || row_count>9) || (columns_count < 1 || columns_count>9));
-
-	matrix = new int* [row_count];
-	for (row = 0; row < row_count; row++) {
+	int** matrix = new int* [row_count];
+	for (int row = 0; row < row_count; row++) {
 		matrix[row] = new int[columns_count];
 	}
 
-	cout << "Random matrix or enter elements of  matrix: 1 - random, 2 - enter";
-	while (true) {
-		char randomOrNot = _getch();
-		cout << " " << randomOrNot;
-		if (randomOrNot == '1') {
-			randomMatrix(row_count, columns_count, matrix);
-			break;
-		}
-		else if (randomOrNot == '2') {
-			cout << "\nEnter the matrix:\n";
-			initializeMatrix(matrix, row_count, columns_count);
-			break;
-		}
-		else {
-			cout << "... Repeat.\n";
-		}
-	}
-
-	cout << "___________\n\n";
+	generateMatrix(matrix, row_count, columns_count);
 	printMatrix(matrix, row_count, columns_count);
 
-	cout << "The number of 'special' matrix elements: ";
-	cout << countingSpecialNumbers(matrix, row_count, columns_count);
+	cout << "The number of 'special' matrix elements: " << countingSpecialNumbers(matrix, row_count, columns_count);
 	
 	delete[] matrix;
+	cout << '\n';
 	system("pause");
 	return 0;
 }
@@ -89,19 +63,45 @@ double checkNum() {
 }
 
 //Ввод количества строк матрицы
-int inputMatrixRows() {
-	cout << "Enter the number of matrix rows (from 1 to 9): ";
-	return  checkNum();
+int inputRows() {
+	int rows, columns, input_attempts = 1;
+	do {
+		if (input_attempts == 1) {
+			cout << "Enter the number of rows in the matrix (from 1 to 9): ";
+		}
+		if (input_attempts > 1) {
+			cout << "incorrect size! repeat" << "\n";
+		}
+		input_attempts++;
+		
+		rows = checkNum();
+		cout << endl;
+	} while ((rows < 1 || rows>9));
+
+	return rows;
 }
 
 //Ввод количества столбцов матрицы
-int inputMatrixColumns() {
-	cout << "Enter the number of columns in the matrix (from 1 to 9): ";
-	return checkNum();
+int inputColumns() {
+	int columns, input_attempts = 1;
+	do {
+		if (input_attempts == 1) {
+			cout << "Enter the number of columns in the matrix (from 1 to 9): ";
+		}
+		if (input_attempts > 1) {
+			cout << "incorrect size! repeat" << "\n";
+		}
+		input_attempts++;
+
+		columns = checkNum();
+		cout << endl;
+	} while ((columns < 1 || columns>9));
+
+	return columns;
 }
 
 //Random matrix
-int randomMatrix(int row_count, int columns_count, int** matrix) {
+void randomMatrix(int** matrix, int row_count, int columns_count) {
 	int a, b;
 	cout << "\nset the interval for random numbers( must be b > a):\n";
 	
@@ -119,21 +119,42 @@ int randomMatrix(int row_count, int columns_count, int** matrix) {
 			matrix[row][column] = rand() % (b - a + 1) + a;
 		}
 	}
-	return **matrix;
 }
+
 //Ввод элементов матрицы
-int initializeMatrix(int** matrix, int row_count, int columns_count) {
+void inputMatrix(int** matrix, int row_count, int columns_count) {
 	for (int row = 0; row < row_count; row++) {
 		cout << "line #" << row + 1 << ": ";
 		for (int column = 0; column < columns_count; column++) {
 			cin >> matrix[row][column];
 		}
 	}
-	return **matrix;
+}
+
+//Выбор между рандомной и ссвоей матрицой и ввод матрицы
+void generateMatrix(int** matrix, int row_count, int columns_count) {
+
+	cout << "Choose Random matrix or enter elements of matrix: 1 - random, 2 - enter";
+	while (true) {
+		char randomOrNot = _getch();
+		cout << " " << randomOrNot;
+		if (randomOrNot == '1') {
+			return randomMatrix(matrix, row_count, columns_count);
+		}
+		else if (randomOrNot == '2') {
+			cout << "\nEnter the matrix:\n";
+			return inputMatrix(matrix, row_count, columns_count);
+		}
+		else {
+			cout << "... Repeat.\n";
+		}
+	}
+
 }
 
 //Вывод матрицы на экран
 void printMatrix(int** matrix, int row_count, int columns_count) {
+	cout << "___________\n\n";
 	for (int row = 0; row < row_count; row++) {
 
 		for (int column = 0; column < columns_count; column++) {
@@ -142,6 +163,7 @@ void printMatrix(int** matrix, int row_count, int columns_count) {
 		cout << "\n";
 	}
 }
+
 //Подсчет количества 'особых' элементов матрицы
 int countingSpecialNumbers(int** matrix, int row_count, int columns_count) {
 	int special, sum_of_column, amount_of_special = 0;

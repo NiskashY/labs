@@ -4,22 +4,40 @@
 using namespace std;
 
 //Прототипы функций
+
+void chooseStandart_abh_OrNot(double&, double&, double&);
 double calcResultFunctionS(int n, double x);
 double calcResultFunctionY(double x);
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double));
 double checkNum();
 
 int main() {
-	int  b, n;
-	double  k, x, a, h, sum, y, recurrence;
-	bool check = 1;
+	int  n;
+	double  k, x, a = 0.1, b = 1, h = 0.1, sum, y, recurrence;
+	
+	chooseStandart_abh_OrNot(a, b, h);
+	cout << "\nEnter n: ";
+	n = checkNum();
+
+	for (double x = a; x <= b; x += h) {
+		outRez(n, x, a, b, h, calcResultFunctionY, calcResultFunctionS);
+	}
+
+	cout << '\n';
+	system("pause");
+	return 0;
+}
+
+void chooseStandart_abh_OrNot(double& a, double& b, double& h) {
+
+	int check = 1;
+
 	while (check)
 	{
 		cout << "You want to use  default settings or enter your own values?\n1 - use default\n2 - enter values\n";
 		char term = _getch();
 		if (term == '1') //Стандартный набор чисел 
 		{
-			a = h = 0.1; b = 1;
 			cout << "a = " << a << " b = " << b << " h = " << h << endl;
 			check = 0;
 		}
@@ -35,22 +53,9 @@ int main() {
 			check = 0;
 		}
 		else cout << "Error! Reenter \n";
+	}	
 
-	}
-
-	cout << "\nEnter n: ";
-	n = checkNum();
-
-	for (double x = a; x <= b; x += h) {
-		outRez(n, x, a, b, h, calcResultFunctionY, calcResultFunctionS);
-	}
-
-	cout << '\n';
-	system("pause");
-	return 0;
 }
-
-
 //рекурентная формула для нахождения суммы
 double calcResultFunctionS(int n, double x) {
 

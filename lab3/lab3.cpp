@@ -29,7 +29,7 @@ int main()
 	while (check)
 	{
 		cout << "You want to use  default settings or enter your own values?\n1 - use default\n2 - enter values\n";
-		char term = _getch(); 
+		char term = _getch();
 		if (term == '1') //Стандартный набор чисел 
 		{
 			a = h = 0.1; b = 1;

@@ -14,7 +14,7 @@ double checkNum();
 int main() {
 	int  n;
 	double  k, x, a = 0.1, b = 1, h = 0.1, sum, y, recurrence;
-	
+
 	chooseStandart_abh_OrNot(a, b, h);
 	cout << "\nEnter n: ";
 	n = checkNum();
@@ -53,7 +53,7 @@ void chooseStandart_abh_OrNot(double& a, double& b, double& h) {
 			check = 0;
 		}
 		else cout << "Error! Reenter \n";
-	}	
+	}
 
 }
 //рекурентная формула для нахождения суммы
@@ -76,7 +76,7 @@ double calcResultFunctionY(double x) {
 }
 
 //Функция для вывода результата
-void outRez(int n, double x, double a, int b, double h, double (* calcResultFunctiony)(double), double(* calcResultFunctions)(int, double) )  {
+void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double)) {
 	cout << "x = " << x << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << fabs(calcResultFunctions(n, x) - calcResultFunctiony(x)) << endl << endl;
 }
 

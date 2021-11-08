@@ -2,21 +2,19 @@
 найти и вывести на экран группы с четным количеством символов*/
 
 #include <iostream>
-#include <string>
+
 using namespace std;
 
-
-bool isStringCorrect(string);
-void countEvenGroups(string);
+bool isStringCorrect(char*);
+void countEvenGroups(char*);
 
 int main()
 {
-	string str; 
-
+	char str[100] = "";
 	cout << "String: ";
 
 	do {
-		getline(cin, str);
+		gets_s(str);
 	} while (isStringCorrect(str));
 
 	cout << endl << "Groups with even amount of elemets: ";
@@ -27,9 +25,9 @@ int main()
 	return 0;
 }
 
-bool isStringCorrect(string str)
+bool isStringCorrect(char* str)
 {
-	for (int index = 0; index <= str.size(); index++)
+	for (int index = 0; index <= strlen(str); index++)
 	{
 		if (str[index] != '0' && str[index] != '1' && str[index] != ' ' && str[index] != '\0')
 		{
@@ -39,9 +37,9 @@ bool isStringCorrect(string str)
 	}
 	return false;
 }
-void countEvenGroups(string str)
+void countEvenGroups(char* str)
 {
-	for (int index = 0, index_after_space = 0, amount = 0; index <= str.size(); index++)
+	for (int index = 0, index_after_space = 0, amount = 0; index <= strlen(str); index++)
 	{
 		if (str[index] == ' ' || str[index] == '\0')
 		{

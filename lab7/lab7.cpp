@@ -17,7 +17,7 @@ int main()
 		gets_s(str);
 	} while (isStringCorrect(str));
 
-	cout << endl << "Groups with even amount of elemets: ";
+	cout << endl << "Groups with even amount of elements: ";
 	countEvenGroups(str);
 
 	cout << endl;

@@ -6,16 +6,13 @@ using namespace std;
 
 int sizeInput();
 bool isInputOrRandom();
-
 int searchFirstPositiveElement(int*, int);
 int searchLastPositiveElement(int*, int);
-
 void randomArray(int*, int);
 void inputArray(int*, int);
-
 void sumBetweenPositive(int*, int, int);
-
-double enterAndCheckNum();
+bool isAlessB(int, int);
+double checkNum();
 
 int main() {
 
@@ -49,7 +46,7 @@ int sizeInput() {
 
 	do {
 		cout << "Enter array size from 1 to 100\t";
-		size = enterAndCheckNum();
+		size = checkNum();
 	} while (size < 1 || size > 100);
 
 	return size;
@@ -60,7 +57,7 @@ bool isInputOrRandom() {
 
 	do {
 		cout << "Do you want to use random numbers or enter them yourself ? \t 1 - random 2 - enter\n";
-		choice = enterAndCheckNum();
+		choice = checkNum();
 	} while (choice != 1 && choice != 2);
 
 	if (choice == 2) { 
@@ -68,7 +65,11 @@ bool isInputOrRandom() {
 	}
 	return 0;
 }
-
+bool isAlessB(int a, int b) {
+	if (a >= b)
+		cout << "\na should be less then b\n";
+	return (a >= b);
+}
 void inputArray(int* arr, int size) {
 	cout << "Input Array:\n";
 	for (int i = 0; i < size; ++i) {
@@ -77,17 +78,22 @@ void inputArray(int* arr, int size) {
 	/* 
 	Этот код с проверкой, но есть минус в виде ввода только через enter иначе будет всегда выдавать ошибку!
 	for (int i = 0; i < size; ++i) {
-		arr[i] = enterAndCheckNum();
+		arr[i] = checkNum();
 	}*/
 }
 
 //Рандомный массив
 void randomArray(int* arr, int size) {
 	srand(time(0));
-	cout << "Enter range for random numbers [a;b]:\na - ";
-	int a = enterAndCheckNum();
-	cout << "b - ";
-	int b = enterAndCheckNum();
+	cout << "Enter range for random numbers [a;b]:\n";
+	int a, b;
+	do {
+		cout << "a - ";
+		a = checkNum();
+		cout << "b - ";
+		b = checkNum();
+	} while (isAlessB(a,b));
+
 	cout << "\nArray:	";
 	for (int i = 0; i < size; ++i) {
 		arr[i] = rand() % (b - a + 1) + a;
@@ -129,21 +135,12 @@ int searchLastPositiveElement(int* arr, int n) {
 }
 
 //Функция чтобы вводить переменную и проверять на корректный ввод
-double enterAndCheckNum() {
+double checkNum() {
 	double var;
-	bool local_check = 1;
-
-	while (local_check)
-	{
-		cin >> var;
-		if (cin.get() != '\n')
-		{
-			cin.clear();
-			cin.ignore(INT_MAX, '\n');
-			cout << "Error! Something go wrong ReEnter: ";
-		}
-		else local_check = 0;
+	while (!(cin >> var) || cin.get() != '\n') {
+		cout << "Error! Something go wrong ReEnter: ";
+		cin.clear();
+		while (cin.get() != '\n');
 	}
-
 	return var;
 }

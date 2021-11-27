@@ -3,20 +3,12 @@
 
 using namespace std;
 
-double checkNum() {//Функция чтобы вводить переменную и проверять на корректный ввод
+double checkNum() {
 	double var;
-	bool local_check = 1;
-	while (local_check)
-	{
-		cin >> var;
-		if (cin.get() != '\n')
-		{
-			cin.clear();
-			cin.ignore(INT_MAX, '\n');
-			cout << "Error! Something go wrong ReEnter: ";
-		}
-		else
-			local_check = 0;
+	while (!(cin >> var) || cin.get() != '\n') {
+		cout << "Error! Something go wrong ReEnter: ";
+		cin.clear();
+		while (cin.get() != '\n');
 	}
 	return var;
 }

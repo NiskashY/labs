@@ -6,7 +6,9 @@
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
-
+CMakeLists.txt
+idea/*
+cmake-build-debug/*
 # User-specific files
 *.rsuser
 *.suo

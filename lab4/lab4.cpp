@@ -1,6 +1,6 @@
 ﻿#include <iostream>
 #include <conio.h>
-
+#include <iomanip>
 using namespace std;
 
 //Прототипы функций
@@ -10,9 +10,10 @@ double calcResultFunctionS(int n, double x);
 double calcResultFunctionY(double x);
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double));
 double checkNum();
+bool isAlessB(int, int);
 
 int main() {
-	int  n;
+	int n;
 	double  k, x, a = 0.1, b = 1, h = 0.1, sum, y, recurrence;
 
 	chooseStandart_abh_OrNot(a, b, h);
@@ -28,6 +29,11 @@ int main() {
 	return 0;
 }
 
+bool isAlessB(int a, int b) {
+	if (a >= b)
+		cout << "\na should be less then b\n";
+	return (a >= b);
+}
 void chooseStandart_abh_OrNot(double& a, double& b, double& h) {
 
 	int check = 1;
@@ -43,11 +49,14 @@ void chooseStandart_abh_OrNot(double& a, double& b, double& h) {
 		}
 		else if (term == '2') //Пользователь сам вводит переменные a,b,h
 		{
-			cout << "Enter a\n";
-			a = checkNum();
-			cout << "Enter b\n";
-			b = checkNum();
-			cout << "Enter h\n";
+			do {
+				cout << "a - ";
+				a = checkNum();
+				cout << "b - ";
+				b = checkNum();
+			} while (isAlessB(a, b));
+
+			cout << "h - \n";
 			h = checkNum();
 			cout << "a = " << a << " b = " << b << " h = " << h << endl;
 			check = 0;
@@ -77,24 +86,16 @@ double calcResultFunctionY(double x) {
 
 //Функция для вывода результата
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double)) {
-	cout << "x = " << x << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << fabs(calcResultFunctions(n, x) - calcResultFunctiony(x)) << endl << endl;
+	cout << setprecision(1) << "x = " << x << setprecision(12) << fixed << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << fabs(calcResultFunctions(n, x) - calcResultFunctiony(x))  << endl << endl;
 }
 
 //Функция, чтобы вводить переменную и проверять на корректный ввод
 double checkNum() {
 	double var;
-	bool local_check = 1;
-	while (local_check)
-	{
-		cin >> var;
-		if (cin.get() != '\n')
-		{
-			cin.clear();
-			cin.ignore(INT_MAX, '\n');
-			cout << "Error! Something go wrong ReEnter: ";
-		}
-		else
-			local_check = 0;
+	while (!(cin >> var) || cin.get() != '\n') {
+		cout << "Error! Something go wrong ReEnter: ";
+		cin.clear();
+		while (cin.get() != '\n');
 	}
 	return var;
 }

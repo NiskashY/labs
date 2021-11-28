@@ -11,6 +11,7 @@ double calcResultFunctionY(double x);
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double));
 double checkNum();
 bool isAlessB(int, int);
+template <typename My_Type> My_Type MyAbs(My_Type value);
 
 int main() {
 	int n;
@@ -86,7 +87,7 @@ double calcResultFunctionY(double x) {
 
 //Функция для вывода результата
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double)) {
-	cout << setprecision(1) << "x = " << x << setprecision(12) << fixed << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << fabs(calcResultFunctions(n, x) - calcResultFunctiony(x))  << endl << endl;
+	cout << setprecision(1) << "x = " << x << setprecision(12) << fixed << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << MyAbs(calcResultFunctions(n, x) - calcResultFunctiony(x))  << endl << endl;
 }
 
 //Функция, чтобы вводить переменную и проверять на корректный ввод
@@ -98,4 +99,9 @@ double checkNum() {
 		while (cin.get() != '\n');
 	}
 	return var;
+}
+
+//собственная функция для абсол.тного щначения числа. Используется шаблон для того, чтобы можно было произвольный тип данных передать
+template <typename My_Type> My_Type MyAbs(My_Type value) {
+	return (value >= 0 ? value : -value);
 }

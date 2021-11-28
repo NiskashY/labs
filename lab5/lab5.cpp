@@ -19,18 +19,17 @@ int main() {
 	int size = sizeInput();
 	int *arr = new int[size];
 
-
 	if (isInputOrRandom()) {
 		inputArray(arr, size);
 	}
 	else {
 		randomArray(arr, size);
 	}
-
 	int first_positive = searchFirstPositiveElement(arr, size);
 	int last_positive = searchLastPositiveElement(arr, size);
-
-	if (last_positive - first_positive <= 1) cout << "Error! No sum between positive elements";
+	if (last_positive - first_positive <= 1) {
+		cout << "Error! No sum between positive elements";
+	}
 	else {
 		sumBetweenPositive(arr, first_positive, last_positive);
 	}
@@ -51,6 +50,15 @@ int sizeInput() {
 
 	return size;
 }
+double checkNum() {
+	double var;
+	while (!(cin >> var) || cin.get() != '\n') {
+		cout << "Error! Something go wrong ReEnter: ";
+		cin.clear();
+		while (cin.get() != '\n');
+	}
+	return var;
+}
 
 bool isInputOrRandom() {
 	int choice;
@@ -60,15 +68,32 @@ bool isInputOrRandom() {
 		choice = checkNum();
 	} while (choice != 1 && choice != 2);
 
-	if (choice == 2) { 
-		return 1; 
-	}
-	return 0;
+	return (choice == 2);
 }
 bool isAlessB(int a, int b) {
 	if (a >= b)
 		cout << "\na should be less then b\n";
 	return (a >= b);
+}
+void setInterval(int& a, int& b) {
+	do {
+		cout << "a - ";
+		a = checkNum();
+		cout << "b - ";
+		b = checkNum();
+	} while (isAlessB(a, b));
+}
+void randomArray(int* arr, int size) {
+	srand(time(0));
+	cout << "Enter range for random numbers [a;b]:\n";
+	int a, b;
+	setInterval(a, b);
+	cout << "\nArray:	";
+	for (int i = 0; i < size; ++i) {
+		arr[i] = rand() % (b - a + 1) + a;
+		cout << arr[i] << " ";
+	}
+	cout << '\n';
 }
 void inputArray(int* arr, int size) {
 	cout << "Input Array:\n";
@@ -82,27 +107,6 @@ void inputArray(int* arr, int size) {
 	}*/
 }
 
-//Рандомный массив
-void randomArray(int* arr, int size) {
-	srand(time(0));
-	cout << "Enter range for random numbers [a;b]:\n";
-	int a, b;
-	do {
-		cout << "a - ";
-		a = checkNum();
-		cout << "b - ";
-		b = checkNum();
-	} while (isAlessB(a,b));
-
-	cout << "\nArray:	";
-	for (int i = 0; i < size; ++i) {
-		arr[i] = rand() % (b - a + 1) + a;
-		cout << arr[i] << " ";
-	}
-	cout << '\n';
-}
-
-//Сумма между положительными элементами
 void sumBetweenPositive(int* arr, int first, int last) {
 	int sum = 0;
 	for (int i = first + 1; i <= last - 1; i++) {
@@ -110,7 +114,6 @@ void sumBetweenPositive(int* arr, int first, int last) {
 	}
 	cout << "Sum =  " << sum;
 }
-//Поиск первого положительного элемента
 int searchFirstPositiveElement(int* arr, int n) {
 	int j = 0;
 	for (int i = 0; i < n; i++) {
@@ -121,8 +124,6 @@ int searchFirstPositiveElement(int* arr, int n) {
 	}
 	return j;
 }
-
-//Поиск последнего положительного элемента
 int searchLastPositiveElement(int* arr, int n) {
 	int g = 0;
 	for (int i = n - 1; i >= 0; i--) {
@@ -132,15 +133,4 @@ int searchLastPositiveElement(int* arr, int n) {
 		}
 	}
 	return g;
-}
-
-//Функция чтобы вводить переменную и проверять на корректный ввод
-double checkNum() {
-	double var;
-	while (!(cin >> var) || cin.get() != '\n') {
-		cout << "Error! Something go wrong ReEnter: ";
-		cin.clear();
-		while (cin.get() != '\n');
-	}
-	return var;
 }

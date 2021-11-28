@@ -14,26 +14,31 @@ int inputRows();
 int inputColumns();
 void generateMatrix(int**, int, int);
 void randomMatrix(int** ,int, int);
-void inputMatrix(int**, int, int);
-void printMatrix(int**, int, int);
-int countingSpecialNumbers(int**, int, int);
 bool isAlessB(int, int);
 void setInterval(int& a, int& b);
+void inputMatrix(int**, int, int);
+int countingSpecialNumbers(int**, int, int, int*);
+void printMatrix(int**, int, int);
+void printSpecialElem(int*, int);
 
 
 int main() {
 	int row_count, columns_count;
 	row_count = inputRows();
 	columns_count = inputColumns();
-
+	int* special_elements = new int[columns_count];
+	int* pspec_elem = special_elements; /*Устанавливаю указатель на начало массива и в countingSpecialNumbers использую его, 
+										для добавления в сам массив, т.к.начальный адрес массива нельзя изменять :( */
 	int** matrix = new int* [row_count];
 	for (int row = 0; row < row_count; row++) {
 		matrix[row] = new int[columns_count];
 	}
+	
 	generateMatrix(matrix, row_count, columns_count);
 	printMatrix(matrix, row_count, columns_count);
-	cout << "The number of 'special' matrix elements: " << countingSpecialNumbers(matrix, row_count, columns_count) << '\n';
-
+	int amount_of_special = countingSpecialNumbers(matrix, row_count, columns_count, pspec_elem);
+	cout << "The number of 'special' matrix elements: " << amount_of_special;
+	printSpecialElem(special_elements, amount_of_special);
 	for (int i = 0; i < row_count; i++) {
 		delete[] matrix[i];
 	}
@@ -147,7 +152,16 @@ void printMatrix(int** matrix, int row_count, int columns_count) {
 		cout << "\n";
 	}
 }
-int countingSpecialNumbers(int** matrix, int row_count, int columns_count) {
+void printSpecialElem(int* special_elem, int amount) {
+	if (amount) {
+		cout << "\nThis elements are: ";
+		for (int i = 0; i < amount; i++) {
+			cout << special_elem[i] << ' ';
+		}
+	}
+	cout << '\n';
+}
+int countingSpecialNumbers(int** matrix, int row_count, int columns_count, int *pspec_elem) {
 	int special, sum_of_column, amount_of_special = 0;
 
 	for (int column = 0; column < columns_count; column++) {
@@ -159,6 +173,8 @@ int countingSpecialNumbers(int** matrix, int row_count, int columns_count) {
 			special = matrix[row][column];
 			if (special > (sum_of_column - special)) {
 				amount_of_special++;
+				*pspec_elem = special;
+				pspec_elem++;
 			}
 		}
 	}

@@ -5,19 +5,21 @@ using namespace std;
 
 //Прототипы функций
 
-void chooseStandart_abh_OrNot(double&, double&, double&);
+void chooseStandart_abh_orNot(double&, double&, double&);
 double calcResultFunctionS(int n, double x);
 double calcResultFunctionY(double x);
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double));
 double checkNum();
 bool isAlessB(int, int);
+void setIntervalABH(double&, double&, double&);
+void showABH(double, double, double);
 template <typename My_Type> My_Type MyAbs(My_Type value);
 
 int main() {
 	int n;
-	double  k, x, a = 0.1, b = 1, h = 0.1, sum, y, recurrence;
+	double  k, x, a = 0.1, b = 1, h = 0.1;
 
-	chooseStandart_abh_OrNot(a, b, h);
+	chooseStandart_abh_orNot(a, b, h);
 	cout << "\nEnter n: ";
 	n = checkNum();
 
@@ -35,8 +37,7 @@ bool isAlessB(int a, int b) {
 		cout << "\na should be less then b\n";
 	return (a >= b);
 }
-void chooseStandart_abh_OrNot(double& a, double& b, double& h) {
-
+void chooseStandart_abh_orNot(double& a, double& b, double& h) {
 	int check = 1;
 
 	while (check)
@@ -45,28 +46,32 @@ void chooseStandart_abh_OrNot(double& a, double& b, double& h) {
 		char term = _getch();
 		if (term == '1') //Стандартный набор чисел 
 		{
-			cout << "a = " << a << " b = " << b << " h = " << h << endl;
+			showABH(a, b, h);
 			check = 0;
 		}
 		else if (term == '2') //Пользователь сам вводит переменные a,b,h
 		{
-			do {
-				cout << "a - ";
-				a = checkNum();
-				cout << "b - ";
-				b = checkNum();
-			} while (isAlessB(a, b));
-
-			cout << "h - \n";
-			h = checkNum();
-			cout << "a = " << a << " b = " << b << " h = " << h << endl;
+			setIntervalABH(a, b, h);
+			showABH(a, b, h);
 			check = 0;
 		}
 		else cout << "Error! Reenter \n";
 	}
 
 }
-//рекурентная формула для нахождения суммы
+void showABH(double a, double b, double h) {
+	cout << "a = " << a << " b = " << b << " h = " << h << endl;
+}
+void setIntervalABH(double& a, double& b, double& h) {
+	do {
+		cout << "a - ";
+		a = checkNum();
+		cout << "b - ";
+		b = checkNum();
+		cout << "h - \n";
+		h = checkNum();
+	} while (isAlessB(a, b));
+}
 double calcResultFunctionS(int n, double x) {
 
 	double sum, recurrence, k;
@@ -79,18 +84,12 @@ double calcResultFunctionS(int n, double x) {
 
 	return sum;
 }
-
-//формула для нахождения cos(x)
 double calcResultFunctionY(double x) {
 	return cos(x);
 }
-
-//Функция для вывода результата
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double)) {
 	cout << setprecision(1) << "x = " << x << setprecision(12) << fixed << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << MyAbs(calcResultFunctions(n, x) - calcResultFunctiony(x))  << endl << endl;
 }
-
-//Функция, чтобы вводить переменную и проверять на корректный ввод
 double checkNum() {
 	double var;
 	while (!(cin >> var) || cin.get() != '\n') {

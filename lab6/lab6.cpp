@@ -19,7 +19,6 @@ void printMatrix(int**, int, int);
 int countingSpecialNumbers(int**, int, int);
 bool isAlessB(int, int);
 void setInterval(int& a, int& b);
-void deleteMatrix(int**, int, int);
 
 
 int main() {
@@ -33,19 +32,16 @@ int main() {
 	}
 	generateMatrix(matrix, row_count, columns_count);
 	printMatrix(matrix, row_count, columns_count);
-	cout << "The number of 'special' matrix elements: " << countingSpecialNumbers(matrix, row_count, columns_count);
+	cout << "The number of 'special' matrix elements: " << countingSpecialNumbers(matrix, row_count, columns_count) << '\n';
 
-	deleteMatrix(matrix, row_count, columns_count);
-	cout << '\n';
+	for (int i = 0; i < row_count; i++) {
+		delete[] matrix[i];
+	}
+	delete[] matrix;
 	system("pause");
 	return 0;
 }
-void deleteMatrix(int** matrix, int row_count, int columns_count) {
-	for (int i = 0; i < row_count; i++) {
-		delete [] matrix[i];
-	}
-	delete[] matrix;
-}
+
 double checkNum() {
 	double var;
 	while (!(cin >> var) || cin.get() != '\n') {

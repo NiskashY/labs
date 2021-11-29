@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <conio.h>
 #include <iomanip>
+
 using namespace std;
 
 //Прототипы функций
@@ -13,7 +14,7 @@ double checkNum();
 bool isAlessB(int, int);
 void setIntervalABH(double&, double&, double&);
 void showABH(double, double, double);
-template <typename My_Type> My_Type MyAbs(My_Type value);
+double MyAbs(double value);
 
 int main() {
 	int n;
@@ -99,8 +100,6 @@ double checkNum() {
 	}
 	return var;
 }
-
-//собственная функция для абсол.тного щначения числа. Используется шаблон для того, чтобы можно было произвольный тип данных передать
-template <typename My_Type> My_Type MyAbs(My_Type value) {
+double MyAbs(double value) {
 	return (value >= 0 ? value : -value);
 }

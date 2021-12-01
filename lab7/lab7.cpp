@@ -32,7 +32,10 @@ void MyGets(char* str) {
 	do {
 		input = _getch();
 		cout << input;
-		if (input == '\r') break;
+		if (input == '\r') {
+			cout << '\n';
+			break;
+		}
 		*str = input;
 		str++;
 	} while (true);
@@ -59,6 +62,7 @@ void countEvenGroups(char* str)
 {
 	int len = My_strlen(str);
 	char* pstr = str;
+	int amount_of_groups = 0;
 	for (int index = 0, index_after_space = 0, amount = 0; index <= len; index++)
 	{
 		if (index != 0 && str[index] != str[index - 1])
@@ -68,12 +72,16 @@ void countEvenGroups(char* str)
 				cout << str[index - 1];
 				str[index - 1] = '\0';
 				cout << pstr << ' ';
+				amount_of_groups++;
 			}
 			pstr = &str[index];
 			index_after_space = index;
 			amount = 0;
 		}
 		amount++;
+	}
+	if (amount_of_groups == 0) {
+		cout << "none";
 	}
 }
 /*void countEvenGroups(char* str)

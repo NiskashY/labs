@@ -13,9 +13,8 @@ struct Person {
 	char fio[SIZE_OF_FIO] ;
 	int year;
 	int groupNumber;
-	int math;
 	struct Marks {
-		int math1;
+		int math;
 		int physics;
 		int informatics;
 		int chemistry;
@@ -23,9 +22,9 @@ struct Person {
 	double average_score;
 } student;
 void createEmptyFile(FILE*, char*);
-void viewFile(FILE*, char*, int&);
-void sortInformation(FILE*, char*);
-void addInformation(FILE*, char*, int&);
+void viewFile(FILE*, char*, const int&);
+void addInformation(FILE*, char*, const int&);
+void cleverStudents(FILE*, char*, const int& size);
 void sleep();
 void My_strcat(char*, char*);
 int My_strlen(char*);
@@ -34,13 +33,15 @@ void chooseDataType(char*);
 bool isFileNameCorrect(char*);
 void inputInformation();
 void showInformation();
+int checkNum();
 
 
 int main() {
-	char fileName[50] = "";
+	char fileName[50] = "qwerty.dat";
 	FILE* StudFile = nullptr;
 	char choice;
 	int size = sizeof(Person);
+	int amount = 0;
 
 	while (true) {
 		system("cls");
@@ -61,21 +62,19 @@ int main() {
 			break;
 		}
 		case '4': {
+			cleverStudents(StudFile, fileName, size);
 			break;
 		}
 		default: {
 			printf("\n\t\t\t\t\tGood Bye!\n");
-			return 0; 
+			return 0;
 		}
 		}
-
-
 	}
-
 }
 
-double checkNum() {
-	double var;
+int checkNum() {
+	int var;
 	while (!(scanf_s("%d", &var)) || cin.get() != '\n') {
 		cout << "Error! Something go wrong ReEnter: ";
 		cin.clear();
@@ -120,8 +119,8 @@ void My_strcat(char* s1, char* s2) {
 	*s1 = '\0';
 }
 void sleep() {
-	printf("This stage will close in 3 seconds: ");
-	for (int i = 1; i <= 3; i++) {
+	printf("This stage will close in 2 seconds: ");
+	for (int i = 1; i <= 2; i++) {
 		printf("...%d", i);
 		Sleep(1000);
 	}
@@ -150,25 +149,26 @@ bool isFileNameCorrect(char* str)
 	return false;
 }
 void inputInformation() {
-	printf("\n LastName, Name and Patronymic - ");
-	MyGets(student.fio);
-	printf("\n Year of birth - ");
+	printf("\nLastName, Name and Patronymic - ");
+	fflush(stdin);
+	gets_s(student.fio);
+	printf("Year of birth - ");
 	student.year = checkNum();
-	printf("\n Group number - ");
+	printf("Group number - ");
 	student.groupNumber = checkNum();
-	printf("\n Marks:\n math - ");
-	student.math = checkNum();
-	printf("\n Physics - ");
-	student.marks.physics = checkNum(); printf("\n Physics - " , &student.marks.physics);
-	printf("\n Informatics - ");
+	printf("Marks:\nMath - ");
+	student.marks.math = checkNum();
+	printf("Physics - ");
+	student.marks.physics = checkNum();
+	printf("Informatics - ");
 	student.marks.informatics = checkNum();
-	printf("\n Chemistry - ");
+	printf("Chemistry - ");
 	student.marks.chemistry = checkNum();
-	int mark = student.marks.math1 + student.marks.physics + student.marks.informatics + student.marks.informatics;
-	student.average_score = (double)mark / 4.;
+	student.average_score = ((double)student.marks.math + (double)student.marks.physics + (double)student.marks.informatics + (double)student.marks.informatics) / 4.;
+	printf("\n");
 }
 void showInformation() {
-	printf("\n%s %d %d %d %d %d %d %lf\n", &student.fio, &student.year, &student.groupNumber, &student.marks.math1, &student.marks.physics, &student.marks.informatics, &student.marks.chemistry, &student.average_score);
+	printf("\n%s %d %d %d %d %d %d %lf\n", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
 }
 
 void createEmptyFile(FILE* StudFile, char fileName[50]) {
@@ -190,7 +190,7 @@ void createEmptyFile(FILE* StudFile, char fileName[50]) {
 		printf("Succesfull create of file %s!\n", fileName);
 		sleep();
 }
-void addInformation(FILE* StudFile, char fileName[50], int& size) {
+void addInformation(FILE* StudFile, char fileName[50], const int& size) {
 	fopen_s(&StudFile, fileName, "ab");
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
@@ -203,19 +203,35 @@ void addInformation(FILE* StudFile, char fileName[50], int& size) {
 	printf("Succesfull added information in file %s!\n", fileName);
 	sleep();
 }
-void viewFile(FILE* StudFile, char fileName[50], int& size) {
+void viewFile(FILE* StudFile, char fileName[50], const int& size) {
 	fopen_s(&StudFile, fileName, "rb");
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
 		return;
 	}
-	fread(&student, size, 1, StudFile);
-	showInformation();
+	int amount = _filelength(_fileno(StudFile)) / size;
+	for (int i = 0; i < amount; i++) {
+		fread(&student, size, 1, StudFile);
+		showInformation();
+	}
 	fclose(StudFile);
 	system("pause");
 }
-void sortInformation(FILE* StudFile, char fileName[50]) {
-
-}
-
+void cleverStudents(FILE* StudFile, char fileName[50], const int& size) {
+	fopen_s(&StudFile, fileName, "rb");
+	if (StudFile == NULL) {
+		printf("Open file Failed!!!\n");
+		sleep();
+		return;
+	}
+	int amount = _filelength(_fileno(StudFile)) / size;
+	for (int i = 0; i < amount; i++) {
+		fread(&student, size, 1, StudFile);
+		if ((student.fio[0] == -128 || student.fio[0] == 65) && (student.marks.math == 8 || student.marks.math == 9)) {
+			showInformation();
+		}
+	}
+	fclose(StudFile);
+	system("pause");
+}   

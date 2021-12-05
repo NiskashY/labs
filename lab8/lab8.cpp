@@ -3,12 +3,12 @@
 #include <conio.h>
 
 using namespace std;
-const char MENU[] = "\nCreate New File - 1\nAdd information - 2\nView information - 3\nSort information - 4\nEXIT - another symbol \n\nchoose with mode you want to use: ";
+const char MENU[] = "\nCreate New File - 1\nAdd information - 2\nView information - 3\nSort information - 4\nEXIT - another symbol \n\nchoose mode you want to use: ";
 
 struct Person {
-	char* name;
-	char* lastName;
-	char* patronymic;
+	char name[15];
+	char lastName[15];
+	char patronymic[15];
 	int year;
 	int groupNumber;
 	struct Marks {
@@ -16,7 +16,7 @@ struct Person {
 		int physics;
 		int informatics;
 		int chemistry;
-	};
+	} marks;
 	double average_score;
 } student;
 void createEmptyFile(FILE*, char*);
@@ -28,6 +28,7 @@ int My_strlen(char*);
 void MyGets(char*);
 void chooseDataType(char*);
 bool isFileNameCorrect(char*);
+void inputInformation();
 
 
 int main() {
@@ -122,7 +123,26 @@ bool isFileNameCorrect(char* str)
 	}
 	return false;
 }
-
+void inputInformation() {
+	printf("\n Last name - ");
+	scanf_s("%s", student.name, 15);
+	printf("\n Name - ");
+	scanf_s("%s", student.lastName, 15);
+	printf("\n Patronymic - ");
+	scanf_s("%c", student.patronymic, 15);
+	printf("\n Year of birth - ");
+	scanf_s("%d", &student.year);
+	printf("\n Group number - ");
+	scanf_s("%d", &student.groupNumber);
+	printf("\n Marks:\n math - ");
+	scanf_s("%d", &student.marks.math);
+	printf("\n Physics - ");
+	scanf_s("%d", &student.marks.physics);
+	printf("\n Informatics - ");
+	scanf_s("%d", &student.marks.informatics);
+	printf("\n Chemistry - ");
+	scanf_s("%d", &student.marks.chemistry);
+}
 void createEmptyFile(FILE* StudFile, char fileName[50]) {
 		printf("Type a name for your file: ");
 		do {
@@ -139,12 +159,16 @@ void createEmptyFile(FILE* StudFile, char fileName[50]) {
 		}
 		printf("Succesfull create of file %s!\n", fileName);
 		fclose(StudFile);
-		system("pause");
+		//system("pause");
 
 }
 void addInformation(FILE* StudFile, char fileName[50]) {
-	fopen_s(&StudFile, fileName, "a");
-	fprintf_s(StudFile, "Hi to the world!~~~\n");
+
+	fopen_s(&StudFile, fileName, "ab");
+	//system("pause");
+	inputInformation();
+	int size = sizeof(Person);
+	fwrite(&student, size, 1, StudFile);
 	fclose(StudFile);
 }
 void viewFile(FILE* StudFile, char fileName[50]) {

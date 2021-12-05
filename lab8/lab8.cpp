@@ -13,8 +13,9 @@ struct Person {
 	char fio[SIZE_OF_FIO] ;
 	int year;
 	int groupNumber;
+	int math;
 	struct Marks {
-		int math;
+		int math1;
 		int physics;
 		int informatics;
 		int chemistry;
@@ -22,9 +23,9 @@ struct Person {
 	double average_score;
 } student;
 void createEmptyFile(FILE*, char*);
-void viewFile(FILE*, char*);
+void viewFile(FILE*, char*, int&);
 void sortInformation(FILE*, char*);
-void addInformation(FILE* StudFile, char fileName[50], int&);
+void addInformation(FILE*, char*, int&);
 void sleep();
 void My_strcat(char*, char*);
 int My_strlen(char*);
@@ -56,6 +57,7 @@ int main() {
 			break;
 		}
 		case '3': {
+			viewFile(StudFile, fileName, size);
 			break;
 		}
 		case '4': {
@@ -72,6 +74,15 @@ int main() {
 
 }
 
+double checkNum() {
+	double var;
+	while (!(scanf_s("%d", &var)) || cin.get() != '\n') {
+		cout << "Error! Something go wrong ReEnter: ";
+		cin.clear();
+		while (cin.get() != '\n');
+	}
+	return var;
+}
 void MyGets(char* str) {//сюда мы копируем только адрес str[1000], и все
 						//т.е. указатель, который у str[1000] остается на месте
 						//а с помощью копии адреса и нового локального 
@@ -109,8 +120,8 @@ void My_strcat(char* s1, char* s2) {
 	*s1 = '\0';
 }
 void sleep() {
-	printf("This stage will close in 4 seconds: ");
-	for (int i = 1; i <= 4; i++) {
+	printf("This stage will close in 3 seconds: ");
+	for (int i = 1; i <= 3; i++) {
 		printf("...%d", i);
 		Sleep(1000);
 	}
@@ -142,22 +153,22 @@ void inputInformation() {
 	printf("\n LastName, Name and Patronymic - ");
 	MyGets(student.fio);
 	printf("\n Year of birth - ");
-	scanf_s("%d", &student.year);
+	student.year = checkNum();
 	printf("\n Group number - ");
-	scanf_s("%d", &student.groupNumber);
+	student.groupNumber = checkNum();
 	printf("\n Marks:\n math - ");
-	scanf_s("%d", &student.marks.math);
+	student.math = checkNum();
 	printf("\n Physics - ");
-	scanf_s("%d", &student.marks.physics);
+	student.marks.physics = checkNum(); printf("\n Physics - " , &student.marks.physics);
 	printf("\n Informatics - ");
-	scanf_s("%d", &student.marks.informatics);
+	student.marks.informatics = checkNum();
 	printf("\n Chemistry - ");
-	scanf_s("%d", &student.marks.chemistry);
-	int mark = student.marks.math + student.marks.physics + student.marks.informatics + student.marks.informatics;
-	student.average_score = (double) mark / 4.;
+	student.marks.chemistry = checkNum();
+	int mark = student.marks.math1 + student.marks.physics + student.marks.informatics + student.marks.informatics;
+	student.average_score = (double)mark / 4.;
 }
 void showInformation() {
-	printf("\n%s %d %d %d %d %d %d %lf\n", &student.fio, &student.year, &student.groupNumber, &student.marks.math, &student.marks.physics, &student.marks.informatics, &student.marks.chemistry, &student.average_score);
+	printf("\n%s %d %d %d %d %d %d %lf\n", &student.fio, &student.year, &student.groupNumber, &student.marks.math1, &student.marks.physics, &student.marks.informatics, &student.marks.chemistry, &student.average_score);
 }
 
 void createEmptyFile(FILE* StudFile, char fileName[50]) {
@@ -201,8 +212,8 @@ void viewFile(FILE* StudFile, char fileName[50], int& size) {
 	}
 	fread(&student, size, 1, StudFile);
 	showInformation();
-
-
+	fclose(StudFile);
+	system("pause");
 }
 void sortInformation(FILE* StudFile, char fileName[50]) {
 

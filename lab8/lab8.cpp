@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿/*Распечатать анкетные данные студентов, фамилии которых начинаются с буквы А, и сдавших математику на 8 или 9.*/
+#include <iostream>
 #include <stdio.h>
 #include <conio.h>
 #include <io.h>
@@ -18,11 +19,12 @@ struct Person {
 		int chemistry;
 	} marks;
 	double average_score;
-} student;
+} student, arr[10];
 
 void createEmptyFile(FILE*, char*);
-void viewFile(FILE*, char*, const int&);
 void addInformation(FILE*, char*, const int&);
+void viewFile(FILE*, char*, const int&);
+void correctionOfFile(FILE*, char*, const int&);
 void cleverStudents(FILE*, char*, const int& size);
 void chooseFileFromCurrentFolder(FILE*, char*);
 
@@ -44,9 +46,10 @@ void inputYear();
 int main() {
 	FILE* StudFile = nullptr;
 	int size = sizeof(Person);
-	const char MENU[] = "Current file - %s\nCreate New File - 1\nAdd information - 2\nView information - 3\nClever students - 4\nChoose file from folder - 5\nEXIT - another symbol\n\nchoose mode you want to use: ";
-	char fileName[50] = "";
+	const char MENU[] = "Current file - %s\nCreate New File and delete Current File - 1\nAdd information - 2\nView information - 3\nCorrection of information - 4\nClever students - 5 \nChoose file from folder - 6\nEXIT - another symbol\n\nchoose mode you want to use: ";
+	char fileName[50] = "qwerty.dat";
 	char choice;
+
 	while (true) {
 		system("cls");
 		printf(MENU, (fileName[0] == '\0' ? "none" : fileName));
@@ -63,13 +66,18 @@ int main() {
 		}
 		case '3': {
 			viewFile(StudFile, fileName, size);
+			system("pause");
 			break;
 		}
 		case '4': {
-			cleverStudents(StudFile, fileName, size);
+			correctionOfFile(StudFile, fileName, size);
 			break;
 		}
 		case '5': {
+			cleverStudents(StudFile, fileName, size);
+			break;
+		}
+		case '6': {
 			chooseFileFromCurrentFolder(StudFile, fileName);
 			break;
 		}
@@ -184,7 +192,7 @@ void inputInformation() {
 	printf("\n");
 }
 void showInformation() {
-	printf("\n%s %d %d %d %d %d %d %lf\n", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
+	printf("%s %d %d %d %d %d %d %lf\n", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
 }
 void inputYear() {
 	int current_year = time(0) / 3.154e7 + 1970;
@@ -258,10 +266,71 @@ void viewFile(FILE* StudFile, char* fileName, const int& size) {
 	int amount = _filelength(_fileno(StudFile)) / size;
 	for (int i = 0; i < amount; i++) {
 		fread(&student, size, 1, StudFile);
+		printf("\n%d. ", i + 1);
 		showInformation();
 	}
 	fclose(StudFile);
 	printf("\n");
+}
+void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
+	fopen_s(&StudFile, fileName, "rb");
+	if (StudFile == NULL) {
+		printf("Open file Failed!!!\n");
+		sleep();
+		return;
+	}
+	fclose(StudFile);
+
+	viewFile(StudFile, fileName, size);
+	fopen_s(&StudFile, fileName, "r+b");
+	//Person arr[10];
+	int choice, number_of_student;
+	if (StudFile == NULL) {
+		printf("Open file Failed!!!\n");
+		sleep();
+		return;
+	}
+	int n = _filelength(_fileno(StudFile)) / size;
+	for (int i = 0; i < n; i++) {
+		fread(&arr[i], size, 1, StudFile);
+	}
+
+	printf("Choose which one you want to: edit information of student - 1, delete student - 2, else - leave this stage\n\n");
+	scanf_s("%d", &choice);
+
+
+	switch (choice) {
+	case 1: {
+		printf("Choose number of student: ");
+		scanf_s("%d", &number_of_student);
+		break;
+	}
+	case 2: {
+		printf("Choose number of student: ");
+		scanf_s("%d", &number_of_student);
+		for (int i = --number_of_student; i < n - 1; i++) {
+			arr[i] = arr[i + 1];
+		}
+		n--;
+		break;
+	}
+	default: {
+		fclose(StudFile); 
+		return;
+	}
+	}
+	fseek(StudFile, 0, SEEK_SET);
+	fclose(StudFile);
+	fopen_s(&StudFile, fileName, "wb");
+	if (StudFile == NULL) {
+		printf("Create file Failed!!!\n");
+		sleep();
+		return;
+	}
+	for (int i = 0; i < n; i++) {
+		fwrite(&arr[i], size, 1, StudFile);
+	}
+	fclose(StudFile);
 	system("pause");
 }
 void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
@@ -305,3 +374,4 @@ void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
 	fclose(StudFile);
 	system("pause");
 }
+

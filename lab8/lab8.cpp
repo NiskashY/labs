@@ -6,7 +6,6 @@
 
 using namespace std;
 
-const char MENU[] = "\nCreate New File - 1\nAdd information - 2\nView information - 3\nSort information - 4\nEXIT - another symbol \n\nchoose mode you want to use: ";
 const int SIZE_OF_FIO = 50;
 
 struct Person {
@@ -25,6 +24,7 @@ void createEmptyFile(FILE*, char*);
 void viewFile(FILE*, char*, const int&);
 void addInformation(FILE*, char*, const int&);
 void cleverStudents(FILE*, char*, const int& size);
+void chooseFileFromCurrentFolder(FILE*, char*);
 void sleep();
 void My_strcat(char*, char*);
 int My_strlen(char*);
@@ -37,15 +37,14 @@ int checkNum();
 
 
 int main() {
-	char fileName[50] = "qwerty.dat";
 	FILE* StudFile = nullptr;
-	char choice;
 	int size = sizeof(Person);
-	int amount = 0;
-
+	const char MENU[] = "Current file - %s\nCreate New File - 1\nAdd information - 2\nView information - 3\nClever students - 4\nChoose file from folder - 5\nEXIT - another symbol\n\nchoose mode you want to use: ";
+	char fileName[50] = "";
+	char choice;
 	while (true) {
 		system("cls");
-		printf(MENU);
+		printf(MENU, (fileName[0] == '\0' ? "none" : fileName));
 		choice = _getch();
 		printf("%c\n", choice);
 		switch (choice) {
@@ -63,6 +62,10 @@ int main() {
 		}
 		case '4': {
 			cleverStudents(StudFile, fileName, size);
+			break;
+		}
+		case '5': {
+			chooseFileFromCurrentFolder(StudFile, fileName);
 			break;
 		}
 		default: {
@@ -149,11 +152,14 @@ bool isFileNameCorrect(char* str)
 	return false;
 }
 void inputInformation() {
+	int current_year = time(0) / 3.154e7 + 1970;
 	printf("\nLastName, Name and Patronymic - ");
 	fflush(stdin);
 	MyGets(student.fio);
 	printf("Year of birth - ");
-	student.year = checkNum();
+	do {
+		student.year = checkNum();
+	} while (student.year <= 1940 || student.year >= current_year);
 	printf("Group number - ");
 	student.groupNumber = checkNum();
 	printf("Marks:\nMath - ");
@@ -192,6 +198,7 @@ void createEmptyFile(FILE* StudFile, char* fileName) {
 }
 void addInformation(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "ab");
+	
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
@@ -235,3 +242,26 @@ void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 	fclose(StudFile);
 	system("pause");
 }   
+void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
+	//баг с none после выхода из функции путем q
+	system("dir *.txt *.dat");
+	char fileNameCopy[50];
+	do {
+		printf("\nIf you want to leave this mode type: 'q'\nChoose File from list before: ");
+		scanf_s("%s", fileNameCopy, 50);
+		if (fileNameCopy[0] == 'q' && fileNameCopy[1] == '\0'  ) {
+			return;
+		}
+		for (int i = 0; i < My_strlen(fileNameCopy); i++) {
+			fileName[i] = fileNameCopy[i];
+		}
+		fopen_s(&StudFile, fileName, "rb");
+		if (StudFile == NULL) {
+			printf("\No such file with this name in this directory!");
+			continue;
+		}
+		break;
+	} while (true);
+	fclose(StudFile);
+	system("pause");
+}

@@ -7,7 +7,6 @@
 using namespace std;
 
 const int SIZE_OF_FIO = 50;
-
 struct Person {
 	char fio[SIZE_OF_FIO] ;
 	int year;
@@ -20,20 +19,26 @@ struct Person {
 	} marks;
 	double average_score;
 } student;
+
 void createEmptyFile(FILE*, char*);
 void viewFile(FILE*, char*, const int&);
 void addInformation(FILE*, char*, const int&);
 void cleverStudents(FILE*, char*, const int& size);
 void chooseFileFromCurrentFolder(FILE*, char*);
+
 void sleep();
 void My_strcat(char*, char*);
 int My_strlen(char*);
 void MyGets(char*);
+
 void chooseDataType(char*);
 bool isFileNameCorrect(char*);
+bool isMarkCorrect(const int&);
 void inputInformation();
 void showInformation();
 int checkNum();
+void inputGroupNumber();
+void inputYear();
 
 
 int main() {
@@ -152,29 +157,62 @@ bool isFileNameCorrect(char* str)
 	return false;
 }
 void inputInformation() {
-	int current_year = time(0) / 3.154e7 + 1970;
 	printf("\nLastName, Name and Patronymic - ");
 	fflush(stdin);
 	MyGets(student.fio);
 	printf("Year of birth - ");
-	do {
-		student.year = checkNum();
-	} while (student.year <= 1940 || student.year >= current_year);
+	inputYear();
 	printf("Group number - ");
-	student.groupNumber = checkNum();
+	inputGroupNumber();
 	printf("Marks:\nMath - ");
-	student.marks.math = checkNum();
+	do {
+		student.marks.math = checkNum();
+	} while (isMarkCorrect(student.marks.math));
 	printf("Physics - ");
-	student.marks.physics = checkNum();
-	printf("Informatics - ");
-	student.marks.informatics = checkNum();
+	do {
+		student.marks.physics = checkNum();
+	} while (isMarkCorrect(student.marks.physics));
+	printf("Informatics - "); 
+	do {
+		student.marks.informatics = checkNum();
+	} while (isMarkCorrect(student.marks.informatics));
 	printf("Chemistry - ");
-	student.marks.chemistry = checkNum();
+	do {
+		student.marks.chemistry = checkNum();
+	} while (isMarkCorrect(student.marks.chemistry));
 	student.average_score = ((double)student.marks.math + (double)student.marks.physics + (double)student.marks.informatics + (double)student.marks.informatics) / 4.;
 	printf("\n");
 }
 void showInformation() {
 	printf("\n%s %d %d %d %d %d %d %lf\n", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
+}
+void inputYear() {
+	int current_year = time(0) / 3.154e7 + 1970;
+	while (true) {
+		student.year = checkNum();
+		if (student.year <= 1900 || student.year >= current_year) {
+			printf("People with this age do not exist:/\n");
+			continue;
+		}
+		return;
+	}
+}
+void inputGroupNumber() {
+	while (true) {
+		student.groupNumber = checkNum();
+		if (student.groupNumber <= 0 || student.groupNumber >= 1000000) {
+			printf("No group with this number! (Should be [0,1000 000\n");
+			continue;
+		}
+		return;
+	}
+}
+bool isMarkCorrect(const int& mark) {
+	bool tmp = (mark > 10 || mark < 0);
+	if (tmp) {
+		printf("Mark shoud be [0,10]\n");
+	}
+	return tmp;
 }
 
 void createEmptyFile(FILE* StudFile, char* fileName) {
@@ -223,6 +261,7 @@ void viewFile(FILE* StudFile, char* fileName, const int& size) {
 		showInformation();
 	}
 	fclose(StudFile);
+	printf("\n");
 	system("pause");
 }
 void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
@@ -240,6 +279,7 @@ void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 		}
 	}
 	fclose(StudFile);
+	printf("\n");
 	system("pause");
 }   
 void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
@@ -251,11 +291,12 @@ void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
 		if (fileNameCopy[0] == 'q' && fileNameCopy[1] == '\0'  ) {
 			return;
 		}
-		fopen_s(&StudFile, fileName, "rb");
+		fopen_s(&StudFile, fileNameCopy, "rb");
 		if (StudFile == NULL) {
-			printf("\No such file with this name in this directory!");
+			printf("\nNo such file with this name in this directory!");
 			continue;
 		}
+		printf("\nOK!\n");
 		for (int i = 0; i < My_strlen(fileNameCopy); i++) {
 			fileName[i] = fileNameCopy[i];
 		}

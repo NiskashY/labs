@@ -151,7 +151,7 @@ bool isFileNameCorrect(char* str)
 void inputInformation() {
 	printf("\nLastName, Name and Patronymic - ");
 	fflush(stdin);
-	gets_s(student.fio);
+	MyGets(student.fio);
 	printf("Year of birth - ");
 	student.year = checkNum();
 	printf("Group number - ");
@@ -171,7 +171,7 @@ void showInformation() {
 	printf("\n%s %d %d %d %d %d %d %lf\n", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
 }
 
-void createEmptyFile(FILE* StudFile, char fileName[50]) {
+void createEmptyFile(FILE* StudFile, char* fileName) {
 		printf("Type a name for your file: ");
 		do {
 			fflush(stdin);
@@ -190,7 +190,7 @@ void createEmptyFile(FILE* StudFile, char fileName[50]) {
 		printf("Succesfull create of file %s!\n", fileName);
 		sleep();
 }
-void addInformation(FILE* StudFile, char fileName[50], const int& size) {
+void addInformation(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "ab");
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
@@ -203,7 +203,7 @@ void addInformation(FILE* StudFile, char fileName[50], const int& size) {
 	printf("Succesfull added information in file %s!\n", fileName);
 	sleep();
 }
-void viewFile(FILE* StudFile, char fileName[50], const int& size) {
+void viewFile(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "rb");
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
@@ -218,7 +218,7 @@ void viewFile(FILE* StudFile, char fileName[50], const int& size) {
 	fclose(StudFile);
 	system("pause");
 }
-void cleverStudents(FILE* StudFile, char fileName[50], const int& size) {
+void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "rb");
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");

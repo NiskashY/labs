@@ -243,7 +243,6 @@ void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 	system("pause");
 }   
 void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
-	//баг с none после выхода из функции путем q
 	system("dir *.txt *.dat");
 	char fileNameCopy[50];
 	do {
@@ -252,13 +251,13 @@ void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
 		if (fileNameCopy[0] == 'q' && fileNameCopy[1] == '\0'  ) {
 			return;
 		}
-		for (int i = 0; i < My_strlen(fileNameCopy); i++) {
-			fileName[i] = fileNameCopy[i];
-		}
 		fopen_s(&StudFile, fileName, "rb");
 		if (StudFile == NULL) {
 			printf("\No such file with this name in this directory!");
 			continue;
+		}
+		for (int i = 0; i < My_strlen(fileNameCopy); i++) {
+			fileName[i] = fileNameCopy[i];
 		}
 		break;
 	} while (true);

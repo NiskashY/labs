@@ -45,12 +45,17 @@ void viewFile(FILE*, char*, const int&);
 void correctionOfFile(FILE*, char*, const int&);
 void cleverStudents(FILE*, char*, const int& size);
 void chooseFileFromCurrentFolder(FILE*, char*);
+void writeIntoFile(FILE*, char*, const int&);
 
 int main() {
+	//setlocale(0, "Rus");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	FILE* StudFile = nullptr;
 	int size = sizeof(Person);
 	char fileName[50] = "qwerty.dat";
 	showMenu(StudFile, fileName, size);
+	writeIntoFile(StudFile, fileName, size);
 }
 
 /*--------------------------------MyFunctions-----------------------------------*/
@@ -420,4 +425,42 @@ void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
 	} while (true);
 	fclose(StudFile);
 	system("pause");
+}
+void writeIntoFile(FILE* StudFile, char* fileName, const int& size) {
+	int amount_of_clever_students = 0;
+
+	fopen_s(&StudFile, fileName, "rb");
+	if (StudFile == NULL) {
+		printf("Create file Failed!!!\n");
+		sleep();
+		return;
+	}
+	int amount_of_students = _filelength(_fileno(StudFile)) / size;
+	Person* array_of_students = new Person[amount_of_students];
+	Person* array_of_clever_students = new Person[amount_of_students];
+	fread(array_of_students, size, amount_of_students, StudFile);
+
+	fclose(StudFile);
+
+	FILE* FileForOutput;
+	fopen_s(&FileForOutput, "output.txt", "w");
+	if (FileForOutput == NULL) {
+		printf("Create file Failed!!!\n");
+		sleep();
+		return;
+	}
+	fprintf(FileForOutput, "------All students-----\n");
+	for (int i = 0, j = 0; i < amount_of_students; i++) {
+		fprintf(FileForOutput, "%d. %s, %d, %d, %d, %d, %d, %d, %lf\n", i + 1, array_of_students[i].fio, array_of_students[i].year, array_of_students[i].groupNumber, array_of_students[i].marks.math, array_of_students[i].marks.physics, array_of_students[i].marks.informatics, array_of_students[i].marks.chemistry, array_of_students[i].average_score);
+		if ((array_of_students[i].fio[0] == -128 || array_of_students[i].fio[0] == 65) && (array_of_students[i].marks.math == 8 || array_of_students[i].marks.math == 9)) {
+			array_of_clever_students[j++] = array_of_students[i];
+			amount_of_clever_students++;
+		}
+	}
+	fprintf(FileForOutput, "------Clever students-----\n");
+	for (int i = 0; i < amount_of_clever_students; i++) {
+		fprintf(FileForOutput, "%d. %s, %d, %d, %d, %d, %d, %d, %lf\n", i + 1, array_of_clever_students[i].fio, array_of_clever_students[i].year, array_of_clever_students[i].groupNumber, array_of_clever_students[i].marks.math, array_of_clever_students[i].marks.physics, array_of_clever_students[i].marks.informatics, array_of_clever_students[i].marks.chemistry, array_of_clever_students[i].average_score);
+	}
+
+	fclose(FileForOutput);
 }

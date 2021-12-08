@@ -1,4 +1,4 @@
-﻿/*Распечатать анкетные данные студентов, фамилии которых начинаются с буквы А, и сдавших математику на 8 или 9.*/
+﻿/*Распечатать анкетные данные студентов, фамилии которых начинаются с буквы А, и сдавших математику на 8, или 9, или 10.*/
 #include <iostream>
 #include <stdio.h>
 #include <conio.h>
@@ -19,7 +19,7 @@ struct Person {
 		int chemistry;
 	} marks;
 	double average_score;
-} student, arr[10];
+} student1, arr[10], student_tmp;
 
 /*--------------------------Prototypes for funtions-----------------------------*/
 void sleep();
@@ -27,16 +27,16 @@ void My_strcat(char*, char*);
 int My_strlen(char*);
 void MyGets(char*);
 
-void chooseTypeOfCorrection();
+void chooseTypeOfCorrection(Person&);
 void chooseDataType(char*);
 bool isFileNameCorrect(char*);
 bool isMarkCorrect(const int&);
-void inputInformation();
-void showInformation();
+void inputInformation(Person&);
+void showInformation(Person&);
 int checkNum();
-void inputGroupNumber();
-void inputYear();
-void inputMarks();
+void inputGroupNumber(Person&);
+void inputYear(Person&);
+void inputMarks(Person&);
 
 void showMenu(FILE*, char*, const int&);
 void createEmptyFile(FILE*, char*);
@@ -48,7 +48,6 @@ void chooseFileFromCurrentFolder(FILE*, char*);
 void writeIntoFile(FILE*, char*, const int&);
 
 int main() {
-	//setlocale(0, "Rus");
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	FILE* StudFile = nullptr;
@@ -113,7 +112,7 @@ void sleep() {
 }
 
 /*--------------------Functions for working with file data----------------------*/
-void chooseTypeOfCorrection() {
+void chooseTypeOfCorrection(Person& student) {
 	printf("FIO - 1, Year - 2, Group number - 3, Marks - 4, else - back to menu\nChoose what you want to correct: ");
 	char choice = _getch();
 	printf("%c\n", choice);
@@ -125,24 +124,23 @@ void chooseTypeOfCorrection() {
 	}
 	case '2': {
 		printf("\nType Year: ");
-		inputYear();
+		inputYear(student);
 		break;
 	}
 	case '3': {
 		printf("\nType Group number: ");
-		inputGroupNumber();
+		inputGroupNumber(student);
 		break;
 	}
 	case '4': {
 		printf("\nType Marks:\n");
-		inputMarks();
+		inputMarks(student);
 		break;
 	}
 	default: {
 		return;
 	}
 	}
-	sleep();
 }
 void chooseDataType(char* fileName) {
 	printf("Choose type of your file: \n1 - .dat\nelse - .txt");
@@ -166,23 +164,23 @@ bool isFileNameCorrect(char* str)
 	}
 	return false;
 }
-void inputInformation() {
+void inputInformation(Person& student) {
 	printf("\nLastName, Name and Patronymic - ");
 	fflush(stdin);
 	MyGets(student.fio);
 	printf("Year of birth - ");
-	inputYear();
+	inputYear(student);
 	printf("Group number - ");
-	inputGroupNumber();
+	inputGroupNumber(student);
 	printf("Marks:\n");
-	inputMarks();
-	student.average_score = ((double)student.marks.math + (double)student.marks.physics + (double)student.marks.informatics + (double)student.marks.informatics) / 4.;
+	inputMarks(student);
+	student.average_score = ((double)student.marks.math + (double)student.marks.physics + (double)student.marks.informatics + (double)student.marks.chemistry) / 4.;
 	printf("\n");
 }
-void showInformation() {
+void showInformation(Person& student) {
 	printf("%s %d %d %d %d %d %d %lf\n", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
 }
-void inputYear() {
+void inputYear(Person& student) {
 	int current_year = (int)(time(0) / 3.154e7 + 1970);
 	while (true) {
 		student.year = checkNum();
@@ -193,7 +191,7 @@ void inputYear() {
 		return;
 	}
 }
-void inputGroupNumber() {
+void inputGroupNumber(Person& student) {
 	while (true) {
 		student.groupNumber = checkNum();
 		if (student.groupNumber <= 0 || student.groupNumber >= 1000000) {
@@ -203,7 +201,7 @@ void inputGroupNumber() {
 		return;
 	}
 }
-void inputMarks() {
+void inputMarks(Person& student) {
 	printf("Math - ");
 	do {
 		student.marks.math = checkNum();
@@ -220,7 +218,7 @@ void inputMarks() {
 	do {
 		student.marks.chemistry = checkNum();
 	} while (isMarkCorrect(student.marks.chemistry));
-
+	student.average_score = ((double)student.marks.math + (double)student.marks.physics + (double)student.marks.informatics + (double)student.marks.chemistry) / 4.;
 }
 bool isMarkCorrect(const int& mark) {
 	bool tmp = (mark > 10 || mark < 0);
@@ -294,19 +292,20 @@ void createEmptyFile(FILE* StudFile, char* fileName) {
 }
 void addInformation(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "ab");
-	
+	Person student;
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
 		return;
 	}
-	inputInformation();
+	inputInformation(student);
 	fwrite(&student, size, 1, StudFile);
 	fclose(StudFile);
 	printf("Succesfull added information in file %s!\n", fileName);
 	sleep();
 }
 void viewFile(FILE* StudFile, char* fileName, const int& size) {
+	Person student;
 	fopen_s(&StudFile, fileName, "rb");
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
@@ -317,13 +316,14 @@ void viewFile(FILE* StudFile, char* fileName, const int& size) {
 	for (int i = 0; i < amount; i++) {
 		fread(&student, size, 1, StudFile);
 		printf("\n%d. ", i + 1);
-		showInformation();
+		showInformation(student);
 	}
 	fclose(StudFile);
 	printf("\n");
 }
 void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "rb");
+	Person student;
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
@@ -352,8 +352,7 @@ void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
 	case '1' : {
 		printf("Choose number of student: ");
 		scanf_s("%d", &number_of_student);
-		chooseTypeOfCorrection();
-		arr[number_of_student - 1] = student;
+		chooseTypeOfCorrection(arr[number_of_student - 1]);
 		break;
 	}
 	case '2': {
@@ -387,6 +386,7 @@ void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
 }
 void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "rb");
+	Person student;
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
@@ -395,8 +395,8 @@ void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 	int amount = _filelength(_fileno(StudFile)) / size;
 	for (int i = 0; i < amount; i++) {
 		fread(&student, size, 1, StudFile);
-		if ((student.fio[0] == -128 || student.fio[0] == 65) && (student.marks.math == 8 || student.marks.math == 9)) {
-			showInformation();
+		if ((student.fio[0] == -128 || student.fio[0] == 65) && (student.marks.math == 8 || student.marks.math == 9 || student.marks.math == 10)) {
+			showInformation(student);
 		}
 	}
 	fclose(StudFile);

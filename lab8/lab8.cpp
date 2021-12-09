@@ -19,7 +19,7 @@ struct Person {
 		int chemistry;
 	} marks;
 	double average_score;
-} student1, arr[10], student_tmp;
+};
 
 /*--------------------------Prototypes for funtions-----------------------------*/
 void sleep();
@@ -323,24 +323,25 @@ void viewFile(FILE* StudFile, char* fileName, const int& size) {
 }
 void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
 	fopen_s(&StudFile, fileName, "rb");
-	Person student;
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
 		return;
 	}
 	fclose(StudFile);
-
 	viewFile(StudFile, fileName, size);
+	
 	fopen_s(&StudFile, fileName, "r+b");
-	int number_of_student;
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
 		return;
 	}
-	int n = _filelength(_fileno(StudFile)) / size;
-	for (int i = 0; i < n; i++) {
+
+	int amount_of_students = _filelength(_fileno(StudFile)) / size, number_of_student;;
+	Person student;
+	Person* arr = new Person[amount_of_students];
+	for (int i = 0; i < amount_of_students; i++) {
 		fread(&arr[i], size, 1, StudFile);
 	}
 
@@ -358,10 +359,10 @@ void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
 	case '2': {
 		printf("Choose number of student: ");
 		scanf_s("%d", &number_of_student);
-		for (int i = number_of_student - 1; i < n - 1; i++) {
+		for (int i = number_of_student - 1; i < amount_of_students - 1; i++) {
 			arr[i] = arr[i + 1];
 		}
-		n--;
+		amount_of_students--;
 		break;
 	}
 	default: {
@@ -377,11 +378,12 @@ void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
 		sleep();
 		return;
 	}
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < amount_of_students; i++) {
 		fwrite(&arr[i], size, 1, StudFile);
 	}
 	fclose(StudFile);
 	printf("Done!\n");
+	delete[] arr;
 	sleep();
 }
 void cleverStudents(FILE* StudFile, char* fileName, const int& size) {

@@ -47,7 +47,10 @@ void cleverStudents(FILE*, char*, const int& size);
 void chooseFileFromCurrentFolder(FILE*, char*);
 void writeIntoFile(FILE*, char*, const int&);
 
+
+
 int main() {
+	
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	FILE* StudFile = nullptr;
@@ -55,6 +58,7 @@ int main() {
 	char fileName[50] = "qwerty.dat";
 	showMenu(StudFile, fileName, size);
 	writeIntoFile(StudFile, fileName, size);
+	return 0;
 }
 
 /*--------------------------------MyFunctions-----------------------------------*/
@@ -72,6 +76,7 @@ void MyGets(char* str) {//сюда мы копируем только адрес
 						//а с помощью копии адреса и нового локального 
 						//указателя заполняем наше str[1000]
 	char input;
+	char* start = str;
 	do {
 		input = _getch();
 		cout << input;
@@ -80,7 +85,12 @@ void MyGets(char* str) {//сюда мы копируем только адрес
 			break;
 		}
 		*str = input;
-		str++;
+		if (input == '\b' && str != start) {
+			str--;
+		}
+		if (input != '\b') {
+			str++;
+		}
 	} while (true);
 	*str = '\0';//делаем для того, чтобы работал вывод: 
 				//если ввели больше в пред раз, а в этот раз меньше, ставим на позицию, 

@@ -30,6 +30,7 @@ void MyGets(char*);
 void chooseTypeOfCorrection(Person&);
 void chooseDataType(char*);
 bool isFileNameCorrect(char*);
+bool isStudentClever(Person&);
 bool isMarkCorrect(const int&);
 void inputInformation(Person&);
 void showInformation(Person&);
@@ -50,12 +51,12 @@ void writeIntoFile(FILE*, char*, const int&);
 
 
 int main() {
-	
+	setlocale(LC_ALL, "rus");
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	FILE* StudFile = nullptr;
 	int size = sizeof(Person);
-	char fileName[50] = "qwerty.dat";
+	char fileName[50] = "";
 	showMenu(StudFile, fileName, size);
 	writeIntoFile(StudFile, fileName, size);
 	return 0;
@@ -174,6 +175,9 @@ bool isFileNameCorrect(char* str)
 	}
 	return false;
 }
+bool isStudentClever(Person& student) {
+	return (student.fio[0] == -64 || student.fio[0] == 65 || student.fio[0] == -32) && (student.marks.math == 8 || student.marks.math == 9 || student.marks.math == 10);
+}
 void inputInformation(Person& student) {
 	printf("\nLastName, Name and Patronymic - ");
 	fflush(stdin);
@@ -188,7 +192,7 @@ void inputInformation(Person& student) {
 	printf("\n");
 }
 void showInformation(Person& student) {
-	printf("%s %d %d %d %d %d %d %lf\n", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
+	printf("%s %d %d %d %d %d %d %lf", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
 }
 void inputYear(Person& student) {
 	int current_year = (int)(time(0) / 3.154e7 + 1970);
@@ -241,14 +245,32 @@ bool isMarkCorrect(const int& mark) {
 /*--------------------Functions for working with files--------------------------*/
 void showMenu(FILE* StudFile, char* fileName, const int& size) {
 	char choice;
+	const char MENU_NONE[] = "Current file - %s\n\nCreate New File and delete Current File - 1\nChoose file from folder - 2\nEXIT - another symbol\n\nChoose mode you want to use: ";
 	const char MENU[] = "Current file - %s\n\nCreate New File and delete Current File - 1\nAdd information - 2\nView information - 3\nCorrection of information - 4\nClever students - 5 \nChoose file from folder - 6\nEXIT - another symbol\n\nChoose mode you want to use: ";
-
 	while (true) {
 		system("cls");
-		printf(MENU, (fileName[0] == '\0' ? "none" : fileName));
+		
+		printf((fileName[0] == '\0' ? MENU_NONE : MENU), (fileName[0] == '\0' ? "none" : fileName));
 		choice = _getch();
 		printf("%c\n", choice);
-		switch (choice) {
+		if (fileName[0] == '\0') {
+			switch (choice) {
+			case '1': {
+				createEmptyFile(StudFile, fileName);
+				break;
+			}
+			case '2': {
+				chooseFileFromCurrentFolder(StudFile, fileName);
+				break;
+			}
+			default: {
+				printf("\n\t\t\t\t\tGood Bye!\n");
+				return;
+			}
+			}
+		}
+		else {
+			switch (choice) {
 			case '1': {
 				createEmptyFile(StudFile, fileName);
 				break;
@@ -277,6 +299,7 @@ void showMenu(FILE* StudFile, char* fileName, const int& size) {
 			default: {
 				printf("\n\t\t\t\t\tGood Bye!\n");
 				return;
+			}
 			}
 		}
 	}
@@ -328,11 +351,12 @@ void viewFile(FILE* StudFile, char* fileName, const int& size) {
 		printf("\n%d. ", i + 1);
 		showInformation(student);
 	}
+	printf("\n");
 	fclose(StudFile);
 	printf("\n");
 }
 void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
-	fopen_s(&StudFile, fileName, "rb");
+	fopen_s(&StudFile, fileName, "r+b");
 	if (StudFile == NULL) {
 		printf("Open file Failed!!!\n");
 		sleep();
@@ -380,8 +404,9 @@ void correctionOfFile(FILE* StudFile, char* fileName, const int& size) {
 		return;
 	}
 	}
-	fseek(StudFile, 0, SEEK_SET);
 	fclose(StudFile);
+
+	/*----------------Writing data that has already been changed to a file with the same name--------------*/
 	fopen_s(&StudFile, fileName, "wb");
 	if (StudFile == NULL) {
 		printf("Create file Failed!!!\n");
@@ -407,7 +432,7 @@ void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 	int amount = _filelength(_fileno(StudFile)) / size;
 	for (int i = 0; i < amount; i++) {
 		fread(&student, size, 1, StudFile);
-		if ((student.fio[0] == -128 || student.fio[0] == 65) && (student.marks.math == 8 || student.marks.math == 9 || student.marks.math == 10)) {
+		if (isStudentClever(student)) {
 			showInformation(student);
 		}
 	}
@@ -439,15 +464,14 @@ void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
 	system("pause");
 }
 void writeIntoFile(FILE* StudFile, char* fileName, const int& size) {
-	int amount_of_clever_students = 0;
 
 	fopen_s(&StudFile, fileName, "rb");
 	if (StudFile == NULL) {
-		printf("Create file Failed!!!\n");
-		sleep();
+		printf("\nWrite information into output.txt failed!!!\n");
 		return;
 	}
 	int amount_of_students = _filelength(_fileno(StudFile)) / size;
+	int amount_of_clever_students = 0;
 	Person* array_of_students = new Person[amount_of_students];
 	Person* array_of_clever_students = new Person[amount_of_students];
 	fread(array_of_students, size, amount_of_students, StudFile);

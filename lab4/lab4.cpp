@@ -89,7 +89,11 @@ double calcResultFunctionY(double x) {
 	return cos(x);
 }
 void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double)) {
-	cout << setprecision(1) << "x = " << x << setprecision(12) << fixed << "\t\tY(x) = " << calcResultFunctiony(x) << "\t\tS(x) = " << calcResultFunctions(n, x) << "\t\t|Y(x) - S(x)| = " << MyAbs(calcResultFunctions(n, x) - calcResultFunctiony(x))  << endl << endl;
+	cout << fixed; //fixed - выводит в нотации с зафиксированным кол-вом чисел после запятой. кол-во цифр задаётся через setprecision.
+	cout << setprecision(1) << "x = " << x;
+	cout << setprecision(7) << "\t\tY(x) = " << calcResultFunctiony(x);
+	cout << "\tS(x) = " << calcResultFunctions(n, x);
+	cout << scientific << "\t|Y(x) - S(x)| = " << MyAbs(calcResultFunctions(n, x) - calcResultFunctiony(x)) << endl << endl; //scientific - выводит в научной нотации, т.е XX.XXXeN
 }
 double checkNum() {
 	double var;

@@ -1,6 +1,6 @@
 ﻿#include <iostream>
 #include <conio.h>
-
+#include <iomanip>
 using namespace std;
 
 double checkNum() {
@@ -51,7 +51,11 @@ int main()
 			recurrence *= (-1) * x * x / ((2 * k - 1) * (2 * k));
 			sum += recurrence;
 		}
-		cout << "x = " << x << "\t\tY(x) = " << y << "\t\tS(x) = " << sum << "\t\t|Y(x) - S(x)| = " << fabs(y - sum) << endl << endl;
+		cout << fixed; //fixed - выводит в нотации с зафиксированным кол-вом чисел после запятой. кол-во цифр задаётся через setprecision.
+		cout << setprecision(1) << "x = " << x;
+		cout << setprecision(7) << "\t\tY(x) = " << y;
+		cout << "\tS(x) = " << sum;
+		cout << scientific << "\t|Y(x) - S(x)| = " << fabs(y - sum) << endl << endl; //scientific - выводит в научной нотации, т.е XX.XXXeN
 	}
 
 	system("pause");

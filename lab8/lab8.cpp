@@ -19,6 +19,9 @@ struct Person {
 		int chemistry;
 	} marks;
 	double average_score;
+	void showInformation() {
+		printf("%s %d %d %d %d %d %d %lf", fio, year, groupNumber, marks.math, marks.physics, marks.informatics, marks.chemistry, average_score);
+	}
 };
 
 /*--------------------------Prototypes for funtions-----------------------------*/
@@ -33,12 +36,10 @@ bool isFileNameCorrect(char*);
 bool isStudentClever(Person&);
 bool isMarkCorrect(const int&);
 void inputInformation(Person&);
-void showInformation(Person&);
 int checkNum();
 void inputGroupNumber(Person&);
 void inputYear(Person&);
 void inputMarks(Person&);
-
 void showMenu(FILE*, char*, const int&);
 void createEmptyFile(FILE*, char*);
 void addInformation(FILE*, char*, const int&);
@@ -80,14 +81,15 @@ void MyGets(char* str) {//сюда мы копируем только адрес
 	char* start = str;
 	do {
 		input = _getch();
-		cout << input;
+		printf("%c", input);
 		if (input == '\r') {
-			cout << '\n';
+			printf("\n");
 			break;
 		}
 		*str = input;
 		if (input == '\b' && str != start) {
 			str--;
+			printf(" \b");
 		}
 		if (input != '\b') {
 			str++;
@@ -190,9 +192,6 @@ void inputInformation(Person& student) {
 	inputMarks(student);
 	student.average_score = ((double)student.marks.math + (double)student.marks.physics + (double)student.marks.informatics + (double)student.marks.chemistry) / 4.;
 	printf("\n");
-}
-void showInformation(Person& student) {
-	printf("%s %d %d %d %d %d %d %lf", student.fio, student.year, student.groupNumber, student.marks.math, student.marks.physics, student.marks.informatics, student.marks.chemistry, student.average_score);
 }
 void inputYear(Person& student) {
 	int current_year = (int)(time(0) / 3.154e7 + 1970);
@@ -349,7 +348,7 @@ void viewFile(FILE* StudFile, char* fileName, const int& size) {
 	for (int i = 0; i < amount; i++) {
 		fread(&student, size, 1, StudFile);
 		printf("\n%d. ", i + 1);
-		showInformation(student);
+		student.showInformation();
 	}
 	printf("\n");
 	fclose(StudFile);
@@ -433,7 +432,8 @@ void cleverStudents(FILE* StudFile, char* fileName, const int& size) {
 	for (int i = 0; i < amount; i++) {
 		fread(&student, size, 1, StudFile);
 		if (isStudentClever(student)) {
-			showInformation(student);
+			student.showInformation();
+			printf("\n");
 		}
 	}
 	fclose(StudFile);

@@ -42,9 +42,10 @@ void inputMarks(Person&);
 void core(FILE*, char*, const int&);
 bool showMenuEmpty(FILE*, char*, const int&, const char);
 bool showMenuNotEmpty(FILE*, char*, const int&, const char);
-void deletePersonInFile(FILE* StudFile, char* fileName, const int& SIZE);
-void corectionOfPersonInformation(FILE* StudFile, char* fileName, const int& SIZE);
-int GetAmountOfStudents(FILE* StudFile, char* fileName, const int& SIZE);
+void deletePersonInFile(FILE*, char*, const int&);
+bool isFioCorrect(char*);
+void corectionOfPersonInformation(FILE*, char*, const int&);
+int GetAmountOfStudents(FILE*, char*, const int&);
 void chooseTypeOfSort(FILE*, char*, const int&);
 void sortByFio(FILE*, char*, const int&, bool (*sortType) (char*, char*));
 bool ascending(char*, char*);
@@ -53,7 +54,7 @@ void createEmptyFile(FILE*, char*);
 void addInformation(FILE*, char*, const int&);
 void viewFile(FILE*, char*, const int&);
 void correctionOfFile(FILE*, char*, const int&);
-void cleverStudents(FILE*, char*, const int& SIZE);
+void cleverStudents(FILE*, char*, const int&);
 void chooseFileFromCurrentFolder(FILE*, char*);
 void writeIntoFile(FILE*, char*, const int&);
 
@@ -208,10 +209,28 @@ bool isFileNameCorrect(char* str)
 bool isStudentClever(Person& student) {
 	return (student.fio[0] == -64 || student.fio[0] == 65 || student.fio[0] == -32) && (student.marks.math >= 8);
 }
+bool isFioCorrect(char* fio) {
+	if (fio[0] < 65 || fio[0] > 91) {
+		printf("\tthe fio must begin with a capital letter\n");
+		return 1;
+	}
+	while (*fio) {
+		if ((*fio > 64 && *fio < 107) || (*fio > 96 && *fio < 123) || *fio == 32) {
+			fio++;
+		}
+		else {
+			printf("\tFio must contains only letters and Spaces!\n");
+			return 1;
+		}
+	}
+	return 0;
+}
 void inputInformation(Person& student) {
 	printf("\nLastName, Name and Patronymic - ");
 	fflush(stdin);
-	MyGets(student.fio);
+	do {
+		MyGets(student.fio);
+	} while (isFioCorrect(student.fio));
 	printf("Year of birth - ");
 	inputYear(student);
 	printf("Group number - ");
@@ -225,7 +244,7 @@ void inputYear(Person& student) {
 	int current_year = (int)(time(0) / 3.154e7 + 1970);
 	while (true) {
 		student.year = checkNum();
-		if (student.year <= 1900 || student.year >= current_year) {
+		if (student.year <= 1900 || student.year > current_year) {
 			printf("People with this age do not exist:/\n");
 			continue;
 		}

@@ -23,12 +23,12 @@ void printSpecialElem(int*, int);
 
 
 int main() {
-	int row_count, columns_count;
-	row_count = inputRows();
-	columns_count = inputColumns();
-	int* special_elements = new int[columns_count];
+	int row_count = inputRows(), columns_count = inputColumns();
+
+	int* special_elements = new int[columns_count * row_count]; //я умножаю кол-во матриц на столбец, чтобы проходил случай, когда вводятсяотрицательные числа.
 	int* pspec_elem = special_elements; /*Устанавливаю указатель на начало массива и в countingSpecialNumbers использую его, 
-										для добавления в сам массив, т.к.начальный адрес массива нельзя изменять :( */
+										для добавления в сам массив, т.к. начальный адрес массива нельзя изменять :( */
+
 	int** matrix = new int* [row_count];
 	for (int row = 0; row < row_count; row++) {
 		matrix[row] = new int[columns_count];
@@ -39,10 +39,13 @@ int main() {
 	int amount_of_special = countingSpecialNumbers(matrix, row_count, columns_count, pspec_elem);
 	cout << "The number of 'special' matrix elements: " << amount_of_special;
 	printSpecialElem(special_elements, amount_of_special);
+
+
 	for (int i = 0; i < row_count; i++) {
 		delete[] matrix[i];
 	}
 	delete[] matrix;
+
 	system("pause");
 	return 0;
 }
@@ -57,7 +60,7 @@ double checkNum() {
 	return var;
 }
 int inputRows() {
-	int rows, columns, input_attempts = 1;
+	int rows, input_attempts = 1;
 	do {
 		if (input_attempts > 1) {
 			cout << "incorrect size! repeat" << "\n";
@@ -90,7 +93,6 @@ int inputColumns() {
 
 	return columns;
 }
-
 bool isAlessB(int a, int b) {
 	if (a >= b)
 		cout << "\na should be less then b\n";
@@ -104,6 +106,7 @@ void setInterval(int& a, int& b) {
 		b = checkNum();
 	} while (isAlessB(a, b));
 }
+
 void randomMatrix(int** matrix, int row_count, int columns_count) {
 	int a, b;
 	cout << "\nset the interval for random numbers:\n";
@@ -127,8 +130,9 @@ void inputMatrix(int** matrix, int row_count, int columns_count) {
 
 void generateMatrix(int** matrix, int row_count, int columns_count) {
 	while (true) {
-		cout << "Choose Random matrix or enter elements of matrix: 1 - random, 2 - enter";
-		int choice = _getch();
+		cout << "Choose Random matrix or enter elements of matrix: 1 - random, 2 - enter \t";
+		char choice = _getch();
+		cout << choice << '\n';
 		if (choice == '1') {
 			randomMatrix(matrix, row_count, columns_count);
 		}
@@ -173,11 +177,10 @@ int countingSpecialNumbers(int** matrix, int row_count, int columns_count, int *
 			special = matrix[row][column];
 			if (special > (sum_of_column - special)) {
 				amount_of_special++;
-				*pspec_elem = special;
+				*pspec_elem = special;//добавляю в массив special_elements особый элемент через указатели
 				pspec_elem++;
 			}
 		}
 	}
 	return amount_of_special;
 }
-

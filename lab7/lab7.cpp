@@ -90,6 +90,7 @@ void countEvenGroups(char* str)
 	if (amount_of_groups == 0) {
 		cout << "none";
 	}
+	//ниже есть ещё варианты выполненения поиска групп. 
 }
 /*void countEvenGroups(char* str)
 {
@@ -110,5 +111,38 @@ void countEvenGroups(char* str)
 			amount = 0;
 		}
 		amount++;
+	}
+}*/
+/*
+void countEvenGroups(char* str)
+{
+	//00010001111000 -> 1111
+	int len = My_strlen(str), amount_of_groups = 0;
+	char token[1000];
+	char* p_str = str, *p_token;
+
+	while (*p_str) {
+		p_token = token;
+		int amount = 0;
+		while (true) {
+			*p_token = *p_str;
+			p_token++;
+			p_str++;
+			amount++;
+
+			if (*p_str != *(p_str - 1)) {
+				break;
+			}
+		}
+
+		*p_token = '\0';
+		if (amount % 2 == 0 && amount) {
+			amount_of_groups++;
+			cout << token << ' ';
+		}
+	}
+
+	if (amount_of_groups == 0) {
+		cout << "none";
 	}
 }*/

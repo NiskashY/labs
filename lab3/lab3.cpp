@@ -55,7 +55,7 @@ int main()
 		cout << setprecision(1) << "x = " << x;
 		cout << setprecision(7) << "\t\tY(x) = " << y;
 		cout << "\tS(x) = " << sum;
-		cout << scientific << "\t|Y(x) - S(x)| = " << fabs(y - sum) << endl << endl; //scientific - выводит в научной нотации, т.е XX.XXXeN
+		cout << scientific << setprecision(3) << "\t|Y(x) - S(x)| = " << fabs(y - sum) << endl << endl; //scientific - выводит в научной нотации, т.е XX.XXXeN
 	}
 
 	system("pause");

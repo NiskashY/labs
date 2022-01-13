@@ -7,33 +7,72 @@ using namespace std;
 //Прототипы функций
 
 void chooseStandart_abh_orNot(double&, double&, double&);
-double calcResultFunctionS(int n, double x);
-double calcResultFunctionY(double x);
-void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double));
+void chooseOutRez(int, double, double, double, bool*);
+double calcResultFunctionS(int, double);
+double calcResultFunctionY(int, double);
+double difference(int, double);
+void outRez(int, double, double, double, double (*function)(int, double));
 double checkNum();
 bool isAlessB(int, int);
 void setIntervalABH(double&, double&, double&);
 void showABH(double, double, double);
-double MyAbs(double value);
+double MyAbs(double);
 
 int main() {
 	int n;
-	double  k, x, a = 0.1, b = 1, h = 0.1;
+	double a = 0.1, b = 1, h = 0.1;
 
 	chooseStandart_abh_orNot(a, b, h);
 	cout << "\nEnter n: ";
 	n = checkNum();
 
-	for (double x = a; x <= b; x += h) {
-		outRez(n, x, a, b, h, calcResultFunctionY, calcResultFunctionS);
-	}
+
+	bool status = 1;
+
+	do {
+		chooseOutRez(n, a, b, h, &status);
+	} while (status);
+
 
 	cout << '\n';
 	system("pause");
 	return 0;
 }
 
-bool isAlessB(int a, int b) {
+void chooseOutRez(int n, double a, double b, double h, bool* status) {
+	const char* MENU_TMP = "\nInput:\n1 - for function F(x) = S(x)\n2 - for function F(x) = Y(x)\n3 - for function F(x) = |S(x) - Y(x)|\n4 - change a, b, h\nelse - quit\n";
+	cout << MENU_TMP;
+
+	char choice = _getch();
+	cout << choice << '\n';
+
+	switch (choice) {
+		case '1': {
+			cout << "F(x) = S(x)\n"; 
+			outRez(n, a, b, h, calcResultFunctionS);
+			break;
+		}
+		case '2': {
+			cout << "F(x) = Y(x)\n";
+			outRez(n, a, b, h, calcResultFunctionY);
+			break;
+		}
+		case '3': {
+			cout << "F(x) = |S(x) - Y(x)|\n";
+			outRez(n, a, b, h, difference);
+			break;
+		}
+		case '4': {
+			chooseStandart_abh_orNot(a, b, h);
+			break;
+		}
+		default: {
+			cout << "Bye!\n";
+			*status = 0;
+		}
+	}
+}
+template <typename T> bool isAlessB(T a, T b) {
 	if (a >= b)
 		cout << "\na should be less then b\n";
 	return (a >= b);
@@ -85,15 +124,22 @@ double calcResultFunctionS(int n, double x) {
 
 	return sum;
 }
-double calcResultFunctionY(double x) {
+double calcResultFunctionY(int n, double x) {
 	return cos(x);
 }
-void outRez(int n, double x, double a, int b, double h, double (*calcResultFunctiony)(double), double(*calcResultFunctions)(int, double)) {
-	cout << fixed; //fixed - выводит в нотации с зафиксированным кол-вом чисел после запятой. кол-во цифр задаётся через setprecision.
-	cout << setprecision(1) << "x = " << x;
-	cout << setprecision(7) << "\t\tY(x) = " << calcResultFunctiony(x);
-	cout << "\tS(x) = " << calcResultFunctions(n, x);
-	cout << scientific << "\t|Y(x) - S(x)| = " << MyAbs(calcResultFunctions(n, x) - calcResultFunctiony(x)) << endl << endl; //scientific - выводит в научной нотации, т.е XX.XXXeN
+double difference(int n, double x) {
+	double diff =  calcResultFunctionS(n, x) - calcResultFunctionY(n, x);
+	if (diff >= 0) {
+		return diff;
+	}
+	return (-diff);
+}
+void outRez(int n, double a, double b, double h, double (*function)(int, double)) {
+	for (double x = a; x <= b; x += h) {
+		cout << fixed; //fixed - выводит в нотации с зафиксированным кол-вом чисел после запятой. кол-во цифр задаётся через setprecision.
+		cout << setprecision(1) << "x = " << x;
+		cout << scientific <<  setprecision(4) << "\tF(x) = " << function(n, x) << '\n'; //scientific - выводит в научной нотации, т.е XX.XXXeN
+	}
 }
 double checkNum() {
 	double var;

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int sizeInput();
+int SIZEInput();
 bool isInputOrRandom();
 int searchFirstPositiveElement(int*, int);
 int searchLastPositiveElement(int*, int);
@@ -16,17 +16,17 @@ double checkNum();
 
 int main() {
 
-	int size = sizeInput();
-	int *arr = new int[size];
+	int SIZE = SIZEInput();
+	int *arr = new int[SIZE];
 
 	if (isInputOrRandom()) {
-		inputArray(arr, size);
+		inputArray(arr, SIZE);
 	}
 	else {
-		randomArray(arr, size);
+		randomArray(arr, SIZE);
 	}
-	int first_positive = searchFirstPositiveElement(arr, size);
-	int last_positive = searchLastPositiveElement(arr, size);
+	int first_positive = searchFirstPositiveElement(arr, SIZE);
+	int last_positive = searchLastPositiveElement(arr, SIZE);
 	if (last_positive - first_positive <= 1) {
 		cout << "Error! No sum between positive elements";
 	}
@@ -40,15 +40,15 @@ int main() {
 	return 0;
 }
 
-int sizeInput() {
-	int size;
+int SIZEInput() {
+	int SIZE;
 
 	do {
-		cout << "Enter array size from 1 to 100\t";
-		size = checkNum();
-	} while (size < 1 || size > 100);
+		cout << "Enter array SIZE from 1 to 100\t";
+		SIZE = checkNum();
+	} while (SIZE < 1 || SIZE > 100);
 
-	return size;
+	return SIZE;
 }
 double checkNum() {
 	double var;
@@ -83,26 +83,26 @@ void setInterval(int& a, int& b) {
 		b = checkNum();
 	} while (isAlessB(a, b));
 }
-void randomArray(int* arr, int size) {
+void randomArray(int* arr, int SIZE) {
 	srand(time(0));
 	cout << "Enter range for random numbers [a;b]:\n";
 	int a, b;
 	setInterval(a, b);
 	cout << "\nArray:	";
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < SIZE; ++i) {
 		arr[i] = rand() % (b - a + 1) + a;
 		cout << arr[i] << " ";
 	}
 	cout << '\n';
 }
-void inputArray(int* arr, int size) {
+void inputArray(int* arr, int SIZE) {
 	cout << "Input Array:\n";
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < SIZE; ++i) {
 		cin >> arr[i];
 	}
 	/* 
 	Этот код с проверкой, но есть минус в виде ввода только через enter иначе будет всегда выдавать ошибку!
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < SIZE; ++i) {
 		arr[i] = checkNum();
 	}*/
 }

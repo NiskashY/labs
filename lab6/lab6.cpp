@@ -63,7 +63,7 @@ int inputRows() {
 	int rows, input_attempts = 1;
 	do {
 		if (input_attempts > 1) {
-			cout << "incorrect size! repeat" << "\n";
+			cout << "incorrect SIZE! repeat" << "\n";
 		}
 		if (input_attempts == 1) {
 			cout << "Enter the number of rows in the matrix (from 1 to 9): ";
@@ -80,7 +80,7 @@ int inputColumns() {
 	int columns, input_attempts = 1;
 	do {
 		if (input_attempts > 1) {
-			cout << "incorrect size! repeat" << "\n";
+			cout << "incorrect SIZE! repeat" << "\n";
 		}
 		if (input_attempts == 1) {
 			cout << "Enter the number of columns in the matrix (from 1 to 9): ";

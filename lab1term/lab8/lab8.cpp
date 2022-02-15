@@ -192,6 +192,18 @@ void chooseDataType(char* fileName) {
 	printf(" %c\n", choice);
 	choice == '1' ? My_strcat(fileName, file_type1) : My_strcat(fileName, file_type2);
 }
+void chooseTypeOfSort(FILE* StudFile, char* fileName, const int& SIZE) {
+	printf("1 - ascending, 2 - descending, else - exit");
+	char choice = _getch();
+	printf("%c\n", choice);
+	if (choice == '1') {
+		sortByFio(StudFile, fileName, SIZE, ascending);
+	}
+	else if (choice == '2') {
+		sortByFio(StudFile, fileName, SIZE, descending);
+	}
+}
+
 bool isFileNameCorrect(char* str)
 {
 	int len = My_strlen(str);
@@ -225,6 +237,14 @@ bool isFioCorrect(char* fio) {
 	}
 	return 0;
 }
+bool isMarkCorrect(const int& mark) {
+	bool tmp = (mark > 10 || mark < 0);
+	if (tmp) {
+		printf("Mark shoud be [0,10]\n");
+	}
+	return tmp;
+}
+
 void inputInformation(Person& student) {
 	printf("\nLastName, Name and Patronymic - ");
 	fflush(stdin);
@@ -280,13 +300,7 @@ void inputMarks(Person& student) {
 	} while (isMarkCorrect(student.marks.chemistry));
 	student.average_score = ((double)student.marks.math + (double)student.marks.physics + (double)student.marks.informatics + (double)student.marks.chemistry) / 4.;
 }
-bool isMarkCorrect(const int& mark) {
-	bool tmp = (mark > 10 || mark < 0);
-	if (tmp) {
-		printf("Mark shoud be [0,10]\n");
-	}
-	return tmp;
-}
+
 bool showMenuEmpty(FILE* StudFile, char* fileName, const int& SIZE, const char choice) {
 	switch (choice) {
 		case '1': {
@@ -354,17 +368,7 @@ int GetAmountOfStudents(FILE* StudFile, char* fileName, const int& SIZE) {
 	fclose(StudFile);
 	return amount;
 }
-void chooseTypeOfSort(FILE* StudFile, char* fileName, const int& SIZE) {
-	printf("1 - ascending, 2 - descending, else - exit");
-	char choice = _getch();
-	printf("%c\n", choice);
-	if (choice == '1') {
-		sortByFio(StudFile, fileName, SIZE, ascending);
-	}
-	else if (choice == '2') {
-		sortByFio(StudFile, fileName, SIZE, descending);
-	}
-}
+
 
 /*--------------------Functions for working with files--------------------------*/
 
@@ -391,6 +395,7 @@ void core(FILE* StudFile, char* fileName, const int& SIZE) {
 		writeIntoFile(StudFile, fileName, SIZE);
 	}
 }
+
 void createEmptyFile(FILE* StudFile, char* fileName) {
 		printf("Type a name for your file: ");
 		do {
@@ -442,6 +447,7 @@ void viewFile(FILE* StudFile, char* fileName, const int& SIZE) {
 	fclose(StudFile);
 	printf("\n");
 }
+
 void cleverStudents(FILE* StudFile, char* fileName, const int& SIZE) {
 	fopen_s(&StudFile, fileName, "rb");
 	Person student;
@@ -462,6 +468,7 @@ void cleverStudents(FILE* StudFile, char* fileName, const int& SIZE) {
 	printf("\n");
 	system("pause");
 }
+
 void correctionOfFile(FILE* StudFile, char* fileName, const int& SIZE) {
 	viewFile(StudFile, fileName, SIZE);
 	printf("Edit information of student - 1, delete student - 2, else - leave this stage\nChoose which one you want to: ");
@@ -555,13 +562,61 @@ void deletePersonInFile(FILE* StudFile, char* fileName, const int& SIZE) {
 	delete[] arr;
 	fclose(StudFile);
 }
+
+void sortByFio (FILE* StudFile, char* fileName, const int& SIZE, bool (*sortType) (char*, char*) ) {
+	int amount_of_students = GetAmountOfStudents(StudFile, fileName, SIZE);
+	Person student;
+	Person* arr = new Person[amount_of_students];
+
+	fopen_s(&StudFile, fileName, "r+b");
+	if (StudFile == NULL) {
+		printf("Open file Failed!!!\n");
+		sleep();
+		return;
+	}
+
+	for (int i = 0; i < amount_of_students; i++) {
+		fread(&arr[i], SIZE, 1, StudFile);
+	}
+	fclose(StudFile);
+
+	for (int i = 0; i < amount_of_students; i++) {
+		for (int j = 0; j < amount_of_students - 1; j++) {
+			if (sortType(arr[j].fio, arr[j + 1].fio)) {
+				Person tmp_student = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp_student;
+			}
+		}
+	}
+
+
+	fopen_s(&StudFile, fileName, "w+b");
+	if (StudFile == NULL) {
+		printf("Create file Failed!!!\n");
+		sleep();
+		return;
+	}
+
+	for (int i = 0; i < amount_of_students; i++) {
+		fwrite(&arr[i], SIZE, 1, StudFile);
+	}
+
+	fclose(StudFile);
+
+	printf("Done!\n");
+	delete[] arr;
+	system("pause");
+
+}
+
 void chooseFileFromCurrentFolder(FILE* StudFile, char* fileName) {
 	system("dir *.txt *.dat");
 	char fileNameCopy[50];
 	do {
 		printf("\nIf you want to leave this mode type: 'q'\nChoose File from list before: ");
 		scanf_s("%s", fileNameCopy, 50);
-		if (fileNameCopy[0] == 'q' && fileNameCopy[1] == '\0'  ) {
+		if (fileNameCopy[0] == 'q' && fileNameCopy[1] == '\0') {
 			return;
 		}
 		fopen_s(&StudFile, fileNameCopy, "rb");
@@ -616,50 +671,4 @@ void writeIntoFile(FILE* StudFile, char* fileName, const int& SIZE) {
 	fclose(FileForOutput);
 	delete[] array_of_students;
 	delete[] array_of_clever_students;
-}
-void sortByFio (FILE* StudFile, char* fileName, const int& SIZE, bool (*sortType) (char*, char*) ) {
-	int amount_of_students = GetAmountOfStudents(StudFile, fileName, SIZE);
-	Person student;
-	Person* arr = new Person[amount_of_students];
-
-	fopen_s(&StudFile, fileName, "r+b");
-	if (StudFile == NULL) {
-		printf("Open file Failed!!!\n");
-		sleep();
-		return;
-	}
-
-	for (int i = 0; i < amount_of_students; i++) {
-		fread(&arr[i], SIZE, 1, StudFile);
-	}
-	fclose(StudFile);
-
-	for (int i = 0; i < amount_of_students; i++) {
-		for (int j = 0; j < amount_of_students - 1; j++) {
-			if (sortType(arr[j].fio, arr[j + 1].fio)) {
-				Person tmp_student = arr[j];
-				arr[j] = arr[j + 1];
-				arr[j + 1] = tmp_student;
-			}
-		}
-	}
-
-
-	fopen_s(&StudFile, fileName, "w+b");
-	if (StudFile == NULL) {
-		printf("Create file Failed!!!\n");
-		sleep();
-		return;
-	}
-
-	for (int i = 0; i < amount_of_students; i++) {
-		fwrite(&arr[i], SIZE, 1, StudFile);
-	}
-
-	fclose(StudFile);
-
-	printf("Done!\n");
-	delete[] arr;
-	system("pause");
-
 }

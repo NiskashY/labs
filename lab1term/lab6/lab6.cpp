@@ -184,3 +184,4 @@ int countingSpecialNumbers(int** matrix, int row_count, int columns_count, int *
 	}
 	return amount_of_special;
 }
+  

@@ -13,10 +13,10 @@ double calcResultFunctionY(int, double);
 double difference(int, double);
 void outRez(int, double, double, double, double (*function)(int, double));
 double checkNum();
-bool isAlessB(int, int);
+template <typename T> bool isAlessB(T, T);
 void setIntervalABH(double&, double&, double&);
 void showABH(double, double, double);
-double MyAbs(double);
+template <typename T> double  MyAbs(T);
 
 int main() {
 	int n;
@@ -26,13 +26,10 @@ int main() {
 	cout << "\nEnter n: ";
 	n = checkNum();
 
-
 	bool status = 1;
-
 	do {
 		chooseOutRez(n, a, b, h, &status);
 	} while (status);
-
 
 	cout << '\n';
 	system("pause");
@@ -72,30 +69,24 @@ void chooseOutRez(int n, double a, double b, double h, bool* status) {
 		}
 	}
 }
-template <typename T> bool isAlessB(T a, T b) {
-	if (a >= b)
-		cout << "\na should be less then b\n";
-	return (a >= b);
-}
 void chooseStandart_abh_orNot(double& a, double& b, double& h) {
 	int check = 1;
 
 	while (check)
 	{
-		cout << "You want to use  default settings or enter your own values?\n1 - use default\n2 - enter values\n";
+		cout << "You want to use  default settings or enter your own values?\n1 - use default\nelse - enter values\n";
 		char term = _getch();
 		if (term == '1') //Стандартный набор чисел 
 		{
 			showABH(a, b, h);
 			check = 0;
 		}
-		else if (term == '2') //Пользователь сам вводит переменные a,b,h
+		else //Пользователь сам вводит переменные a,b,h
 		{
 			setIntervalABH(a, b, h);
 			showABH(a, b, h);
 			check = 0;
 		}
-		else cout << "Error! Reenter \n";
 	}
 
 }
@@ -128,17 +119,13 @@ double calcResultFunctionY(int n, double x) {
 	return cos(x);
 }
 double difference(int n, double x) {
-	double diff =  calcResultFunctionS(n, x) - calcResultFunctionY(n, x);
-	if (diff >= 0) {
-		return diff;
-	}
-	return (-diff);
+	return MyAbs(calcResultFunctionS(n, x) - calcResultFunctionY(n, x));
 }
 void outRez(int n, double a, double b, double h, double (*function)(int, double)) {
 	for (double x = a; x <= b; x += h) {
 		cout << fixed; //fixed - выводит в нотации с зафиксированным кол-вом чисел после запятой. кол-во цифр задаётся через setprecision.
 		cout << setprecision(1) << "x = " << x;
-		cout << scientific <<  setprecision(4) << "\tF(x) = " << function(n, x) << '\n'; //scientific - выводит в научной нотации, т.е XX.XXXeN
+		cout << scientific <<  setprecision(5) << "\tF(x) = " << function(n, x) << '\n'; //scientific - выводит в научной нотации, т.е XX.XXXeN
 	}
 }
 double checkNum() {
@@ -150,6 +137,11 @@ double checkNum() {
 	}
 	return var;
 }
-double MyAbs(double value) {
+template <typename T> double  MyAbs(T value) {
 	return (value >= 0 ? value : -value);
+}
+template <typename T> bool isAlessB(T a, T b) {
+	if (a >= b)
+		cout << "\na should be less then b\n";
+	return (a >= b);
 }

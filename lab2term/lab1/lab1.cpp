@@ -1,8 +1,9 @@
+Ôªø//6. –ù–∞–π—Ç–∏  –º–µ—Ç–æ–¥–æ–º  –¥–µ–ª–µ–Ω–∏—è   –æ—Ç—Ä–µ–∑–∫–∞   –ø–æ–ø–æ–ª–∞–º  –º–∏–Ω–∏–º—É–º  —Ñ—É–Ω–∫—Ü–∏–∏ f(x) = = 7sin2(x) –Ω–∞ –æ—Ç—Ä–µ–∑–∫–µ [2, 6] —Å –∑–∞–¥–∞–Ω–Ω–æ–π —Ç–æ—á–Ω–æ—Å—Ç—å—é ÔÅ• (–Ω–∞–ø—Ä–∏–º–µ—Ä 0,01). 
 #include <iostream>
 #include <cmath>
 #include <iomanip>
 
-double MinSearch(double& a, double& b, double& e);
+double MinSearch(double& a, double& b, double& e, double& min);
 double loop(double& a, double& b, double& e);
 bool IsALessB(double a, double b);
 void InputAB(double& a, double& b);
@@ -13,38 +14,21 @@ int main() {
     double a, b, e;
 
     InputAB(a, b);
+    std::cout << "Input e: ";
     e = InputNum();
-
-    std::cout << std::fixed << std::setprecision(15) << MinSearch(a, b, e) << std::endl;
+    std::cout << "\n";
+    double min = 7 * sin(a) * sin(a);
+//    std::cout << std::fixed << std::setprecision(15) << MinSearch(a, b, e) << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << MinSearch(a, b, e, min) << std::endl;
     std::cout << std::fixed << std::setprecision(15) << loop(a, b, e) << std::endl;
 
 
     return 0;
 }
 
-/*
-double MinSearch(double& a, double& b, double& e) {
-    /// ‰‡ÌÌ‡ˇ ÔÂÂÏÂÌÌ‡ˇ Ó·˙ˇ‚ÎˇÂÚÒˇ ÚÓÎ¸ÍÓ Ó‰ËÌ ‡Á,
-    /// ‡ ‰‡ÎÂÂ ÓÌ‡ ËÁÏÂÌˇÂÚÒˇ Ë ‚Ë‰Ì‡ ÚÓÎ¸ÍÓ ‚ ÔÂ‰ÂÎ‡ı ˝ÚÓÈ ÙÛÌÍˆËË
-    static double min = 7 * sin(a) * sin(a);
-
-    if (a > b) {
-        return min;
-    }
-
-    double tmp = 7 * sin(a) * sin(a);
-    if (tmp < min) {
-        min = tmp;
-    }
-    a += e;
-    MinSearch(a, b, e);
-
-    return min;
-}*/
-
-double MinSearch(double& a, double& b, double& e) {
-    static double min = 7 * sin(a) * sin(a);
-
+//double MinSearch(double& a, double& b, double& e) {
+   // static double min = 7 * sin(a) * sin(a);
+double MinSearch(double& a, double& b, double& e, double& min) {
     if (b - a <= e) {
         return min;
     }
@@ -55,11 +39,11 @@ double MinSearch(double& a, double& b, double& e) {
 
     if (left < right) {
         min = left;
-        MinSearch(a, mid, e);
+        MinSearch(a, mid, e, min);
     }
     else {
         min = right;
-        MinSearch(mid, b, e);
+        MinSearch(mid, b, e, min);
     }
 
     return min;
@@ -92,9 +76,11 @@ bool IsALessB(double a, double b) {
 
 void InputAB(double& a, double& b) {
     do {
+        std::cout << "Input a: ";
         a = InputNum();
+        std::cout << "\nInput b: ";
         b = InputNum();
-
+        std::cout << "\n";
     } while (IsALessB(a, b));
 }
 
@@ -107,3 +93,23 @@ double InputNum() {
     }
     return var;
 }
+
+/*
+double MinSearch(double& a, double& b, double& e) {
+    /// –¥–∞–Ω–Ω–∞—è –ø–µ—Ä–µ–º–µ–Ω–Ω–∞—è –æ–±—ä—è–≤–ª—è–µ—Ç—Å—è —Ç–æ–ª—å–∫–æ –æ–¥–∏–Ω —Ä–∞–∑,
+    /// –∞ –¥–∞–ª–µ–µ –æ–Ω–∞ –∏–∑–º–µ–Ω—è–µ—Ç—Å—è –∏ –≤–∏–¥–Ω–∞ —Ç–æ–ª—å–∫–æ –≤ –ø—Ä–µ–¥–µ–ª–∞—Ö —ç—Ç–æ–π —Ñ—É–Ω–∫—Ü–∏–∏
+    static double min = 7 * sin(a) * sin(a);
+
+    if (a > b) {
+        return min;
+    }
+
+    double tmp = 7 * sin(a) * sin(a);
+    if (tmp < min) {
+        min = tmp;
+    }
+    a += e;
+    MinSearch(a, b, e);
+
+    return min;
+}*/

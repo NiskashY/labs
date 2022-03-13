@@ -4,7 +4,7 @@
 	находящиеся между вершиной и максимальным элементом.
 */
 
-class Stack {
+struct Stack {
 private:
 	// information
 	int info_ = 0;
@@ -12,22 +12,18 @@ private:
 	Stack* begin = nullptr; // peek of Stack / or current element
 public:
 	// push, pop, top, clear
+	
 	Stack(int i) { info_ = i; }
 
 	Stack() = default;
 
 	// Getters
-	Stack* GetBegin() {
-		return begin;
-	}
 	
-	int GetInfo() {
-		return info_;
-	}
+	Stack* GetBegin() { return begin; }
+	
+	int GetInfo() { return info_; }
 
-	Stack* GetNext() {
-		return next;
-	}
+	Stack* GetNext() { return next; }
 
 	// Funtions for working with stack
 	void push(int info) {
@@ -38,11 +34,19 @@ public:
 
 	void view() {
 		Stack* tmp = begin;
+		bool first = true;
+
 		std::cout << "View: \n";
+		
 		while (tmp != nullptr) {
-			std::cout << tmp->info_ << std::endl;
+			if (!first) {
+				std::cout << ", ";
+			}
+			first = false;
+			std::cout << tmp->info_;
 			tmp = tmp->next;
 		}
+		
 		std::cout << "\n";
 	}
 
@@ -161,7 +165,15 @@ Stack*  FindMax(Stack **copy) {
 Stack* CreateNewStack(Stack* (&old_stack), Stack* maximum) {
 	Stack* old = new Stack;
 	Stack* ref = new Stack;
+
+	// неправильно получается стэк (он перевернут) сделать наоборот
+
 	old = old_stack->GetBegin()->GetNext();
+
+	if (old_stack->GetBegin() == maximum) {
+		std::cout << "Maximum = begin\n";
+		return ref;
+	}
 
 	while (old != maximum && old != nullptr) {
 		ref->push(old->GetInfo());
@@ -173,7 +185,15 @@ Stack* CreateNewStack(Stack* (&old_stack), Stack* maximum) {
 
 void Test();
 
+/*
+
+	если в цикле с пользователем есть break -> на continue
+
+*/
+
 int main() {
+	Test();
+
 	Stack* stack = new Stack;
 
 	int n = 0;
@@ -188,8 +208,8 @@ int main() {
 		stack->push(tmp);
 	}
 
-	std::cout << "Default stack:\n";
 	stack->view();
+	std::cout << "\n";
 
 	// Create new stack from elements between BEGIN and MAX
 	Stack* elements_from_old_stack = new Stack;
@@ -204,7 +224,7 @@ int main() {
 }
 
 void Test() {
-	Stack* stack = new Stack;
+	Stack* stack = new Stack();
 
 	stack->push(1);
 	stack->push(2);
@@ -234,4 +254,6 @@ void Test() {
 	elements_from_old_stack->view();
 
 	delete stack, elements_from_old_stack;
+
+	std::cerr << "Ok!\n";
 }

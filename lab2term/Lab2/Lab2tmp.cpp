@@ -4,7 +4,7 @@
 	находящиеся между вершиной и максимальным элементом.
 */
 
-struct Stack {
+class Stack {
 private:
 	// information
 	int info_ = 0;
@@ -36,10 +36,17 @@ public:
 
     void pop() {
         if (begin != nullptr) {
-            Stack* tmp = begin;
-            next = next->next;
-            begin = begin->next;
-            delete tmp;
+            Stack* tmp1 = begin;
+            Stack* tmp2 = next;
+            begin = next;
+
+            if (next != nullptr) {
+                info_ = next->info_;
+                next = next->next;
+            }
+
+            delete tmp1, tmp2;
+            tmp1 = tmp2 = nullptr;
         }
         else {
             std::cout << "Pop: stack is empty!\n";
@@ -79,17 +86,21 @@ public:
 
 	void clear(bool isNeedToPrintMessage = true) {
 
-		while (begin != nullptr) {
+        // this != nullptr - плохо
+		while (this != nullptr && begin != nullptr) {
 			Stack* tmp = begin;
             begin = next;
+            if (next != nullptr)
+                next = begin->next;
             delete tmp;
         }
 
         if (isNeedToPrintMessage)
-            std::cout << "Clear: stack is empty!\n";
+            std::cout << "Clear: now stack is empty!\n";
 	}
 
 	void SortAddress() {
+        // Криво работает ON NE RABOTAET
 		Stack* limit = nullptr, *tmp;
 
 		if (begin->next->next == nullptr) {
@@ -101,7 +112,7 @@ public:
 		const int TMP_FOR_DELETE = -1;
 		push(TMP_FOR_DELETE);
 
-		std::cout << "SortAddress: stack is empty!\n";
+		std::cout << "SortAddress: Sort of stack - ";
 		// 1 -> 4 -> 3 -> 0 -> nullptr
 		// 1 -> 4 -> 0 -> nullptr
 		// 1 ->
@@ -128,14 +139,13 @@ public:
 	void SortNear() {
 		Stack* limit = nullptr, *tmp, *t = begin;
 
-		if (begin->next->next == nullptr) {
+		if (begin == nullptr || begin->next == nullptr) {
 			std::cout << "SortNear: stack is empty!\n";
 			return;
 		}
 
-		std::cout << "SortNear: stack is empty!\n";
-
-		for (; t->next != limit;) {
+        std::cout << "SortNear: Sort of stack - ";
+        for (; t->next != limit;) {
 			for (tmp = t; tmp->next != limit; tmp = tmp->next) {
 				if (tmp->info_ > tmp->next->info_) {
 					int tmp_for_swap = tmp->info_;
@@ -154,9 +164,9 @@ public:
 bool isMaximumBeginInvalid(Stack* (&stack), Stack* (&max)){
     const char* ERROR_MESSAGE = "New stack will be empty, because ";
     if (stack->GetBegin() == max) {
-        std::cout << ERROR_MESSAGE << "Maximum = begin\n";
+        std::cout << ERROR_MESSAGE << "Maximum = begin or no elements in the stack\n";
         return true;
-    } else if (stack->GetBegin()->GetBegin() == max) {
+    } else if (stack->GetBegin()->GetNext() == max) {
         std::cout << ERROR_MESSAGE << "No elements between maximum and begin\n";
         return true;
     }
@@ -164,7 +174,7 @@ bool isMaximumBeginInvalid(Stack* (&stack), Stack* (&max)){
     return false;
 }
 
-Stack*  FindMax(Stack **copy) {
+Stack* FindMax(Stack **copy) {
 	Stack* p = nullptr, *max = nullptr;
 
 	p = (*copy)->GetBegin();
@@ -183,32 +193,51 @@ Stack*  FindMax(Stack **copy) {
 	return max;
 }
 
-Stack* CreateNewStack(Stack* (&old_stack), Stack* maximum) {
-	Stack* old = new Stack();
-	Stack* ref = new Stack();
-    old = old_stack->GetNext();
+void NewReverseStack(Stack* (&old), Stack* (&ref), Stack* (maximum) = nullptr) {
+    while (old/*->GetNext()*/ != nullptr && old->GetBegin() != nullptr ) {
 
-    if (isMaximumBeginInvalid(old_stack, maximum)) {
-        return ref;
+        if (maximum != nullptr && old->GetInfo() == maximum->GetInfo()){
+            break;
+        }
+        ref->push(old->GetInfo());
+        old->pop();
     }
 
-	while (old->GetNext() != nullptr && old != maximum) {
-		ref->push(old->GetInfo());
-		old = old->GetNext();
-	}
+}
 
-    // очищаю для того, чтобы перевернуть stack
-    old->clear(false);
+Stack* MoveElementsFromTo(Stack* (&old_), Stack* maximum) {
+    // Создаю две переменные, чтобы stack получился не вверх ногами. Не могу использовать повторно old, т.к. это влияет на основной stack
+    Stack* reverse_tmp = new Stack();
+    Stack* result = new Stack();
 
-    ref = ref->GetBegin();
-    // тут ref, а нe ref->GetBegin(), т.к. я уже взял GetBegin(), а это значит, что когда на последнем шаге
-    // будет ref->GetBegin() ( в это время ref = ref ->GetNext()  =  ref = nullptr) выскочит ошибка. из-за обращения к nullptr;
-    while (ref != nullptr) {
-        old->push(ref->GetInfo());
-        ref = ref->GetNext();
+
+    if (isMaximumBeginInvalid(old_, maximum)) {
+        return result;
     }
 
-	return old;
+    Stack* old = old_->GetNext();
+    NewReverseStack(old, reverse_tmp, maximum);
+
+    reverse_tmp = reverse_tmp->GetBegin();
+    NewReverseStack(reverse_tmp, result);
+
+
+	return result;
+    /*
+    Some tests
+
+    std::cout << "(Old_st in cns Stack 1) ";
+    old_stack->view();
+    std::cout << "(Old_st in cns Stack 2) ";
+    old_stack->view();
+    std::cout << "(Old_st in cns Stack 3) ";
+    old_stack->view();
+    std::cout << "(NewOld in cns Stack 4) ";
+    old->view();
+    std::cout << "(NewU   in cns Stack 5) ";
+    result->view();
+
+*/
 }
 
 void Test1();
@@ -222,15 +251,17 @@ void Test3();
 */
 
 int main() {
-	//Test1();
+    Test1();
+    std::cout << "\n\n";
     //Test2();
     Test3();
 	return 0;
 }
 
 void Test1() {
-	Stack* stack = new Stack();
+    std::cout << "-------TEST1----\n\n";
 
+	Stack* stack = new Stack();
     stack->view();
 
 	stack->push(1);
@@ -241,8 +272,7 @@ void Test1() {
     std::cout << "1: ";
     stack->view();
 
-    stack->SortAddress();
-
+    stack->SortNear();
     std::cout << "2: ";
     stack->view();
 
@@ -250,35 +280,33 @@ void Test1() {
 	stack->push(22131);
     stack->push(-1);
 
-    stack->SortAddress();
-	std::cout << std::endl;
+    stack->SortNear();
+    std::cout << "3: ";
+    stack->view();
+
 
     stack->push(10000);
     stack->push(-2);
     stack->push(-3);
     stack->push(-5);
 
-    std::cout << "3: ";
-    stack->view();
-
-
-
-    stack->SortAddress();
     std::cout << "4: ";
     stack->view();
 
-
-	//FindMax(&stack);
-	Stack* elements_from_old_stack = new Stack;
-	elements_from_old_stack = CreateNewStack(stack, FindMax(&stack));
-
-	// не знаю нужно удаление старого или нет?
-    std::cout << "New Stack: \n";
-    elements_from_old_stack->view();
-    std::cout << "Old Stack: \n";
+    stack->SortNear();
+    std::cout << "5: ";
     stack->view();
-	delete stack, elements_from_old_stack;
 
+
+
+	Stack* elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
+
+    std::cout << "(New Stack) ";
+    elements_from_old_stack->view();
+    std::cout << "(Old Stack) ";
+    stack->view();
+
+	delete stack, elements_from_old_stack;
 }
 
 void Test2() {
@@ -302,7 +330,7 @@ void Test2() {
 
     // Create new stack from elements between BEGIN and MAX
     Stack* elements_from_old_stack = new Stack;
-    elements_from_old_stack = CreateNewStack(stack, FindMax(&stack));
+    elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
 
     // не знаю нужна очистка старого или нет?
     std::cout << "Stack between begin and max:\n";
@@ -312,24 +340,56 @@ void Test2() {
 }
 
 void Test3() {
+    std::cout << "-------TEST3----\n\n";
     Stack* stack = new Stack();
 
 
-    // Валится на этом тесте 2 - 3 - 1 из-за clear
-    stack->push(1);
     stack->push(3);
+    stack->push(1);
     stack->push(2);
+
+    stack->push(3);
+    stack->push(1);
+    stack->push(2);
+
+    stack->push(3);
+    stack->push(1);
+    stack->push(2);
+
+//    stack->push(3);
+//    stack->push(1);
+//    stack->push(2);
+//    stack->push(3);
+//    stack->push(1);
+//    stack->push(2);
+//    stack->push(3);
+//    stack->push(1);
+//    stack->push(2);
+    std::cout << "(After push) ";
     stack->view();
 
 
-    //FindMax(&stack);
+    stack->SortNear();
+
+    std::cout << "(BefPop &ASor) ";
+    stack->view();
+
+    stack->pop();
+    std::cout << "(AftPop stack) ";
+    stack->view();
+
     Stack* elements_from_old_stack = new Stack();
-    elements_from_old_stack = CreateNewStack(stack, FindMax(&stack));
+    elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
 
-    // не знаю нужно удаление старого или нет?
+
+    std::cout << "(New stack) ";
     elements_from_old_stack->view();
-    std::cout << "Old Stack: \n";
+    std::cout << "(Old Stack) ";
     stack->view();
+
+    stack->clear();
+    stack->view();
+
     delete stack, elements_from_old_stack;
 
 }

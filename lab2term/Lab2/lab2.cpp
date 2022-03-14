@@ -18,7 +18,7 @@ int main() {
 
     while (true) {
         system("cls");
-        std::cout << "0 - Run Tests.\n1 - Creat new stack.\n2 - Add.\n3 - View.\n4 - Delete Last Element.\n5 - Clear.\n6 - Sort.\n7 - Individual Task.\nelse - Exit.\n\nYour choice: ";
+        std::cout << "\t\tTask: move elements in new stack from begin - maximum\n0 - Run Tests.\n1 - Creat new stack.\n2 - Add.\n3 - View.\n4 - Delete Last Element.\n5 - Clear.\n6 - Sort.\n7 - Individual Task.\nelse - Exit.\n\nYour choice: ";
         int choice = CheckNum();
 
         switch (choice) {

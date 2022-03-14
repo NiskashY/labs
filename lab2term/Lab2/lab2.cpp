@@ -1,290 +1,216 @@
 #include <iostream>
+#include <iomanip>
+#include "stack.h"
+#include "individualTask.h"
 /*
-	Перенести из созданного списка в новый список все элементы,
-	находящиеся между вершиной и максимальным элементом.
+    Перенести из созданного списка в новый список все элементы,
+    находящиеся между вершиной и максимальным элементом.
 */
-
-class Stack {
-private:
-	// information
-	int info_ = 0;
-	Stack* next = nullptr; // next element
-	Stack* begin = nullptr; // peek of Stack / or current element
-public:
-
-	explicit Stack(int i) { info_ = i; }
-
-	Stack() = default;
-
-	Stack* GetBegin() const{ return begin; }
-
-	int GetInfo() const { return info_; }
-
-	Stack* GetNext() const { return next; }
-
-	// Funtions for working with stack
-
-	void push(int info) {
-        Stack *tmp = new Stack(info);
-        // Добавляю во временную переменную следующий элемент стэка, а затем делаю действия уже с основным стэком
-        tmp->next = begin;
-        next = begin;
-
-        tmp->begin = new Stack();
-        begin = tmp;
-    }
-
-    void pop() {
-        if (begin != nullptr) {
-            Stack* tmp = begin;
-            next = next->next;
-            begin = begin->next;
-            delete tmp;
-        }
-        else {
-            std::cout << "Pop: stack is empty!\n";
-        }
-    }
-
-	void view() {
-		Stack* tmp = begin;
-		bool first = true;
-
-		std::cout << "View: ";
-
-        if (tmp == nullptr) {
-            std::cout << "stack is empty :(";
-        }
-
-		while (tmp != nullptr) {
-			if (!first) {
-				std::cout << ", ";
-			}
-			first = false;
-			std::cout << tmp->info_;
-			tmp = tmp->next;
-		}
-
-		std::cout << "\n";
-	}
-
-	void peek() {
-		if (begin != nullptr) {
-			std::cout << begin->info_ << std::endl;
-		}
-		else {
-			std::cout << "Peek: stack is empty!\n";
-		}
-	}
-
-	void clear(bool isNeedToPrintMessage = true) {
-
-		while (begin != nullptr) {
-			Stack* tmp = begin;
-            begin = next;
-            if (next != nullptr)
-                next = begin->next;
-            delete tmp;
-            tmp = nullptr;
-        }
-
-        if (isNeedToPrintMessage)
-            std::cout << "Clear: stack is empty!\n";
-	}
-
-	void SortAddress() {
-		Stack* limit = nullptr, *tmp;
-
-		if (begin->next->next == nullptr) {
-			std::cout << "SortAddress: stack is empty!\n";
-			return;
-		}
-
-		// Добавляем элемент, чтобы сортировка корректно работала, в конце его нужно удалить
-		const int TMP_FOR_DELETE = -1;
-		push(TMP_FOR_DELETE);
-
-		std::cout << "SortAddress: stack is empty!\n";
-		// 1 -> 4 -> 3 -> 0 -> nullptr
-		// 1 -> 4 -> 0 -> nullptr
-		// 1 ->
-		do {
-			for (tmp = begin; tmp->next->next != limit; tmp = tmp->next)
-				if (tmp->next->info_ > tmp->next->next->info_) {
-					// вы двигаем весь стек после элемента на вправо грубо говоря
-					// а затем меньшее значение присваиваем переменной tmp->next
-					// затем весь путь стэка после начального элемента записываем
-					// в tmp->next->next
-					Stack* tmp_for_swap = tmp->next->next;
-					tmp->next->next = tmp_for_swap->next;
-					tmp_for_swap->next = tmp->next;
-					tmp->next = tmp_for_swap;
-				}
-			limit = tmp->next;
-		} while (begin->next->next != limit);
-
-		std::cout << "Done!\n";
-
-		pop();
-	}
-
-	void SortNear() {
-		Stack* limit = nullptr, *tmp, *t = begin;
-
-		if (begin->next->next == nullptr) {
-			std::cout << "SortNear: stack is empty!\n";
-			return;
-		}
-
-		std::cout << "SortNear: stack is empty!\n";
-
-		for (; t->next != limit;) {
-			for (tmp = t; tmp->next != limit; tmp = tmp->next) {
-				if (tmp->info_ > tmp->next->info_) {
-					int tmp_for_swap = tmp->info_;
-					tmp->info_ = tmp->next->info_;
-					tmp->next->info_ = tmp_for_swap;
-				}
-			}
-			limit = tmp;
-		}
-
-		std::cout << "Done!\n";
-	}
-
-};
-
-bool isMaximumBeginInvalid(Stack* (&stack), Stack* (&max)){
-    const char* ERROR_MESSAGE = "New stack will be empty, because ";
-    if (stack->GetBegin() == max) {
-        std::cout << ERROR_MESSAGE << "Maximum = begin\n";
-        return true;
-    } else if (stack->GetBegin()->GetNext() == max) {
-        std::cout << ERROR_MESSAGE << "No elements between maximum and begin\n";
-        return true;
-    }
-
-    return false;
-}
-
-Stack*  FindMax(Stack **copy) {
-	Stack* p = nullptr, *max = nullptr;
-
-	p = (*copy)->GetBegin();
-	max = (*copy)->GetBegin();
-
-	while (p != nullptr) {
-
-		if (p->GetInfo() > max->GetInfo()) {
-			max = p;
-		}
-
-		p = p->GetNext();
-	}
-
-//	std::cout << "Max: " << max->GetInfo() << std::endl;
-	return max;
-}
-
-Stack* CreateNewStack(Stack* (&old_stack), Stack* maximum) {
-	Stack* old = new Stack();
-	Stack* ref = new Stack();
-    old = old_stack->GetNext();
-
-    if (isMaximumBeginInvalid(old_stack, maximum)) {
-        return ref;
-    }
-
-	while (old->GetNext() != nullptr && old != maximum) {
-		ref->push(old->GetInfo());
-		old = old->GetNext();
-	}
-
-    // очищаю для того, чтобы перевернуть stack
-    old->clear(false);
-
-    ref = ref->GetBegin();
-    // тут ref, а нe ref->GetBegin(), т.к. я уже взял GetBegin(), а это значит, что когда на последнем шаге
-    // будет ref->GetBegin() ( в это время ref = ref ->GetNext()  =  ref = nullptr) выскочит ошибка. из-за обращения к nullptr;
-    while (ref != nullptr) {
-        old->push(ref->GetInfo());
-        ref = ref->GetNext();
-    }
-
-	return old;
-}
 
 void Test1();
 void Test2();
 void Test3();
-
-/*
-
-	если в цикле с пользователем есть break -> на continue
-
-*/
+void AddElements(Stack*&);
+int CheckNum();
 
 int main() {
-	//Test1();
-    //Test2();
-    Test3();
-	return 0;
+    Stack* stack = new Stack();
+
+    while (true) {
+        system("cls");
+        std::cout << "0 - Run Tests.\n1 - Creat new stack.\n2 - Add.\n3 - View.\n4 - Delete Last Element.\n5 - Clear.\n6 - Sort.\n7 - Individual Task.\nelse - Exit.\n\nYour choice: ";
+        int choice = CheckNum();
+
+        switch (choice) {
+            case 0: {
+                Test1();
+                std::cout << "\n\n";
+                Test2();
+                break;
+            }
+            case 1: case 2: {
+                if (choice == 1 && stack->GetBegin() != nullptr) {
+                    std::cout << "Old stack not empty -> deleting the old stack\n";
+                    stack->clear();
+                }
+                AddElements(stack);
+                std::cout << "The elements have been successfully added\n";
+                break;
+            }
+            case 3: {
+                stack->view();
+                break;
+            }
+            case 4: {
+                stack->pop();
+                break;
+            }
+            case 5: {
+                stack->clear();
+                break;
+            }
+            case 6: {
+                stack->Sort();
+                break;
+            }
+            case 7: {
+                std::cout << "(Before dividing Stack) ";
+                stack->view();
+
+                Stack* new_stack = MoveElementsFromTo(stack, FindMax(&stack));
+
+                std::cout << std::left << std::setw(24) << "(New Stack) ";
+                new_stack->view();
+                std::cout << std::left << std::setw(24) << "(Old Stack) ";
+                stack->view();
+
+                std::cout << "Do you want to assign a new_stack to an old_stack? (Yes - 1, No - else): ";
+                int tmp = CheckNum();
+                if (tmp == 1) {
+                    stack = new_stack;
+                }
+
+                break;
+            }
+            default: {
+                std::cout << "\n\t\t\tBye!\n";
+                return 0;
+            }
+        }
+        std::cout << '\n';
+        system("pause");
+    }
+    return 0;
 }
 
-void Test1() {
-	Stack* stack = new Stack();
+void AddElements(Stack*& stack) {
+    std::cout << "Input amount of numbers: ";
+    int n = CheckNum();
+    for (int i = 0; i < n; ++i) {
+        std::cout << "#" << i + 1 << " Input Number : ";
+        int number = CheckNum();
+        stack->push(number);
+    }
+}
 
+int CheckNum() {
+    int var;
+
+    while (!(scanf_s("%d", &var)) || std::cin.get() != '\n') {
+        std::cout << "Error! Something go wrong ReEnter: ";
+        std::cin.clear();
+        while (std::cin.get() != '\n');
+    }
+
+    return var;
+}
+
+// ---------------tests-------------
+
+void Test1() {
+    std::cout << "-------TEST1----\n\n";
+
+    Stack* stack = new Stack();
     stack->view();
 
-	stack->push(1);
-	stack->push(2);
-	stack->push(3);
+    stack->push(1);
+    stack->push(2);
+    stack->push(3);
 
 
     std::cout << "1: ";
     stack->view();
 
-    stack->SortAddress();
-
+    stack->Sort();
     std::cout << "2: ";
     stack->view();
 
-	stack->push(90);
-	stack->push(22131);
+    stack->push(90);
+    stack->push(22131);
     stack->push(-1);
 
-    stack->SortAddress();
-	std::cout << std::endl;
+    stack->Sort();
+    std::cout << "3: ";
+    stack->view();
 
     stack->push(10000);
     stack->push(-2);
     stack->push(-3);
     stack->push(-5);
 
-    std::cout << "3: ";
-    stack->view();
-
-
-
-    stack->SortAddress();
     std::cout << "4: ";
     stack->view();
 
-
-	//FindMax(&stack);
-	Stack* elements_from_old_stack = new Stack;
-	elements_from_old_stack = CreateNewStack(stack, FindMax(&stack));
-
-	// не знаю нужно удаление старого или нет?
-    std::cout << "New Stack: \n";
-    elements_from_old_stack->view();
-    std::cout << "Old Stack: \n";
+    stack->Sort();
+    std::cout << "5: ";
     stack->view();
-	delete stack, elements_from_old_stack;
 
+    Stack* elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
+
+    std::cout << "(New Stack) ";
+    elements_from_old_stack->view();
+    std::cout << "(Old Stack) ";
+    stack->view();
+
+    delete stack, elements_from_old_stack;
 }
 
 void Test2() {
+    std::cout << "-------TEST2----\n\n";
+    Stack* stack = new Stack();
+
+
+    stack->push(3);
+    stack->push(1);
+    stack->push(2);
+
+    stack->push(3);
+    stack->push(1);
+    stack->push(2);
+
+    stack->push(3);
+    stack->push(1);
+    stack->push(2);
+
+    //    stack->push(3);
+    //    stack->push(1);
+    //    stack->push(2);
+    //    stack->push(3);
+    //    stack->push(1);
+    //    stack->push(2);
+    //    stack->push(3);
+    //    stack->push(1);
+    //    stack->push(2);
+    std::cout << "(After push) ";
+    stack->view();
+
+
+    stack->Sort();
+
+    std::cout << "(BefPop &ASor) ";
+    stack->view();
+
+    stack->pop();
+    std::cout << "(AftPop stack) ";
+    stack->view();
+
+    Stack* elements_from_old_stack = new Stack();
+    elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
+
+
+    std::cout << "(New stack) ";
+    elements_from_old_stack->view();
+    std::cout << "(Old Stack) ";
+    stack->view();
+
+    stack->clear();
+    stack->view();
+
+    delete stack, elements_from_old_stack;
+
+}
+
+void Test3() {
     Stack* stack = new Stack;
 
     int n = 0;
@@ -305,56 +231,11 @@ void Test2() {
 
     // Create new stack from elements between BEGIN and MAX
     Stack* elements_from_old_stack = new Stack;
-    elements_from_old_stack = CreateNewStack(stack, FindMax(&stack));
+    elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
 
     // не знаю нужна очистка старого или нет?
     std::cout << "Stack between begin and max:\n";
     elements_from_old_stack->view();
 
     delete stack, elements_from_old_stack;
-}
-
-void Test3() {
-    Stack* stack = new Stack();
-
-
-    // Валится на этом тесте 2 - 3 - 1 из-за clear
-    stack->push(3);
-    stack->push(1);
-    stack->push(2);
-    stack->push(3);
-    stack->push(1);
-    stack->push(2);
-    stack->push(3);
-    stack->push(1);
-    stack->push(2);
-    stack->push(3);
-    stack->push(1);
-    stack->push(2);
-    stack->push(3);
-    stack->push(1);
-    stack->push(2);
-    stack->push(3);
-    stack->push(1);
-    stack->push(2);
-
-    stack->SortAddress();
-
-    std::cout << "(Bef stack) ";
-    stack->view();
-
-
-    //FindMax(&stack);
-    Stack* elements_from_old_stack = new Stack();
-    elements_from_old_stack = CreateNewStack(stack, FindMax(&stack));
-
-    // не знаю нужно удаление старого или нет?
-    std::cout << "(New stack) ";
-    elements_from_old_stack->view();
-    std::cout << "(Old Stack) ";
-    stack->view();
-    stack->clear();
-    stack->view();
-    delete stack, elements_from_old_stack;
-
 }

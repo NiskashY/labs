@@ -10,6 +10,7 @@
 void Test1();
 void Test2();
 void Test3();
+void IndividualTask(Stack*&, bool isItTest = false);
 void AddElements(Stack*&);
 int CheckNum();
 
@@ -26,10 +27,16 @@ int main() {
                 Test1();
                 std::cout << "\n\n";
                 Test2();
+                std::cout << "\n\n";
+                Test3();
                 break;
             }
             case 1: case 2: {
                 if (choice == 1 && stack->GetBegin() != nullptr) {
+                    std::cout << "Are you sure you want to delete not empty stack? 1 - y, else - n: ";
+                    int tmp = CheckNum();
+                    if (tmp != 1)
+                        continue;
                     std::cout << "Old stack not empty -> deleting the old stack\n";
                     stack->clear();
                 }
@@ -54,22 +61,7 @@ int main() {
                 break;
             }
             case 7: {
-                std::cout << "(Before dividing Stack) ";
-                stack->view();
-
-                Stack* new_stack = MoveElementsFromTo(stack, FindMax(&stack));
-
-                std::cout << std::left << std::setw(24) << "(New Stack) ";
-                new_stack->view();
-                std::cout << std::left << std::setw(24) << "(Old Stack) ";
-                stack->view();
-
-                std::cout << "Do you want to assign a new_stack to an old_stack? (Yes - 1, No - else): ";
-                int tmp = CheckNum();
-                if (tmp == 1) {
-                    stack = new_stack;
-                }
-
+                IndividualTask(stack);
                 break;
             }
             default: {
@@ -81,6 +73,26 @@ int main() {
         system("pause");
     }
     return 0;
+}
+
+void IndividualTask(Stack*& stack, bool isItTest) {
+    std::cout << "(Before dividing Stack) ";
+    stack->view();
+
+    Stack* new_stack = MoveElementsFromTo(stack, FindMax(&stack));
+
+    std::cout << std::left << std::setw(24) << "(New Stack) ";
+    new_stack->view();
+    std::cout << std::left << std::setw(24) << "(Old Stack) ";
+    stack->view();
+
+    if (!isItTest) {
+        std::cout << "Do you want to assign a new_stack to an old_stack? (Yes - 1, No - else): ";
+        int tmp = CheckNum();
+        if (tmp == 1) {
+            stack = new_stack;
+        }
+    }
 }
 
 void AddElements(Stack*& stack) {
@@ -145,14 +157,9 @@ void Test1() {
     std::cout << "5: ";
     stack->view();
 
-    Stack* elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
+    IndividualTask(stack, true);
 
-    std::cout << "(New Stack) ";
-    elements_from_old_stack->view();
-    std::cout << "(Old Stack) ";
-    stack->view();
-
-    delete stack, elements_from_old_stack;
+    delete stack;
 }
 
 void Test2() {
@@ -194,48 +201,32 @@ void Test2() {
     std::cout << "(AftPop stack) ";
     stack->view();
 
-    Stack* elements_from_old_stack = new Stack();
-    elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
-
-
-    std::cout << "(New stack) ";
-    elements_from_old_stack->view();
-    std::cout << "(Old Stack) ";
-    stack->view();
+    IndividualTask(stack, true);
 
     stack->clear();
     stack->view();
 
-    delete stack, elements_from_old_stack;
+    delete stack;
 
 }
 
 void Test3() {
+    std::cout << "-------TEST3----\t(Random elements)\n\n";
     Stack* stack = new Stack;
-
-    int n = 0;
-    std::cout << "Input amount of elements: ";
-    std::cin >> n;
-
-    std::cout << "Input elements:\n";
+    srand(time(0));
+    int n = 10;
 
     while (n--) {
         int tmp = 0;
-        std::cin >> tmp;
+        tmp = rand() % 10 + 1;
         stack->push(tmp);
-
     }
 
     stack->view();
     std::cout << "\n";
 
     // Create new stack from elements between BEGIN and MAX
-    Stack* elements_from_old_stack = new Stack;
-    elements_from_old_stack = MoveElementsFromTo(stack, FindMax(&stack));
+    IndividualTask(stack, true);
 
-    // не знаю нужна очистка старого или нет?
-    std::cout << "Stack between begin and max:\n";
-    elements_from_old_stack->view();
-
-    delete stack, elements_from_old_stack;
+    delete stack;
 }

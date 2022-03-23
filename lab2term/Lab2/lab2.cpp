@@ -214,7 +214,7 @@ void Test3() {
     std::cout << "-------TEST3----\t(Random elements)\n\n";
     Stack* stack = new Stack;
     srand(time(0));
-    int n = 10;
+    int n = 1000;
 
     while (n--) {
         int tmp = 0;

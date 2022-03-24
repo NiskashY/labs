@@ -1,21 +1,18 @@
 #include <iostream>
 #include <iomanip>
 #include "queue.h"
+#include "tests.h"
 /*
     Перенести из созданного списка в новый список все элементы,
     находящиеся между вершиной и максимальным элементом.
 */
 
-enum class Direction {
-    FRONT,
-    BACK
-};
+void Push(Queue*&);
+void Delete(Queue*&);
+void View(Queue*&);
 
-void Test1();
-void Test2();
-void Test3();
-void AddElements(Queue*&, Direction&);
 void (Queue::*Operation(Direction& direction))(int);
+void AddElements(Queue*&, Direction&);
 int CheckNum();
 
 int main() {
@@ -23,16 +20,18 @@ int main() {
 
     while (true) {
         system("cls");
-        std::cout << "\t\tTask: move elements in new queue from begin - maximum\n0 - Run Tests.\n1 - Creat new queue.\n2 - Push Front.\n3 - Push Back.\n4 - View.\n5 - Delete Last Element.\n6 - Clear.\n7 - Sort.\n8 - Individual Task.\nelse - Exit.\n\nYour choice: ";
+        std::cout << "\t\tTask: move elements in new queue from begin - maximum\n0 - Run Tests.\n1 - Creat new queue.\n2 - Push Front.\n3 - Push Back.\n4 - View Front->Back.\n5 - View Back->Front.\n6 - Delete first Element.\n7 - Clear.\n8 - Sort.\n9 - Individual Task.\nelse - Exit.\n\nYour choice: ";
         int choice = CheckNum();
 
         switch (choice) {
-            case 0: {
+            case 0: {                
                 Test1();
                 std::cout << "\n\n";
                 Test2();
                 std::cout << "\n\n";
                 Test3();
+                std::cout << "\n\n";
+                Test4();
                 break;
             }
             case 1: case 2: case 3: {
@@ -54,18 +53,22 @@ int main() {
                 break;
             }
             case 5: {
-                queue->pop();
+                queue->reverse_view();
                 break;
             }
             case 6: {
-                queue->clear();
+                queue->pop_front();
                 break;
             }
             case 7: {
-                queue->Sort();
+                queue->clear();
                 break;
             }
             case 8: {
+                queue->Sort();
+                break;
+            }
+            case 9: {
                 //IndividualTask(queue);
                 break;
             }
@@ -81,6 +84,7 @@ int main() {
 }
 
 // тут без & низя | создаю указатель на метод класса.
+// а вообще тут можно просто через if, но тогда это не весело :)
 void (Queue::*Operation(Direction& direction))(int) {
     return (direction == Direction::FRONT ? &Queue::push_front : &Queue::push_back);
 }
@@ -110,114 +114,15 @@ int CheckNum() {
     return var;
 }
 
-// ---------------tests-------------
 
-void Test1() {
-    std::cout << "-------TEST1----\n\n";
-
-    Queue* queue = new Queue();
-    queue->view();
-
-
-    queue->push_back(4);
-    queue->push_back(3);
-    queue->push_back(2);
-    queue->push_front(1);
-
-    std::cout << "1: ";
-    queue->view();
-
-    queue->Sort();
-    std::cout << "2: ";
-    queue->view();
-
-    queue->push_front(90);
-    queue->push_front(22131);
-    queue->push_front(-1);
-
-    queue->Sort();
-    std::cout << "3: ";
-    queue->view();
-
-    queue->push_back(10000);
-    queue->push_front(-2);
-    queue->push_back(-3);
-    queue->push_front(-5);
-
-    std::cout << "4: ";
-    queue->view();
-
-    queue->Sort();
-    std::cout << "5: ";
-    queue->view();
-
-    delete queue;
-}
-
-void Test2() {
-    std::cout << "-------TEST2----\n\n";
-    Queue* queue = new Queue();
-
-
-    queue->push_front(3);
-    queue->push_front(1);
-    queue->push_front(2);
-
-    queue->push_front(3);
-    queue->push_front(1);
-    queue->push_front(2);
-
-    queue->push_front(3);
-    queue->push_front(1);
-    queue->push_front(2);
-
-    //    queue->push_front(3);
-    //    queue->push_front(1);
-    //    queue->push_front(2);
-    //    queue->push_front(3);
-    //    queue->push_front(1);
-    //    queue->push_front(2);
-    //    queue->push_front(3);
-    //    queue->push_front(1);
-    //    queue->push_front(2);
-    std::cout << "(After push_front) ";
-    queue->view();
-
-
-    queue->Sort();
-
-    std::cout << "(BefPop &ASor) ";
-    queue->view();
-
-    queue->pop();
-    std::cout << "(AftPop queue) ";
-    queue->view();
-
-
-
-    queue->clear();
-    queue->view();
-
-    delete queue;
+void Push(Queue*&) {
 
 }
 
-void Test3() {
-    std::cout << "-------TEST3----\t(Random elements)\n\n";
-    Queue* queue = new Queue;
-    srand(time(0));
-    int n = 10;
+void Delete(Queue*&) {
 
-    while (n--) {
-        int tmp = 0;
-        tmp = rand() % 10 + 1;
-        queue->push_front(tmp);
-    }
+}
 
-    queue->view();
-    std::cout << "\n";
+void View(Queue*&) {
 
-    // Create new queue from elements between BEGIN and MAX
-
-    delete queue;
 }

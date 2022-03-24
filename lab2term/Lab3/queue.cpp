@@ -31,37 +31,61 @@ void Queue::push_back(int info) {
     if (end == nullptr) {
         tmp->next = begin;
         tmp->prev = nullptr;
-        next = begin;
-
         tmp->begin = new Queue();
+
         begin = end = tmp;
     }
     else {
         tmp->next = nullptr;
         tmp->prev = end;
         tmp->begin = new Queue();
+        
+        
+        // это в том случае, если в queue только один элемент -> инициализируем next значением tmp
+        // если next != nullptr -> оно инициализируется в части end->next ... т.к. там УЖЕ есть связь между элементами
+        if (next == nullptr)
+            next = tmp;
 
         // присваивает end->next = tpm, чтобы не нарушить порядок, 
-        // а затем у end'a устанавливаем настоящий конец
+        // а затем у end'a устанавливаем настоящий конец        
         end->next = tmp;
         end = end->next;
     }
 }
 
-
-void Queue::pop(bool isNeedToPrintMessage) {
+void Queue::pop_front(bool isNeedToPrintMessage) {
     if (begin != nullptr) {
         Queue* tmp1 = begin;
         Queue* tmp2 = next;
+
         begin = next;
 
         if (next != nullptr) {
             info_ = next->info_;
             next = next->next;
+            begin->prev = nullptr;
         }
 
         delete tmp1, tmp2;
         tmp1 = tmp2 = nullptr;
+        if (isNeedToPrintMessage)
+            std::cout << "Delete first element: Done!\n";
+    }
+    else if (isNeedToPrintMessage) {
+        std::cout << "Delete first element: queue is empty!\n";
+    }
+}
+
+void Queue::pop_back(bool isNeedToPrintMessage) {
+    if (begin != nullptr) {
+        Queue* tmp1 = end;
+
+        end = end->prev;
+        end->next = nullptr;
+        end->end = end;
+
+        delete tmp1;
+        tmp1 = nullptr;
         if (isNeedToPrintMessage)
             std::cout << "Delete last element: Done!\n";
     }
@@ -92,6 +116,28 @@ void Queue::view() {
     std::cout << "\n";
 }
 
+void Queue::reverse_view() {
+    Queue* tmp = end;
+    bool first = true;
+
+    std::cout << "Queue reverse view: ";
+
+    if (tmp == nullptr) {
+        std::cout << "nothing to show :(";
+    }
+
+    while (tmp != nullptr) {
+        if (!first) {
+            std::cout << ", ";
+        }
+        first = false;
+        std::cout << tmp->info_;
+        tmp = tmp->prev;
+    }
+
+    std::cout << "\n";
+}
+
 void Queue::peek() {
     if (begin != nullptr) {
         std::cout << begin->info_ << std::endl;
@@ -114,7 +160,7 @@ void Queue::clear(bool isNeedToPrintMessage) {
                 next = begin->next;
             delete tmp;
         }
-
+        end = nullptr;
         if (isNeedToPrintMessage)
             std::cout << "Clear: now queue is empty!\n";
     }

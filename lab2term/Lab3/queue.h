@@ -2,6 +2,11 @@
 
 #include <iostream>
 
+enum class Direction {
+    FRONT,
+    BACK
+};
+
 class Queue {
 private:
     int info_ = 0; // information
@@ -30,8 +35,10 @@ public:
 
     void push_back(int info);
     void push_front(int info);
-    void pop(bool isNeedToPrintMessage = true);
+    void pop_front(bool isNeedToPrintMessage = true);
+    void pop_back(bool isNeedToPrintMessage = true);
     void view();
+    void reverse_view();
     void peek();
     void clear(bool isNeedToPrintMessage = true);
     void Sort();

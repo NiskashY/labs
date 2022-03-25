@@ -37,6 +37,7 @@ public:
     void push_front(int info);
     void pop_front(bool isNeedToPrintMessage = true);
     void pop_back(bool isNeedToPrintMessage = true);
+    void pop(int element, bool isNeedToPrintMessage = true);
     void view();
     void reverse_view();
     void peek();

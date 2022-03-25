@@ -159,3 +159,42 @@ void Test4() {
 
     delete queue;
 }
+
+void Test5() {
+    std::cout << "-------TEST5----\t(Delete elemnts)\n\n";
+    Queue* queue = new Queue();
+    {
+        int numbers[] = { 3, 3, 3, 3, 3 };
+        for (int i = 0; i < 5; ++i) {
+            queue->push_back(numbers[i]);
+        }
+
+        std::cout << "1: ";
+        queue->view();
+
+        queue->pop(3);
+
+        std::cout << "2: ";
+        queue->view();
+
+        queue->clear();
+    }
+
+    {
+        // не проходит тест. Ошбика в pop_back.
+        int numbers[] = { 3, 1, 3, 1, 3, 1, 3};
+        for (int i = 0; i < 7; ++i) {
+            queue->push_back(numbers[i]);
+        }
+
+        std::cout << "3: ";
+        queue->view();
+
+        queue->pop(3);
+
+        std::cout << "4: ";
+        queue->view();
+
+        delete queue;
+    }
+}

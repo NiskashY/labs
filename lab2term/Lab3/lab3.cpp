@@ -19,19 +19,29 @@ int main() {
     Queue* queue = new Queue();
 
     while (true) {
+        //  Front->Back.\n5 - View Back->Front
         system("cls");
-        std::cout << "\t\tTask: move elements in new queue from begin - maximum\n0 - Run Tests.\n1 - Creat new queue.\n2 - Push Front.\n3 - Push Back.\n4 - View Front->Back.\n5 - View Back->Front.\n6 - Delete first Element.\n7 - Clear.\n8 - Sort.\n9 - Individual Task.\nelse - Exit.\n\nYour choice: ";
+        const char MENU[] = "\t\tTask: move elements in new queue from begin - maximum\n0 - Run Tests.\n1 - Creat new queue.\n2 - Push Front. \
+            \n3 - Push Back.\n4 - View.\n5 - Pop element.\n6 - Clear.\n7 - Sort. \
+            \n8 - Individual Task.\nelse - Exit.\n\nYour choice : ";
+
+        std::cout << MENU;
+
         int choice = CheckNum();
 
         switch (choice) {
             case 0: {                
-                Test1();
+
+                Test5();
+                /* 
+               Test1();
                 std::cout << "\n\n";
                 Test2();
                 std::cout << "\n\n";
                 Test3();
                 std::cout << "\n\n";
                 Test4();
+                */
                 break;
             }
             case 1: case 2: case 3: {
@@ -49,26 +59,48 @@ int main() {
                 break;
             }
             case 4: {
-                queue->view();
+                system("cls");
+                std::cout << "\t\tTask: move elements in new queue from begin - maximum\n1 - View Front->Back.\n2 - View Back->Front\nelse - back.\nYour Choice: ";
+                int choice = CheckNum();
+
+                if (choice == 1)
+                    queue->view();
+                else if (choice == 2)
+                    queue->reverse_view();
+                else
+                    continue;
+
                 break;
             }
             case 5: {
-                queue->reverse_view();
+                system("cls");
+                std::cout << "\t\tTask: move elements in new queue from begin - maximum\n1 - Delete first element.\n2 - Delete last element.\
+\n3 - Delete element.\nelse - back.\nYour Choice: ";
+                int choice = CheckNum();
+
+                if (choice == 1)
+                    queue->pop_front();
+                else if (choice == 2)
+                    queue->pop_back();
+                else if (choice == 3) {
+                    std::cout << "Input element you want to delete: ";
+                    int element = CheckNum();
+                    queue->pop(element);
+                }
+                else
+                    continue;
+
                 break;
             }
             case 6: {
-                queue->pop_front();
-                break;
-            }
-            case 7: {
                 queue->clear();
                 break;
             }
-            case 8: {
+            case 7: {
                 queue->Sort();
                 break;
             }
-            case 9: {
+            case 8: {
                 //IndividualTask(queue);
                 break;
             }

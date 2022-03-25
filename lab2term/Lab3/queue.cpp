@@ -68,6 +68,10 @@ void Queue::pop_front(bool isNeedToPrintMessage) {
 
         delete tmp1, tmp2;
         tmp1 = tmp2 = nullptr;
+
+        if (begin == nullptr)
+            end = nullptr;
+
         if (isNeedToPrintMessage)
             std::cout << "Delete first element: Done!\n";
     }
@@ -81,16 +85,68 @@ void Queue::pop_back(bool isNeedToPrintMessage) {
         Queue* tmp1 = end;
 
         end = end->prev;
-        end->next = nullptr;
         end->end = end;
+        
+        // какой-то дерьмо, почему не работает если я присваива.т одресу в end->next = nullptr
+        // оно не меняется и в next, если они совпадают :/
 
-        delete tmp1;
-        tmp1 = nullptr;
+        // тут явно проблема.
+        if (end->next == next) {
+            next = nullptr;
+        }
+
+        end->next = nullptr;
+
+
         if (isNeedToPrintMessage)
             std::cout << "Delete last element: Done!\n";
     }
     else if (isNeedToPrintMessage) {
         std::cout << "Delete last element: queue is empty!\n";
+    }
+}
+
+void Queue::pop(int element, bool isNeedToPrintMessage) {
+    if (begin != nullptr) {
+
+        // в GetBegin() ошибка посмотреть почему + скорее всего алгоритм работает не правильно + 
+        // проверить как работает этот алгоритм с случаем при удаленни последнего или первого
+        // я конечно был на лекциях, но я хочу удалять все случаи совпадения, а не только 1-ый.
+        
+        Queue* tmp = next;
+        
+        do {
+            if (tmp->info_ == element) {
+                Queue* next_tmp = tmp->next;
+                Queue* prev_tmp = tmp->prev;
+                Queue* del_tmp = tmp;
+
+                tmp = prev_tmp;
+                tmp->next = next_tmp;
+                next_tmp->prev = tmp;
+                next = tmp->next; // делаю для того, чтобы в this у next != непонятно чему. 
+                                  // У begin - ok, а у next без этого не ок, т.к. связь для next не устанавливаб вот сложно объяснил но да ладно
+
+                delete del_tmp;
+            }
+            tmp = tmp->next;
+       } while (tmp->next != nullptr);
+
+
+
+       if (end->info_ == element) {
+           pop_back(false);
+       }
+
+       if (begin->info_ == element) {
+           pop_front(false);
+       }
+       
+       if (isNeedToPrintMessage)
+            std::cout << "Delete element: Done!\n";
+    }
+    else if (isNeedToPrintMessage) {
+        std::cout << "Delete element: queue is empty!\n";
     }
 }
 

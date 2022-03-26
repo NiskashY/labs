@@ -85,18 +85,15 @@ void Queue::pop_back(bool isNeedToPrintMessage) {
         Queue* tmp1 = end;
 
         end = end->prev;
-        end->end = end;
-        
-        // какой-то дерьмо, почему не работает если я присваива.т одресу в end->next = nullptr
-        // оно не меняется и в next, если они совпадают :/
 
-        // тут явно проблема.
-        if (end->next == next) {
-            next = nullptr;
+        if (end != nullptr) {
+            end->end = end;
+
+            if (end->next == next)
+                next = nullptr;
+            
+            end->next = nullptr;
         }
-
-        end->next = nullptr;
-
 
         if (isNeedToPrintMessage)
             std::cout << "Delete last element: Done!\n";
@@ -109,13 +106,11 @@ void Queue::pop_back(bool isNeedToPrintMessage) {
 void Queue::pop(int element, bool isNeedToPrintMessage) {
     if (begin != nullptr) {
 
-        // в GetBegin() ошибка посмотреть почему + скорее всего алгоритм работает не правильно + 
-        // проверить как работает этот алгоритм с случаем при удаленни последнего или первого
+        bool isPopSomeElement = false;
         // я конечно был на лекциях, но я хочу удалять все случаи совпадения, а не только 1-ый.
-        
         Queue* tmp = next;
-        
-        do {
+
+        while (tmp != nullptr && tmp->next != nullptr) { // tmp != для одного элемента.
             if (tmp->info_ == element) {
                 Queue* next_tmp = tmp->next;
                 Queue* prev_tmp = tmp->prev;
@@ -128,22 +123,27 @@ void Queue::pop(int element, bool isNeedToPrintMessage) {
                                   // У begin - ok, а у next без этого не ок, т.к. связь для next не устанавливаб вот сложно объяснил но да ладно
 
                 delete del_tmp;
+
+                isPopSomeElement = true;
             }
             tmp = tmp->next;
-       } while (tmp->next != nullptr);
-
-
+        }
+       next = begin->next;
 
        if (end->info_ == element) {
            pop_back(false);
+           isPopSomeElement = true;
        }
 
        if (begin->info_ == element) {
            pop_front(false);
+           isPopSomeElement = true;
        }
        
-       if (isNeedToPrintMessage)
-            std::cout << "Delete element: Done!\n";
+       if (!isPopSomeElement)
+           std::cout << "No such element in queue\n";
+       else if (isNeedToPrintMessage)
+            std::cout << "Delete element " << element << ": Done!\n";
     }
     else if (isNeedToPrintMessage) {
         std::cout << "Delete element: queue is empty!\n";
@@ -195,8 +195,8 @@ void Queue::reverse_view() {
 }
 
 void Queue::peek() {
-    if (begin != nullptr) {
-        std::cout << begin->info_ << std::endl;
+    if (end != nullptr) {
+        std::cout << end->info_ << std::endl;
     }
     else {
         std::cout << "Peek: queue is empty!\n";

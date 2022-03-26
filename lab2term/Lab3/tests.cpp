@@ -4,10 +4,8 @@
 
 void Test1() {
     std::cout << "-------TEST1----\n\n";
-
     Queue* queue = new Queue();
     queue->view();
-
 
     queue->push_back(4);
     queue->push_back(3);
@@ -50,8 +48,6 @@ void Test1() {
 void Test2() {
     std::cout << "-------TEST2----\n\n";
     Queue* queue = new Queue();
-
-
     queue->push_front(3);
     queue->push_front(1);
     queue->push_front(2);
@@ -64,35 +60,21 @@ void Test2() {
     queue->push_front(1);
     queue->push_front(2);
 
-    //    queue->push_front(3);
-    //    queue->push_front(1);
-    //    queue->push_front(2);
-    //    queue->push_front(3);
-    //    queue->push_front(1);
-    //    queue->push_front(2);
-    //    queue->push_front(3);
-    //    queue->push_front(1);
-    //    queue->push_front(2);
     std::cout << "(After push_front) ";
     queue->view();
-
-
     queue->Sort();
 
     std::cout << "(BefPop &ASor) ";
     queue->view();
-
     queue->pop_front();
+
     std::cout << "(AftPop queue) ";
     queue->view();
-
-
 
     queue->clear();
     queue->view();
 
     delete queue;
-
 }
 
 void Test3() {
@@ -108,10 +90,8 @@ void Test3() {
     }
 
     queue->view();
-    std::cout << "\n";
-
-    // Create new queue from elements between BEGIN and MAX
-
+    queue->pop(FindMax(queue));
+    queue->view();
     delete queue;
 }
 
@@ -135,7 +115,6 @@ void Test4() {
     std::cout << "4: ";
     queue->reverse_view();
 
-
     queue->pop_back();
     std::cout << "5: ";
     queue->view();
@@ -156,6 +135,7 @@ void Test4() {
     std::cout << "10: ";
     queue->reverse_view();
 
+    queue->pop(FindMax(queue));
 
     delete queue;
 }
@@ -181,7 +161,6 @@ void Test5() {
     }
 
     {
-        // не проходит тест. Ошбика в pop_back.
         int numbers[] = { 3, 1, 3, 1, 3, 1, 3};
         for (int i = 0; i < 7; ++i) {
             queue->push_back(numbers[i]);

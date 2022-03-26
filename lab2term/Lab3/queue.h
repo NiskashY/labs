@@ -30,7 +30,6 @@ public:
     
     Queue* GetEnd() const { return end; }
 
-
     // Funtions for working with queue
 
     void push_back(int info);

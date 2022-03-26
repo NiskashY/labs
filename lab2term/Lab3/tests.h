@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include "queue.h"
+#include "individualTask.h"
 
 void Test1();
 void Test2();

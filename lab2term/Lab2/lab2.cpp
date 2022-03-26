@@ -76,6 +76,11 @@ int main() {
 }
 
 void IndividualTask(Stack*& stack, bool isItTest) {
+    if (stack->GetBegin() == nullptr) {
+        std::cout << "Stack is empty!\n";
+        return;
+    }
+
     std::cout << "(Before dividing Stack) ";
     stack->view();
 
@@ -214,7 +219,7 @@ void Test3() {
     std::cout << "-------TEST3----\t(Random elements)\n\n";
     Stack* stack = new Stack;
     srand(time(0));
-    int n = 1000;
+    int n = 10;
 
     while (n--) {
         int tmp = 0;

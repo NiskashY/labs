@@ -31,7 +31,7 @@ public:
         begin = tmp;
     }
 
-    void pop(bool isNeedToPrintMessage = true) {
+    void pop(bool isNeedToPrintMessage = false) {
         if (begin != nullptr) {
             Stack<T>* tmp1 = begin;
             Stack<T>* tmp2 = next;
@@ -78,16 +78,14 @@ public:
         if (begin != nullptr) {
             return begin->info_;
         }
-        else {
-            std::cout << "Peek: stack is empty!\n";
-        }
+        return '{';
     }
 
     bool empty() {
         return begin == nullptr;
     }
 
-    void clear(bool isNeedToPrintMessage = true) {
+    void clear(bool isNeedToPrintMessage = false) {
         // this != nullptr - плохо
         if (isNeedToPrintMessage && (this == nullptr || begin == nullptr))
             std::cout << "Nothing to clear!\n";

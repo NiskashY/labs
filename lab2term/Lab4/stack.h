@@ -4,7 +4,7 @@
 template<class T = int>
 class Stack {
 private:
-    T info_ = 0; // information
+    T info_; // information
     Stack<T>* next = nullptr; // next element
     Stack<T>* begin = nullptr; // peek of Stack / or current element
 public:
@@ -78,7 +78,7 @@ public:
         if (begin != nullptr) {
             return begin->info_;
         }
-        return '{';
+        return {};
     }
 
     bool empty() {

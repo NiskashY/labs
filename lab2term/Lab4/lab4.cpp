@@ -1,265 +1,91 @@
 #include <iostream>
+#include <string>
 #include "stack.h"
-#include <set>
+#include "rpn.h"
+#include "tests.h"
 
-struct Type {
-	char symbol = 'a' - 1;
-	double value = 0;
-};
-
-std::string CreateReversePolishNotation(std::string&);
-double CalculateReversePolishNotation(std::string&, Type*&, int);
-int FindIndexSymbolValue(Type*& symbols, const int size, char item);
-
-double CheckNum();
-
-bool isInSymbols(Type*&, char, int);
-void InputValueOfSymbols(Type*&, std::string&, int&, int&);
-
-void Test1();
-void Test2();
-void Test3();
-void Test4();
-void RunTests();
+bool isRequestCorrect(std::string&);
+bool isOperation(char i);
 
 int main() {
 	std::string request, result;
-	//RunTests();
+	RunTests();
 
 	std::cout << "Input request: ";
-	std::cin >> request;
+	do {
+		getline(std::cin, request);
+	} while (!isRequestCorrect(request));
+
 	result = CreateReversePolishNotation(request);
 	std::cout << "Result RevePN: " << result << '\n';
 
-	Type* symbols = new Type[request.size()];
-	int index = 0, amount_of_symbols = 0;
+	Type* symbols = new Type[request.size()]; // Array for symbols. In functions below i check for existing symbols in this array;
+	int amount_of_symbols = 0;
 
-	InputValueOfSymbols(symbols, request, index, amount_of_symbols);
+	InputValueOfSymbols(symbols, request, amount_of_symbols);
 
 	double answer = CalculateReversePolishNotation(result, symbols, amount_of_symbols);
 
-	std::cout << answer << '\n';
+	std::cout << "\nAnswer: " << answer << '\n';
 	return 0;
 }
 
-int FindIndexSymbolValue(Type*& symbols, const int size, char item) {
-	for (int i = 0; i < size; ++i) {
-		if (symbols[i].symbol == item) {
-			return i;
-		}
-	}
-
-	return -1; // not exist;
+bool isOperation(char i) {
+	return i == '+' || i == '-' || i == '*' || i == '/';
 }
 
-double CalculateReversePolishNotation(std::string& result, Type*& symbols, const int size) {
-	Stack<char>* stack = new Stack<char>();
-	double R = 0;
-
-	for (auto& i : result) {
-		if (i >= 'a' && i <= 'z') {
-			stack->push(i);
-		}
-		else {
-			int index_tmp_first = FindIndexSymbolValue(symbols, size, stack->peek());
-			stack->pop();
-
-
-				int index_tmp_second = FindIndexSymbolValue(symbols, size, stack->peek());
-				double first = 0;
-				if (index_tmp_first != -1) {
-					first = symbols[index_tmp_first].value;
-				}
-				else {
-					first = R;
-				}
-					
-				double second = symbols[index_tmp_second].value;
-
-				switch (i) {
-				case '+': {
-					R = second + first;
-					break;
-				}
-				case '-': {
-					R = second - first;
-					break;
-				}
-				case '*': {
-					R = second * first;
-					break;
-				}
-				case '/': {
-					R = second / first;
-					break;
-				}
-				}
-				stack->pop();
-				stack->push('R');
-			
-		}
-	}
-
-	return R;
-}
-
-void InputValueOfSymbols(Type*& symbols, std::string& request, int& index, int& amount_of_symbols ) {
-	for (auto& i : request) {
-		if (i >= 'a' && i <= 'z' && !isInSymbols(symbols, i, index)) {
-			symbols[index].symbol = i;
-			std::cout << "Input '" << i << "' value: ";
-			symbols[index].value = CheckNum();
-			index++;
-		}
-	}
-
-	amount_of_symbols = index;
-
-	for (int i = 0; i < amount_of_symbols; ++i) {
-		std::cout << symbols[i].symbol << ' ' << symbols[i].value << '\n';
-	}
-}
-
-double CheckNum() {
-	double var;
-
-	while (!(std::cin >> var) || std::cin.get() != '\n') {
-		std::cout << "Error! Something go wrong ReEnter: ";
-		std::cin.clear();
-		while (std::cin.get() != '\n');
-	}
-
-	return var;
-}
-
-bool isInSymbols(Type*& symbols, char character, int current_size) {
-	for (int i = 0; i < current_size; ++i) {
-		if (symbols[i].symbol == character) {
-			return true;
-		}
-	}
-	return false;
-}
-
-std::string CreateReversePolishNotation(std::string& request) {
-	Stack<char>* stack = new Stack<char>();
-	std::string result;
-
-	for (const auto& i : request) {
-		if (i <= 'z' && i >= 'a') {
-			result.push_back(i);
-		}
-		else {
-			switch (i) {
-			case '+': case '-': {
-				if (stack->peek() == '*' || stack->peek() == '/') {
-					while (!stack->empty()) {
-						result.push_back(stack->peek());
-						stack->pop();
-					}
-				}
-				stack->push(i);
-				break;
-			}
-			case '*': case '/': {
-				if (stack->peek() == '*' || stack->peek() == '/') {
-					result.push_back(stack->peek());
-					stack->pop();
-				}
-				stack->push(i);
-				break;
-			}
-			case '(': {
-				stack->push(i);
-				break;
-			}
-			case ')': {
-				while (stack->peek() != '(') {
-					result.push_back(stack->peek());
-					stack->pop();
-				}
-				stack->pop();
-			}
-			}
-		}
-	}
-	while (!stack->empty()) {
-		result.push_back(stack->peek());
-		stack->pop();
-	}
+bool isRequestCorrect(std::string& request) {
+	Stack<char>* brackets = new Stack<char>();
+	bool answer = true;
+	char prev_symbol = 'a' - 1;
 	
-	return result;
-}
-
-void Test1() {
-	std::string request, result;
-
-	request = "a+b*(c-d)/e+f";
-
-	result = CreateReversePolishNotation(request);
-	/*
-	a+b*(c-d)/e+f
-	abcd-*e/+f+
-
-	a/(b– c)*(d+e)
-
-	*/
-	std::cout << "Test1.\t";
-	if (result == "abcd-*e/+f+") {
-		std::cout << "Request: " + request + ". Result: " + result + "\tOk!\n";
+	// check for brackets sequence and contains unnecessary characters
+	for (const auto& i : request) {
+		if (i == '(') {
+			if (prev_symbol == 'a' - 1 || isOperation(prev_symbol) || prev_symbol == '(') {
+				brackets->push(i);
+				prev_symbol = i;
+				continue;
+			}
+			std::cout << "No operation Before Bracket! ReEnter: ";
+			return false;
+		}
+		else if (i == ')') {
+			prev_symbol = i;
+			if (brackets->peek() == '(') {
+				brackets->pop();
+				continue;
+			}
+			else {
+				answer = false;
+				break;
+			}
+		}
+		else if (isOperation(i)) {
+			if (prev_symbol >= 'a' && prev_symbol <= 'z' ||  prev_symbol == ')') {
+				prev_symbol = i;
+				continue;
+			}
+			std::cout << "Something wrong with Operations! ReEnter: ";
+			return false;
+		}
+		else if (i >= 'a' && i <= 'z') {
+			if (prev_symbol == 'a' - 1 || isOperation(prev_symbol) || prev_symbol == '(' ) {
+				prev_symbol = i;
+				continue;
+			}
+			std::cout << "Something wrong with character sequence! ReEnter: ";
+			return false;
+		}
+		
+		std::cout << "Invalid request! ReEnter: ";
+		return false;
 	}
-	else
-		std::cout << "Request: " + request + ". Result: " + result + "\tError!\n";
-}
 
-void Test2() {
-	std::string request, result;
-
-	request = "a/(b-c)*(d+e)";
-
-	result = CreateReversePolishNotation(request);
-
-	std::cout << "Test2.\t";
-	if (result == "abc-/de+*") {
-		std::cout << "Request: " + request + ". Result: " + result + "\tOk!\n";
+	if (!brackets->empty() || answer == false) {
+		std::cout << "Incorrect brackets sequence! ReEnter: ";
+		return false;
 	}
-	else
-		std::cout << "Request: " + request + ". Result: " + result + "\tError!\n";
-}
 
-void Test3() {
-	std::string request, result;
-
-	request = "(a+b)*(c-d)/e";
-
-	result = CreateReversePolishNotation(request);
-
-	std::cout << "Test3.\t";
-	if (result == "ab+cd-*e/") {
-		std::cout << "Request: " + request + ". Result: " + result + "\tOk!\n";
-	}
-	else
-		std::cout << "Request: " + request + ". Result: " + result + "\tError!\n";
-}
-
-void Test4() {
-	std::string request, result;
-
-	request = "a-(b+c*d)/e";
-
-	result = CreateReversePolishNotation(request);
-
-	std::cout << "Test4.\t";
-	if (result == "abcd*+e/-") {
-		std::cout << "Request: " + request + ". Result: " + result + "\tOk!\n";
-	}
-	else
-		std::cout << "Request: " + request + ". Result: " + result + "\tError!\n";
-}
-
-void RunTests() {
-	Test1();
-	Test2();
-	Test3();
-	Test4();
+	return true;
 }

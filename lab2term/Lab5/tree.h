@@ -15,6 +15,8 @@ struct Node {
 
 bool operator<(Information& lhs, Information& rhs);
 
+void getHeight(Node*, int current_height, int&);
+
 class Tree {
 private:
 	Node* root = nullptr; // ~ begining of the tree
@@ -26,6 +28,8 @@ public:
 		if (root != nullptr)
 			root->info_ = info;
 	}
+
+	Node* GetRoot();
 
 	Node* createLeaf(Information& info);
 

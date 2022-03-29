@@ -7,3 +7,7 @@ struct Information {
 };
 
 std::istream& operator>>(std::istream&, Information&);
+
+bool operator<(Information& lhs, Information& rhs);
+
+bool operator==(Information& lhs, Information& rhs);

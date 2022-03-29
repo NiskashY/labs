@@ -13,8 +13,6 @@ struct Node {
 	Node* right = nullptr;
 };
 
-bool operator<(Information& lhs, Information& rhs);
-
 void getHeight(Node*, int current_height, int&);
 
 class Tree {
@@ -30,19 +28,17 @@ public:
 	}
 
 	Node* GetRoot();
-
 	Node* createLeaf(Information& info);
-
+	bool empty();
 	void insert(Information& info);
-
 	void view();
+	
 	void view(Information&);
-	void clear();
+	void clear(Node* leaf);
 	void maxKey();
 	void minKey();
 	void remove();
 	void makeBalance();
 	Node* search();
 
-	bool empty();
 };

@@ -22,6 +22,9 @@ int main() {
 
 	tree->view();
 
+	tree->clear(tree->GetRoot());
+
+	tree->view();
 
 	return 0;
 }

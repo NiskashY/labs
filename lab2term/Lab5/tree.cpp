@@ -58,6 +58,11 @@ bool Tree::empty() {
 }
 
 void Tree::view() {
+	if (root == nullptr) {
+		std::cout << "Tree is empty!\n";
+		return;
+	}
+	
 	Node* tmp = root;
 
 	int max_height = 0;
@@ -104,4 +109,18 @@ void Tree::view() {
 	}
 
 	delete[] arr;
+}
+
+void Tree::clear(Node* leaf) {
+	if (leaf) {
+		clear(leaf->left);
+		clear(leaf->right);
+		delete leaf;
+		
+		leaf->left = leaf->right = nullptr; // In order not to point to something in memory
+	}
+
+	if (leaf == root) {
+		root = nullptr;
+	}
 }

@@ -1,7 +1,7 @@
 #pragma once
+#include <iomanip>
 #include "iostream"
 #include "information.h"
-
 
 struct Node {
 	Node() = default;

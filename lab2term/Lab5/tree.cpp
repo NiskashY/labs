@@ -44,6 +44,8 @@ void Tree::insert(Information& info) {
 				tmp = tmp->left;
 			}
 		}
+
+		// Mb i need to insert in this line makeBalance?
 	}
 }
 
@@ -57,23 +59,49 @@ bool Tree::empty() {
 
 void Tree::view() {
 	Node* tmp = root;
-	int index = 0;
 
 	int max_height = 0;
 	getHeight(root, 0, max_height);
-	// amount of all possible elements - (2^max_height - 1);
+	// amount of all possible elements - (2^max_height - 1); from geometric progression.
 	// i will show only age in console.
 	// check notes in notebook...
 	int size = pow(2, max_height) - 1;
 	Node** arr = new Node*[size];
+	
 	arr[0] = tmp;
-	for (int i = 1; i < max_height; ++i) {
-		int elem_in_group = pow(2, i);
-		for (int j = pow(2, i - 1); j < elem_in_group; j++) {
-			arr[j] = arr[j];
+	// fill arr with numbers of age. If we have current 'i' element -> left child - 2 * i + 1, right child - 2 * i + 2
+	for (int i = 0; 2 * i + 2 < size; ++i) {
+		if (arr[i] == nullptr) {
+			arr[2 * i + 1] = nullptr;
+			arr[2 * i + 2] = nullptr;
+		}
+		else {
+			arr[2 * i + 1] = arr[i]->left;
+			arr[2 * i + 2] = arr[i]->right;
+		}
+	}
+	
+	int index = 0; // current element;
 
+	for (int i = 0; i < max_height; ++i) {
+		int size_tmp = pow(2, i);
+		int j = 0;
+
+		for (int x = 1; x < max_height - i; ++x) {
+			std::cout << ' ';
+		}
+		
+		while (j < size_tmp) {
+			if (arr[index + j] != nullptr)
+				std::cout << arr[index + j]->info_.age;
+			
+			std::cout << ' ';
+			++j;
 		}
 
-		for (int j = index; j <= i;);
+		index += j;
+		std::cout << '\n';
 	}
+
+	delete[] arr;
 }

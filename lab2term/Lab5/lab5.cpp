@@ -8,7 +8,7 @@ int main() {
 	Tree* tree = new Tree();
 
 	//std::vector<Information> v = { {10, "blue"}, {11, "green"}, {7, "yellow"}, {8, "pink"}, {9, "purple"}, {6, "red"} };
-	std::vector<Information> v = { {10, "blue"}, {9, "green"},{12, "green"}, {12, "green"},{13, "green"},{14, "green"}, {7, "yellow"}, {6, "pink"}, {8, "purple"}, {5, "red"} };
+	std::vector<Information> v = { {10, "blue"}, {9, "green"},{12, "green"},{13, "green"},{14, "green"}, {7, "yellow"}, {6, "pink"}, {8, "purple"}, {11, "red"}, {1, "white"} };
 
 	for (int i = 0; i < v.size(); ++i) {
 		Information info;
@@ -18,9 +18,10 @@ int main() {
 	int max_height = 0;
 	getHeight(tree->GetRoot(), 0, max_height);
 
-	std::cout << max_height;
+	std::cout << max_height << "\n\n";
 
-	delete tree;
+	tree->view();
+
 
 	return 0;
 }

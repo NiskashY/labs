@@ -8,8 +8,9 @@ struct Type {
 };
 
 std::string CreateReversePolishNotation(std::string&);
-double CalculateReversePolishNotation(std::string&, Type*&, int);
+double CalculateReversePolishNotation(const std::string&, Type*&, int, bool&);
 int FindIndexSymbolValue(Type*& symbols, const int size, char item);
 
+double CheckNum();
 bool isInSymbols(Type*&, char, int);
-void InputValueOfSymbols(Type*&, std::string&, int&);
+void InputValueOfSymbols(Type*&, const std::string&, int&);

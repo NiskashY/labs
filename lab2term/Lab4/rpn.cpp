@@ -12,9 +12,9 @@ double CheckNum() {
 	return var;
 }
 
-void InputValueOfSymbols(Type*& symbols, std::string& request, int& amount_of_symbols) {
+void InputValueOfSymbols(Type*& symbols, const std::string& request, int& amount_of_symbols) {
 	int index = 0;
-	for (auto& i : request) {
+	for (const auto& i : request) {
 		if (i >= 'a' && i <= 'z' && !isInSymbols(symbols, i, index)) {
 			symbols[index].symbol = i;
 			std::cout << "Input '" << i << "' value: ";
@@ -44,7 +44,7 @@ int FindIndexSymbolValue(Type*& symbols, const int size, char item) {
 	return -1; // not exist;
 }
 
-double CalculateReversePolishNotation(std::string& result, Type*& symbols, const int size) {
+double CalculateReversePolishNotation(const std::string& result, Type*& symbols, const int size, bool& isDenominator) {
 	Stack<Type>* stack = new Stack<Type>();
 
 	for (auto& i : result) {
@@ -74,7 +74,13 @@ double CalculateReversePolishNotation(std::string& result, Type*& symbols, const
 				break;
 			}
 			case '/': {
+				if (!first.value) {
+					isDenominator = true;
+					std::cout << "\nDenominator = 0! Input values again.\n";
+					return 0;
+				}
 				R.value = second.value / first.value;
+				isDenominator = false;
 				break;
 			}
 			}

@@ -14,6 +14,7 @@ void RunTests();
 void (Queue::*Operation(Direction& direction))(int);
 void AddElements(Queue*&, Direction&);
 int CheckNum();
+bool isNCorrect(int& n);
 
 int main() {
     Queue* queue = new Queue();
@@ -23,7 +24,7 @@ int main() {
 
         queue->view(); // это просто чтобы удобнее работать с меню было :D
         
-        const char MENU[] = "\t\tTask: delete max element from queue.\n0 - Run Tests.\n1 - Creat new queue.\n2 - Push Front. \
+        const char MENU[] = "\t\tTask: delete max element from queue.\n0 - Run Tests.\n1 - Create new queue.\n2 - Push Front. \
             \n3 - Push Back.\n4 - Reverse View.\n5 - Pop element.\n6 - Clear.\n7 - Sort. \
             \n8 - Individual Task.\nelse - Exit.\n\nYour choice : ";
 
@@ -60,7 +61,14 @@ int main() {
                 break;
             }
             case 8: {
-                queue->pop(FindMax(queue));
+                // try - catch - check if queue is empty;
+                try {
+                    queue->pop(FindMax(queue));
+                }
+                catch (std::runtime_error& e) {
+                    std::cout << e.what();
+                }
+
                 break;
             }
             default: {
@@ -86,6 +94,15 @@ int CheckNum() {
     return var;
 }
 
+bool isNCorrect(int& n) {
+    
+    if (n <= 0) {
+        std::cout << "Can't add <= 0 elements! ReEnter: ";
+    }
+
+    return n > 0;
+}
+
 // тут без & низя | создаю указатель на метод класса.
 // а вообще тут можно просто через if, но тогда это не весело :)
 void (Queue::*Operation(Direction& direction))(int) {
@@ -94,7 +111,12 @@ void (Queue::*Operation(Direction& direction))(int) {
 
 void AddElements(Queue*& queue, Direction& direction) {
     std::cout << "Input amount of numbers: ";
-    int n = CheckNum();
+
+    int n = 0;
+    do {
+        n = CheckNum();
+    } while (!isNCorrect(n));
+
     for (int i = 0; i < n; ++i) {
         std::cout << "#" << std::setw(2) << std::left << i + 1 << " Input Number : ";
         int number = CheckNum();

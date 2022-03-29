@@ -226,7 +226,7 @@ void Queue::Sort() {
     Queue* limit = nullptr, * tmp, * t = begin;
 
     if (begin == nullptr || begin->next == nullptr) {
-        std::cout << "Sort: queue is empty!\n";
+        std::cout << "Sort: queue is empty or queue has only one element!\n";
         return;
     }
 

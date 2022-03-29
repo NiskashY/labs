@@ -6,6 +6,10 @@ int FindMax(Queue*& copy) {
     p = copy->GetBegin();
     max = copy->GetBegin();
 
+    if (p == nullptr) { // check if queue is empty
+        throw std::runtime_error("No elements in queue\n");
+    }
+
     while (p != nullptr) {
 
         if (p->GetInfo() > max->GetInfo()) {

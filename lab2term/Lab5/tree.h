@@ -32,9 +32,9 @@ public:
 	bool empty();
 	void insert(Information& info);
 	void view();
+	void clear(Node* leaf);
 	
 	void view(Information&);
-	void clear(Node* leaf);
 	void maxKey();
 	void minKey();
 	void remove();

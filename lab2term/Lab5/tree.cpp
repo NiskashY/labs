@@ -69,8 +69,11 @@ void Tree::view() {
 	getHeight(root, 0, max_height);
 	// amount of all possible elements - (2^max_height - 1); from geometric progression.
 	// i will show only age in console.
-	// check notes in notebook...
-	int size = pow(2, max_height) - 1;
+
+	// ~ pow(2, max_height) - 1; 2 - 10 -> 2 << max_height(= 4) = 100000 = 32 
+	// but 2^4 = 16 -> because of 2 = 10 in binary -> 2^max_height = 2 << (max_height - 1)
+	int size = (2 << (max_height - 1)) - 1;
+
 	Node** arr = new Node*[size];
 	
 	arr[0] = tmp;
@@ -89,7 +92,12 @@ void Tree::view() {
 	int index = 0; // current element;
 
 	for (int i = 0; i < max_height; ++i) {
-		int size_tmp = pow(2, i);
+
+		// I've done this, because if i = 0 -> 2 << -1 = 0 -> output not correct.
+		int size_tmp = 1;
+		if (i)
+			size_tmp = 2 << (i - 1); // ~ pow(2, i);
+
 		int j = 0;
 
 		for (int x = 1; x < max_height - i; ++x) {
@@ -117,10 +125,10 @@ void Tree::clear(Node* leaf) {
 		clear(leaf->right);
 		delete leaf;
 		
-		leaf->left = leaf->right = nullptr; // In order not to point to something in memory
+		leaf->left = leaf->right = nullptr; // In order not to point to something in memory;
 	}
 
 	if (leaf == root) {
-		root = nullptr;
+		root = nullptr; // Set root = nullptr to show that tree is empty;
 	}
 }

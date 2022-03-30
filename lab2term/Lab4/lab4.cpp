@@ -55,7 +55,7 @@ void MenuCalculate(const std::string& request, const std::string& result) {
 
 	std::cout << "\nRequest: " << request << "\nRevers Polish: " << result << '\n';
 
-	Type* symbols = new Type[request.size()]; // Array for symbols. In functions below i check for existing symbols in this array;
+	Type* symbols = new Type[26]; // Array for symbols. In functions below i check for existing symbols in this array; 27 = amount of elements in alphabet
 	int amount_of_symbols = 0;
 
 	double answer = 0;

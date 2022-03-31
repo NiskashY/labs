@@ -36,8 +36,8 @@ public:
 	void search(Information& info);
 	Node* maxKey(bool isNeedToShowMessage = false);
 	Node* minKey(bool isNeedToShowMessage = false);
+	Node* makeBalance(Node*, Information*&, int, int);
 
 	void remove();
-	void makeBalance();
 
 };

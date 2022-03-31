@@ -10,8 +10,6 @@ bool isOperation(char i);
 void MenuCalculate(const std::string& request, const std::string& result);
 void MenuInput(std::string& request, std::string& result);
 
-
-
 int main() {
 	RunTests();
 

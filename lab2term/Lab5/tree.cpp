@@ -13,6 +13,28 @@ void getHeight(Node* tmp, int current_height, int& max_height) {
 	}
 }
 
+void FillArray(Information*& arr, Node* tmp, int& index) {
+	if (tmp == nullptr) {
+		return;
+	}
+
+	arr[index++] = tmp->info_;
+	FillArray(arr, tmp->left, index);
+	FillArray(arr, tmp->right, index);
+}
+
+void SortArr(Information*& arr, int real_amount_of_elements) {
+	for (int i = 0; i < real_amount_of_elements; ++i) {
+		for (int j = 0; j < real_amount_of_elements - 1; ++j) {
+			if (arr[j + 1] < arr[j]) {
+				auto x = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = x;
+			}
+		}
+	}
+}
+
 Node* Tree::GetRoot() {
 	return root;
 }
@@ -23,7 +45,6 @@ void Tree::insert(Information& info) {
 	}
 	else {
 		Node* tmp = root;
-
 		while (true) {
 			if (tmp->info_ == info) {
 				std::cout << "{ " << info.age << ", " << info.favorite_color << " } node already exist in tree!\n";
@@ -32,6 +53,8 @@ void Tree::insert(Information& info) {
 			else if (tmp->info_ < info) {
 				if (tmp->right == nullptr) {
 					tmp->right = createLeaf(info);
+					// mb sift_up?
+
 					break;
 				}
 				tmp = tmp->right;
@@ -39,13 +62,25 @@ void Tree::insert(Information& info) {
 			else {
 				if (tmp->left == nullptr) {
 					tmp->left = createLeaf(info);
+					// mb sift_up?
+
 					break;
-				} 
+				}
 				tmp = tmp->left;
 			}
 		}
 
-		// Mb i need to insert in this line makeBalance?
+
+		int height = 0;
+		int real_amount_of_elements = 0;
+		getHeight(root, 0, height);
+		int max_amount_of_elements = (2 << (height - 1)) - 1;
+		Information* all_keys = new Information[max_amount_of_elements];
+		FillArray(all_keys, root, real_amount_of_elements);
+		SortArr(all_keys, real_amount_of_elements);
+
+		clear(root);
+		root = makeBalance(root, all_keys, 0, real_amount_of_elements);
 	}
 }
 
@@ -105,9 +140,10 @@ void Tree::view() {
 		
 		while (j < size_tmp) {
 			if (arr[index + j] != nullptr)
-				std::cout << arr[index + j]->info_.age;
-			
-			std::cout << ' ';
+				std::cout << arr[index + j]->info_.age << ' ';
+			else
+				std::cout << '-';
+
 			++j;
 		}
 
@@ -191,3 +227,44 @@ Node* Tree::minKey(bool isNeedToShowMessage) {
 		std::cout << "Minimum | " << tmp->info_;
 	return tmp;
 }
+
+Node* Tree::makeBalance(Node* tmp, Information*& arr, int left, int right) {
+	if (left == right) {
+		tmp = nullptr;
+		return tmp;
+	}
+	int mid = (left + right) / 2;
+	Information x = arr[mid];
+
+	tmp = createLeaf(x);
+	tmp->left = makeBalance(tmp->left, arr, left, mid);
+	tmp->right = makeBalance(tmp->right, arr, mid + 1, right);
+
+	return tmp;
+}
+
+
+/*
+
+
+	while (true) {
+		if (tmp->info_ == info) {
+			std::cout << "{ " << info.age << ", " << info.favorite_color << " } node already exist in tree!\n";
+			break;
+		}
+		else if (tmp->info_ < info) {
+			if (tmp->right == nullptr) {
+				tmp->right = createLeaf(info);
+				break;
+			}
+			tmp = tmp->right;
+		}
+		else {
+			if (tmp->left == nullptr) {
+				tmp->left = createLeaf(info);
+				break;
+			}
+			tmp = tmp->left;
+		}
+	}
+*/

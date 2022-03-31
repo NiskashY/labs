@@ -6,7 +6,11 @@ struct Information {
 	std::string favorite_color;
 };
 
+double CheckNum();
+
 std::istream& operator>>(std::istream&, Information&);
+
+std::ostream& operator<<(std::ostream& out, Information& info);
 
 bool operator<(Information& lhs, Information& rhs);
 

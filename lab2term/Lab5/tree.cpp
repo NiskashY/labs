@@ -58,7 +58,7 @@ bool Tree::empty() {
 }
 
 void Tree::view() {
-	if (root == nullptr) {
+	if (empty()) {
 		std::cout << "Tree is empty!\n";
 		return;
 	}
@@ -67,9 +67,8 @@ void Tree::view() {
 
 	int max_height = 0;
 	getHeight(root, 0, max_height);
-	// amount of all possible elements - (2^max_height - 1); from geometric progression.
-	// i will show only age in console.
 
+	// amount of all possible elements - (2^max_height - 1); from geometric progression.
 	// ~ pow(2, max_height) - 1; 2 - 10 -> 2 << max_height(= 4) = 100000 = 32 
 	// but 2^4 = 16 -> because of 2 = 10 in binary -> 2^max_height = 2 << (max_height - 1)
 	int size = (2 << (max_height - 1)) - 1;
@@ -77,7 +76,7 @@ void Tree::view() {
 	Node** arr = new Node*[size];
 	
 	arr[0] = tmp;
-	// fill arr with numbers of age. If we have current 'i' element -> left child - 2 * i + 1, right child - 2 * i + 2
+	// i element -> left child - 2 * i + 1, right child - 2 * i + 2
 	for (int i = 0; 2 * i + 2 < size; ++i) {
 		if (arr[i] == nullptr) {
 			arr[2 * i + 1] = nullptr;
@@ -93,7 +92,7 @@ void Tree::view() {
 
 	for (int i = 0; i < max_height; ++i) {
 
-		// I've done this, because if i = 0 -> 2 << -1 = 0 -> output not correct.
+		// I did this because if i = 0 -> 2 << -1 = 0 -> the output is not correct.
 		int size_tmp = 1;
 		if (i)
 			size_tmp = 2 << (i - 1); // ~ pow(2, i);
@@ -131,4 +130,64 @@ void Tree::clear(Node* leaf) {
 	if (leaf == root) {
 		root = nullptr; // Set root = nullptr to show that tree is empty;
 	}
+}
+
+void Tree::search(Information& info) {
+	Node* tmp = root;
+
+	if (empty()) {
+		std::cout << "Tree is empty!\n";
+		return;
+	}
+
+	while (tmp != nullptr) {
+		if (tmp->info_ == info) {
+			std::cout << tmp->info_;
+			if (tmp->left != nullptr)
+				std::cout << "Left child:" << tmp->left->info_;
+			if (tmp->right!= nullptr)
+				std::cout << "Right child:" << tmp->right->info_;
+			return;
+		}
+		else if (tmp->info_ < info) {
+			tmp = tmp->right;
+		}
+		else {
+			tmp = tmp->left;
+		}
+	}
+
+	std::cout << "No such element in tree :(\n";
+}
+
+Node* Tree::maxKey(bool isNeedToShowMessage) {
+	if (empty()) {
+		std::cout << "Tree is empty!\n";
+		return root;
+	}
+	Node* tmp = root;
+
+	while (tmp->right != nullptr) {
+		tmp = tmp->right;
+	}
+
+	if (isNeedToShowMessage)
+		std::cout << "Maximum | " << tmp->info_;
+	return tmp;
+}
+
+Node* Tree::minKey(bool isNeedToShowMessage) {
+	if (empty()) {
+		std::cout << "Tree is empty!\n";
+		return root;
+	}
+	Node* tmp = root;
+
+	while (tmp->left != nullptr) {
+		tmp = tmp->left;
+	}
+
+	if (isNeedToShowMessage)
+		std::cout << "Minimum | " << tmp->info_;
+	return tmp;
 }

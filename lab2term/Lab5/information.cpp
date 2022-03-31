@@ -1,21 +1,37 @@
 #include "information.h"
-#include "tree.h"
+
+double CheckNum() {
+	double var;
+
+	while (!(std::cin >> var) || std::cin.get() != '\n') {
+		std::cout << "Error! Something go wrong ReEnter: ";
+		std::cin.clear();
+		while (std::cin.get() != '\n');
+	}
+
+	return var;
+}
 
 std::istream& operator>>(std::istream& in, Information& info) {
-	std::cout << "Input Year: ";
-	in >> info.age; // Need validation.
+	do {
+		std::cout << "Input Year [0;100]: ";
+		info.age = CheckNum();
+	} while (info.age < 0 || info.age > 100);
+
 	std::cout << "Input Favorite Color: ";
 	in >> info.favorite_color;
 	return in;
 }
 
-bool operator<(Information& lhs, Information& rhs) {
-	if (lhs.age == rhs.age)
-		return lhs.favorite_color < rhs.favorite_color;
+std::ostream& operator<<(std::ostream& out, Information& info) {
+	out << "Age = " << info.age << ". Favorite color: " << info.favorite_color << '\n';
+	return out;
+}
 
+bool operator<(Information& lhs, Information& rhs) {
 	return lhs.age < rhs.age;
 }
 
 bool operator==(Information& lhs, Information& rhs) {
-	return lhs.age == rhs.age && lhs.favorite_color == rhs.favorite_color;
+	return lhs.age == rhs.age;
 }

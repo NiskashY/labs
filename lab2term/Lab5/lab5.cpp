@@ -10,7 +10,7 @@ int main() {
 	//std::vector<Information> v = { {10, "blue"}, {11, "green"}, {7, "yellow"}, {8, "pink"}, {9, "purple"}, {6, "red"} };
 	std::vector<Information> v = { {10, "blue"}, {9, "green"},{12, "green"},{13, "green"},{14, "green"}, {7, "yellow"}, {6, "pink"}, {8, "purple"}, {11, "red"}, {1, "white"} };
 
-	for (int i = 0; i < v.size(); ++i) {
+	for (size_t i = 0; i < v.size(); ++i) {
 		Information info;
 		tree->insert(v[i]);
 	}
@@ -21,6 +21,12 @@ int main() {
 	std::cout << max_height << "\n\n";
 
 	tree->view();
+
+	Information inf = { 1, "red" };
+	tree->search(inf);
+
+	tree->minKey();
+	tree->maxKey();
 
 	tree->clear(tree->GetRoot());
 

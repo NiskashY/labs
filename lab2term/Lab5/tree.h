@@ -33,12 +33,11 @@ public:
 	void insert(Information& info);
 	void view();
 	void clear(Node* leaf);
-	
-	void view(Information&);
-	void maxKey();
-	void minKey();
+	void search(Information& info);
+	Node* maxKey(bool isNeedToShowMessage = false);
+	Node* minKey(bool isNeedToShowMessage = false);
+
 	void remove();
 	void makeBalance();
-	Node* search();
 
 };

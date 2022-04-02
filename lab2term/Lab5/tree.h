@@ -6,25 +6,31 @@
 struct Node {
 	Node() = default;
 	
-	Node(Information& info) : info_(info) {}
+	Node(Information& info) : info_(info), height(1) {}
 
+	int height;
 	Information info_;
 	Node* left = nullptr;
 	Node* right = nullptr;
 };
 
-void getHeight(Node*, int current_height, int&);
+void GetTreeHeight(Node*, int current_height, int&);
+int getHeight(Node*);
+int balanceFactor(Node*);
+void SetFixedHeight(Node*);
+Node* removeMin(Node*);
 
 class Tree {
 private:
 	Node* root = nullptr; // ~ begining of the tree
+	Node* insert(Node*, Information& info);
+	Node* remove(Node* node, Information& info);
 
 public:
 	Tree() = default;
 
 	Tree(Information& info) {
-		if (root != nullptr)
-			root->info_ = info;
+		root->info_ = info;
 	}
 
 	Node* GetRoot();
@@ -33,11 +39,12 @@ public:
 	void insert(Information& info);
 	void view();
 	void clear(Node* leaf);
-	void search(Information& info);
+	Node* search(Information& info, bool isNeedToPrintMessage = true);
 	Node* maxKey(bool isNeedToShowMessage = false);
 	Node* minKey(bool isNeedToShowMessage = false);
-	Node* makeBalance(Node*, Information*&, int, int);
+	Node* minKey(Node* node, bool isNeedToShowMessage = false);
+	void remove(Information& info);
 
-	void remove();
-
+	
+	//Node* makeBalance(Node*, Information*&, int, int);
 };

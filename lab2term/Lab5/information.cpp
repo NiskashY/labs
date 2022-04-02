@@ -14,12 +14,12 @@ double CheckNum() {
 
 std::istream& operator>>(std::istream& in, Information& info) {
 	do {
-		std::cout << "Input Year [0;100]: ";
+		std::cout << "Input Age [0;100]: ";
 		info.age = CheckNum();
 	} while (info.age < 0 || info.age > 100);
 
 	std::cout << "Input Favorite Color: ";
-	in >> info.favorite_color;
+	getline(in, info.favorite_color);
 	return in;
 }
 

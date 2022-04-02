@@ -1,6 +1,10 @@
 #pragma once
+
+#include <iostream>
 #include <iomanip>
-#include "iostream"
+#include <stdio.h> 
+#include <time.h> 
+
 #include "information.h"
 
 struct Node {
@@ -14,37 +18,39 @@ struct Node {
 	Node* right = nullptr;
 };
 
-void GetTreeHeight(Node*, int current_height, int&);
-int getHeight(Node*);
-int balanceFactor(Node*);
+int GetHeight(Node*);
+int GetBalanceFactor(Node*);
 void SetFixedHeight(Node*);
-Node* removeMin(Node*);
+Node* RemoveMin(Node*);
+
+void ShowLeftRootRight(Node*);
+void ShowRootLeftRight(Node*);
+void ShowLeftRightRoot(Node*);
 
 class Tree {
 private:
 	Node* root = nullptr; // ~ begining of the tree
-	Node* insert(Node*, Information& info);
-	Node* remove(Node* node, Information& info);
+	Node* insert(Node*, Information&, bool&);
+	Node* remove(Node*, Information&);
 
 public:
 	Tree() = default;
+	bool empty();
+	bool insert(Information&);
 
-	Tree(Information& info) {
-		root->info_ = info;
-	}
+	void view();
+	void clear(Node*);
+	void remove(Information&);
 
 	Node* GetRoot();
-	Node* createLeaf(Information& info);
-	bool empty();
-	void insert(Information& info);
-	void view();
-	void clear(Node* leaf);
-	Node* search(Information& info, bool isNeedToPrintMessage = true);
+	Node* createLeaf(Information&);
+	Node* search(Information&, bool isNeedToPrintMessage = true);
 	Node* maxKey(bool isNeedToShowMessage = false);
 	Node* minKey(bool isNeedToShowMessage = false);
-	Node* minKey(Node* node, bool isNeedToShowMessage = false);
-	void remove(Information& info);
+	Node* minKey(Node*, bool isNeedToShowMessage = false);
 
-	
-	//Node* makeBalance(Node*, Information*&, int, int);
 };
+
+//Node* makeBalance(Node*, Information*&, int, int);
+//void GetTreeHeight(Node*, int current_height, int&);
+

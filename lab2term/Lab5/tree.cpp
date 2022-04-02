@@ -1,17 +1,23 @@
 #include "tree.h"
 
-// ------Balance + insert----------
-int getHeight(Node* node) {
+
+int GetHeight(Node* node) {
 	return node == nullptr ? 0 : node->height;
 }
 
-int getBalanceFactor(Node* node) {
-	return getHeight(node->right) - getHeight(node->left);
+// ------Balance----------
+
+int GetBalanceFactor(Node* node) {
+	return GetHeight(node->right) - GetHeight(node->left);
 }
 
 void SetFixedHeight(Node* node) { // Востонавливает значение текущей node. left и right УЖЕ являются корректными
-	int left_height = getHeight(node->left);
-	int right_height = getHeight(node->right);
+	if (node == nullptr) {
+		return;
+	}
+
+	int left_height = GetHeight(node->left);
+	int right_height = GetHeight(node->right);
 
 	node->height = 1 + (right_height > left_height ? right_height: left_height);
 }
@@ -20,8 +26,10 @@ Node* RotateRight(Node* node) {
 	Node* tmp = node->left;
 	node->left = tmp->right;
 	tmp->right = node;
+
 	SetFixedHeight(tmp->left);
 	SetFixedHeight(tmp->right);
+	SetFixedHeight(tmp);
 
 	return tmp;
 }
@@ -30,8 +38,10 @@ Node* RotateLeft(Node* node) {
 	Node* tmp = node->right;
 	node->right= tmp->left;
 	tmp->left = node;
+	
 	SetFixedHeight(tmp->left);
 	SetFixedHeight(tmp->right);
+	SetFixedHeight(tmp);
 
 	return tmp;
 }
@@ -39,39 +49,49 @@ Node* RotateLeft(Node* node) {
 Node* BalanceTree(Node* node) {
 	SetFixedHeight(node);
 
-	if (getBalanceFactor(node) == 2) {
-		if (getBalanceFactor(node->right) < 0)
+	if (GetBalanceFactor(node) == 2) {
+		if (GetBalanceFactor(node->right) < 0)
 			node->right = RotateRight(node->right);
 		return RotateLeft(node);
 	}
 	
-	if (getBalanceFactor(node) == -2) {
-		if (getBalanceFactor(node->left) > 0)
+	if (GetBalanceFactor(node) == -2) {
+		if (GetBalanceFactor(node->left) > 0)
 			node->left = RotateLeft(node->left);
 		return RotateRight(node);
 	}
 
 	return node;
-
 }
 
-Node* Tree::insert(Node* node, Information& info) {
+// ------Insert----------
+
+Node* Tree::insert(Node* node, Information& info, bool& isDuplicate) {
 	if (node == nullptr) {
 		return createLeaf(info);
 	}
 
+	if (info == node->info_) {
+		std::cout << "{ " << info.age << ", " << info.favorite_color << " } node already exist in tree!\n";
+		isDuplicate = true;
+		return node;
+	}
+
 	if (info < node->info_)
-		node->left = insert(node->left, info);
+		node->left = insert(node->left, info, isDuplicate);
 	else
-		node->right = insert(node->right, info);
+		node->right = insert(node->right, info, isDuplicate);
 
 	return BalanceTree(node);
 }
 
-void Tree::insert(Information& info) {
-	root = insert(root, info);
+bool Tree::insert(Information& info) {
+	bool isDuplicate = false;
+	root = insert(root, info, isDuplicate);
+	return isDuplicate;
 }
 
+// ------Remove----------
 
 Node* Tree::remove(Node* node, Information& info) {
 	if (node == nullptr)
@@ -94,23 +114,23 @@ Node* Tree::remove(Node* node, Information& info) {
 
 		Node* minimum = minKey(right);
 		// Выстраиваем логику: удаляемое заменяется на минимум в правом дереве, правое избавляется от минимума, левое остаётся без изменений.
-		minimum->right = removeMin(right);
+		minimum->right = RemoveMin(right);
 		minimum->left = left;
 		return BalanceTree(minimum);
 	}
 
-	BalanceTree(node);
+
+	return BalanceTree(node);
 }
 
 void Tree::remove(Information& info) {
-	if (!search(info)) {
+	if (!search(info, false)) {
 		return;
 	}
-
 	root = remove(root, info);
 }
 
-Node* removeMin(Node* node) {
+Node* RemoveMin(Node* node) {
 	if (node == nullptr) {
 		return nullptr;
 	}
@@ -118,19 +138,11 @@ Node* removeMin(Node* node) {
 	if (node->left == nullptr) {
 		return node->right;
 	}
-	node->left = removeMin(node->left);
+	node->left = RemoveMin(node->left);
 	BalanceTree(node);
 }
 
 // ----------------
-
-Node* Tree::GetRoot() {
-	return root;
-}
-
-Node* Tree::createLeaf(Information& info) {
-	return new Node(info);
-}
 
 bool Tree::empty() {
 	return !root;
@@ -141,21 +153,21 @@ void Tree::view() {
 		std::cout << "Tree is empty!\n";
 		return;
 	}
-
 	std::cout << "___________________\n";
-	
-	Node* tmp = root;
 
-	int max_height = getHeight(root);
+	clock_t start = clock();
+
+	Node* tmp = root;
+	int max_height = GetHeight(root);
 
 	// amount of all possible elements - (2^max_height - 1); from geometric progression.
 	// ~ pow(2, max_height) - 1; 2 - 10 -> 2 << max_height(= 4) = 100000 = 32 
-	// but 2^4 = 16 -> because of 2 = 10 in binary -> 2^max_height = 2 << (max_height - 1)
-	int size = (2 << (max_height - 1)) - 1;
+	// but 2^4 = 16 -> because of 2 = 10 in binary -> 2^max_height = 2 << (max_height - 1) or 2^max_height = 1 << max_height
+	int size = (1 << max_height) - 1;
 
 	Node** arr = new Node*[size];
-	
 	arr[0] = tmp;
+
 	// i element -> left child - 2 * i + 1, right child - 2 * i + 2
 	for (int i = 0; 2 * i + 2 < size; ++i) {
 		if (arr[i] == nullptr) {
@@ -168,39 +180,35 @@ void Tree::view() {
 		}
 	}
 	
-	int index = 0; // current element;
+	int index = 0; // begining of curent group of elements
 	int otstup = 2 << max_height;
 
 	for (int i = 0; i < max_height; ++i) {
-		
-
-		// I did this because if i = 0 -> 2 << -1 = 0 -> the output is not correct.
-		int size_tmp = 1;
-		if (i)
-			size_tmp = 2 << (i - 1); // ~ pow(2, i);
-
-		int j = 0;
+		// if i = 0 ->| 2 << i - 1| = 2 << -1 = 0 -> the output is not correct -> i will use 1 instead of 2.
+		int amount_elements_in_group = 1 << i; // ~ pow(2, i);
 
 		if (i % 2) { // для того, чтобы легче различать строки в дереве при выводе.
-			std::cout << "\033[48;5;235m"; // серый 
+			std::cout << "\033[48;5;235m"; // set background color for line
 		}
 
-		while (j < size_tmp) {
+		int j = 0;
+		while (j < amount_elements_in_group) {
 			if (arr[index + j] != nullptr)
 				std::cout << std::setw(otstup) << arr[index + j]->info_.age << std::setw(otstup) << ' ' ;
 			else
 				std::cout << std::setw(otstup) << '-' << std::setw(otstup) << ' ';
-
-			
 			++j;
 		}
 
 		index += j;
-		std::cout << "\033[m" << '\n';
+		std::cout << "\033[m" << '\n';// delete color
 		otstup /= 2;
 	}
 
+	clock_t end = clock();
+	double seconds = (double)(end - start) / CLOCKS_PER_SEC;
 
+	std::cout << "Seconds for view: " << seconds << '\n';
 	std::cout << "___________________\n";
 
 	delete[] arr;
@@ -218,6 +226,14 @@ void Tree::clear(Node* leaf) {
 	}
 }
 
+Node* Tree::GetRoot() {
+	return root;
+}
+
+Node* Tree::createLeaf(Information& info) {
+	return new Node(info);
+}
+
 Node* Tree::search(Information& info, bool isNeedToPrintMessage){
 	Node* tmp = root;
 
@@ -228,11 +244,13 @@ Node* Tree::search(Information& info, bool isNeedToPrintMessage){
 
 	while (tmp != nullptr) {
 		if (tmp->info_ == info) {
-			std::cout << tmp->info_;
-			if (tmp->left != nullptr && isNeedToPrintMessage)
-				std::cout << "Left child:" << tmp->left->info_;
-			if (tmp->right!= nullptr && isNeedToPrintMessage)
-				std::cout << "Right child:" << tmp->right->info_;
+			if (isNeedToPrintMessage) {
+				std::cout << "Search find this node: " << tmp->info_;
+				if (tmp->left != nullptr)
+					std::cout << "With LEFT child: " << tmp->left->info_;
+				if (tmp->right != nullptr)
+					std::cout << "And with RIGHT child: " << tmp->right->info_;
+			}
 			return tmp;
 		}
 		else if (tmp->info_ < info) {
@@ -264,7 +282,7 @@ Node* Tree::maxKey(bool isNeedToShowMessage) {
 }
 
 Node* Tree::minKey(bool isNeedToShowMessage) {
-	return minKey(root);
+	return minKey(root, isNeedToShowMessage);
 }
 
 Node* Tree::minKey(Node* node, bool isNeedToShowMessage) {
@@ -282,6 +300,39 @@ Node* Tree::minKey(Node* node, bool isNeedToShowMessage) {
 		std::cout << "Minimum | " << tmp->info_;
 	return node;
 }
+
+// -------Traversal------
+
+void ShowLeftRootRight(Node* node) {
+	if (node == nullptr) {
+		return;
+	}
+
+	ShowLeftRootRight(node->left);
+	std::cout << node->info_.age << ' ';
+	ShowLeftRootRight(node->right);
+}
+
+void ShowRootLeftRight(Node* node) {
+	if (node == nullptr) {
+		return;
+	}
+
+	std::cout << node->info_.age << ' ';
+	ShowRootLeftRight(node->left);
+	ShowRootLeftRight(node->right);
+}
+
+void ShowLeftRightRoot(Node* node) {
+	if (node == nullptr) {
+		return;
+	}
+
+	ShowLeftRightRoot(node->left);
+	ShowLeftRightRoot(node->right);
+	std::cout << node->info_.age << ' ';
+}
+
 
 /*
 

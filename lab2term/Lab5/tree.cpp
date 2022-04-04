@@ -246,10 +246,18 @@ Node* Tree::search(Information& info, bool isNeedToPrintMessage){
 		if (tmp->info_ == info) {
 			if (isNeedToPrintMessage) {
 				std::cout << "Search find this node: " << tmp->info_;
+				std::cout << "With LEFT child: ";
+				
 				if (tmp->left != nullptr)
-					std::cout << "With LEFT child: " << tmp->left->info_;
+					std::cout << tmp->left->info_ << '\n';
+				else std::cout << "nullptr.\n";
+				
+				std::cout << "And with RIGHT child: ";
 				if (tmp->right != nullptr)
-					std::cout << "And with RIGHT child: " << tmp->right->info_;
+					std::cout << tmp->right->info_ << '\n';
+				else 
+					std::cout << "nullptr\n";
+
 			}
 			return tmp;
 		}
@@ -290,14 +298,13 @@ Node* Tree::minKey(Node* node, bool isNeedToShowMessage) {
 		std::cout << "Tree is empty!\n";
 		return node;
 	}
-	Node* tmp = node;
 
-	while (tmp->left != nullptr) {
-		tmp = tmp->left;
+	while (node->left != nullptr) {
+		node = node->left;
 	}
 
 	if (isNeedToShowMessage)
-		std::cout << "Minimum | " << tmp->info_;
+		std::cout << "Minimum | " << node->info_;
 	return node;
 }
 

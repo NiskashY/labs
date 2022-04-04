@@ -9,7 +9,7 @@ void RunTests() {
 void Test1() {
 	std::cout << "-------TEST1----\n\n";
 
-	std::cout << "WARNING: You want to run this test? It will take about 1 min to complete test. YES - 3 ( hehe :) ), NO - else: ";
+	std::cout << "WARNING: You want to run this test? It will take about 2 min to complete test. YES - 3 ( hehe :) ), NO - else: ";
 	int choice = CheckNum();
 	if (choice != 3) {
 		std::cout << "Skipped!\n";
@@ -69,7 +69,7 @@ void Test2() {
 
 	for (int i = 0; i < amount; ++i) {
 		int tmp = rand() % 100 + 1;
-		Information inf = { i, "" };
+		Information inf = { tmp, "" };
 		tree->insert(inf);
 	}
 

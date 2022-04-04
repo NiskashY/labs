@@ -15,6 +15,8 @@ void InsertInMenu(Tree*&);
 void SearchInMenu(Tree*&);
 void RemoveInMenu(Tree*&);
 void TraversalInMenu(Tree*&, const std::string&);
+void RandomElements(Tree*&, int);
+
 
 // for 2^17 elements - 107 second for view.
 // for 10 elements - 0.007 seconds for view;
@@ -111,11 +113,30 @@ bool ShowMenu(Tree*& tree) {
 	}
 	return false;
 }
+void RandomElements(Tree*& tree, int amount) {
+	while (amount--) {
+		int tmp = rand() % 100 + 1;
+		std::cout << "Insert key = " << tmp << "...\n";
+		Information inf = { tmp, "some color..." };
+		tree->insert(inf);
+	}
+}
 
 void InsertInMenu(Tree*& tree) {
 	Information information;
 	std::cout << "Input amount of information you want to insert: ";
 	int amount = CheckNum();
+
+	if (amount > 10) { // Suggest the user to fill the tree with random elements
+		std::cout << "Do you want to insert " << amount << " random elements? YES - 1, NO - else: ";
+		int choice = 0;
+		choice = CheckNum();
+		if (choice == 1) {
+			srand(time(NULL));
+			RandomElements(tree, amount);
+			return;
+		}
+	}
 	std::cout << "Input information for insert:\n";
 
 	while (amount--) {
@@ -142,8 +163,8 @@ void RemoveInMenu(Tree*& tree) {
 	key = CheckNum();
 
 	Information tmp = { key, "" };
-	std::cout << "Removed node with key " << tmp.age << '\n';
 	tree->remove(tmp);
+	std::cout << "Removed node with key " << tmp.age << '\n';
 }
 
 void TraversalInMenu(Tree*& tree, const std::string& TASK) {

@@ -9,7 +9,7 @@ void RunTests() {
 void Test1() {
 	std::cout << "-------TEST1----\n\n";
 
-	std::cout << "WARNING: You want to run this test? It will take about 2 min to complete test. YES - 3 ( hehe :) ), NO - else: ";
+	std::cout << "\x1b[31m" << "WARNING: You want to run this test? It will take about 2 min to complete test. YES - 3 ( hehe :) ), NO - else:\x1b[0m ";
 	int choice = CheckNum();
 	if (choice != 3) {
 		std::cout << "Skipped!\n";

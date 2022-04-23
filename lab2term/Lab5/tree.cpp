@@ -182,10 +182,8 @@ void Tree::view() {
 	
 	int index = 0; // begining of curent group of elements
 	int otstup = 2 << max_height;
-
+	int amount_elements_in_group = 1;
 	for (int i = 0; i < max_height; ++i) {
-		// if i = 0 ->| 2 << i - 1| = 2 << -1 = 0 -> the output is not correct -> i will use 1 instead of 2.
-		int amount_elements_in_group = 1 << i; // ~ pow(2, i);
 
 		if (i % 2) { // для того, чтобы легче различать строки в дереве при выводе.
 			std::cout << "\033[48;5;235m"; // set background color for line
@@ -203,6 +201,7 @@ void Tree::view() {
 		index += j;
 		std::cout << "\033[m" << '\n';// delete color
 		otstup /= 2;
+		amount_elements_in_group *= 2; // ~ pow(2, i);
 	}
 
 	clock_t end = clock();

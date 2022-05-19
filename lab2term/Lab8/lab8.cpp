@@ -4,6 +4,8 @@
 #include "validation.h"
 #include <iomanip>
 
+// if it goes inf in calculate = graphic in 0 goes to inf
+
 double Function(const double& x) {
 	return exp(x) / (x * x * x) - (sin(x) * sin(x) * sin(x));
 }
@@ -64,7 +66,7 @@ void Calculate(int& tmp, double& a, double& b) {
 		n = 2; // start amount of partitions.
 		I1 = Method(Function, a, b, n);
 		while (i++ < 300) {
-			n *= n;
+			n *= 2;
 			I2 = Method(Function, a, b, n);
 			if ((fabs(I1 - I2) <= epsilon)) {
 				n /= 2;
@@ -89,14 +91,10 @@ void Calculate(int& tmp, double& a, double& b) {
 double Method(double (*func)(const double&), double& a, double& b, int& n) {
 	double s = 0;
 	double h = 0;
-	double x = 0;
-
 	h = (b - a) / n;			
-	x = a;
 	
-	for (int i = 1; i <= n; i++) {
+	for (double x = a; x < b + h / 4; x += h) {
 		s += func(x) + 4 * func(x + h / 2) + func(x + h);
-		x += h;
 	}
 
 	return  s * h / 6;

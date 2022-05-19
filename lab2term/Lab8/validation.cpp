@@ -53,13 +53,13 @@ int InputN() {
 	return n;
 }
 
-double InputEpsilon() {
+double InputEpsilon() { // ia tyt xotel postavit granici ot 1e-6, do 0.5 :|
 	const std::string& kMessage = "Input epsilon: ";
-	const std::string& kError = "epsilon must be [0.000001; 0.5]! ReEnter: ";
+	const std::string& kError = "Epsilon should be (0; 0.1]! ReEnter: ";
 	bool isNotError = false;
 	double epsilon = 0;
-	double min_eps = 0.000001;
-	double max_eps = 0.5;
+	double min_eps = 1e-307; // number -> 0; need to correct check of interval.
+	double max_eps = 0.1;
 
 	std::cout << kMessage;
 	do {

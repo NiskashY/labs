@@ -4,6 +4,7 @@
 #include "validation.h"
 
 // e^x / x^3 - sin^3(x) - 2
+
 double CheckNum();
 
 inline double CalculateFunction(double x);

@@ -1,49 +1,65 @@
 #pragma once
 #include <iostream>
 
-template<class T = int>
+template<class T>
+struct Node {
+    Node* next = nullptr;
+    T info_ = 0;
+
+    Node() = default;
+
+    Node(const T& info) : info_(info) {}
+
+};
+
+template<class T>
 class Stack {
 private:
-    T info_; // information
-    Stack<T>* next = nullptr; // next element
-    Stack<T>* begin = nullptr; // peek of Stack / or current element
+    Node<T>* head = nullptr;
+
 public:
 
-    explicit Stack<T>(T i) { info_ = i; }
+    Stack() = default;
 
-    Stack<T>() = default;
+    explicit Stack(const T& info) {
+        if (!head) {
+            head = new Node();
+        }
+        head->info_ = info;
+    }
 
-    Stack<T>* GetBegin() const { return begin; }
+    // this const does not change the data in new_head ->
+    // -> we can provide arguments like nullptr by cosnt reference
+    void SetHead(Node<T>* const& new_head) {
+        head = new_head;
+    }
 
-    T GetInfo() const { return info_; }
+    Node<T>* GetHead() const { return head; }
 
-    Stack<T>* GetNext() const { return next; }
+    T GetInfo() const { return head->info_; }
 
+    Node<T>* GetNext() const { return head->next; }
+    
     // Funtions for working with stack
+    
+    bool empty() {
+        return head == nullptr;
+    }
 
-    void push(T info) {
-        Stack<T>* tmp = new Stack(info);
-        // Добавляю во временную переменную следующий элемент стэка, а затем делаю действия уже с основным стэком
-        tmp->next = begin;
-        next = begin;
-
-        tmp->begin = new Stack();
-        begin = tmp;
+    void push(const T& info) {
+        Node<T>* node_new = new Node<T>(info);
+        node_new->next = head;
+        head = node_new;
     }
 
     void pop(bool isNeedToPrintMessage = false) {
-        if (begin != nullptr) {
-            Stack<T>* tmp1 = begin;
-            Stack<T>* tmp2 = next;
-            begin = next;
+        if (head != nullptr) {
+            Node<T>* old_head_node = head;
+            head = head->next;
 
-            if (next != nullptr) {
-                info_ = next->info_;
-                next = next->next;
-            }
+            delete old_head_node;
+            old_head_node = nullptr;
 
-            delete tmp1, tmp2;
-            tmp1 = tmp2 = nullptr;
             if (isNeedToPrintMessage)
                 std::cout << "Delete last element: Done!\n";
         }
@@ -53,49 +69,42 @@ public:
     }
 
     void view() {
-        Stack<T>* tmp = begin;
+        Node* tmp_head = head;
         bool first = true;
 
         std::cout << "Stack view: ";
 
-        if (tmp == nullptr) {
+        if (tmp_head == nullptr) {
             std::cout << "nothing to show :(";
         }
 
-        while (tmp != nullptr) {
+        while (tmp_head != nullptr) {
             if (!first) {
                 std::cout << ", ";
             }
             first = false;
-            std::cout << tmp->info_;
-            tmp = tmp->next;
+
+            std::cout << tmp_head->info_;
+            tmp_head = tmp_head->next;
         }
 
         std::cout << "\n";
     }
 
     T peek() {
-        if (begin != nullptr) {
-            return begin->info_;
+        if (head) {
+            return head->info_;
         }
         return {};
     }
 
-    bool empty() {
-        return begin == nullptr;
-    }
-
     void clear(bool isNeedToPrintMessage = false) {
-        // this != nullptr - плохо
-        if (isNeedToPrintMessage && (this == nullptr || begin == nullptr))
+        if (!head && isNeedToPrintMessage) {
             std::cout << "Nothing to clear!\n";
-        else {
-            while (this != nullptr && begin != nullptr) {
-                Stack<T>* tmp = begin;
-                begin = next;
-                if (next != nullptr)
-                    next = begin->next;
-                delete tmp;
+        }
+        else if (head) {
+            while (head) {  // while stack not empty
+                pop(false);
             }
 
             if (isNeedToPrintMessage)
@@ -103,27 +112,6 @@ public:
         }
     }
 
-    void Sort() {
-        Stack<T>* limit = nullptr, * tmp, * t = begin;
-
-        if (begin == nullptr || begin->next == nullptr) {
-            std::cout << "Sort: stack is empty!\n";
-            return;
-        }
-
-        std::cout << "Sort: Sort of stack - ";
-        for (; t->next != limit;) {
-            for (tmp = t; tmp->next != limit; tmp = tmp->next) {
-                if (tmp->info_ > tmp->next->info_) {
-                    int tmp_for_swap = tmp->info_;
-                    tmp->info_ = tmp->next->info_;
-                    tmp->next->info_ = tmp_for_swap;
-                }
-            }
-            limit = tmp;
-        }
-
-        std::cout << "Done!\n";
-    }
-
 };
+
+

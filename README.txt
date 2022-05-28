@@ -10,3 +10,7 @@ Labs from second term:
 3 - Implementation of queue. -  --//--. Task - Delete max element from queue.
 4 - Implementation of Reverse Polish Notation. (i use stack from Lab2 :D)
 5 - Implementation of tree. - I made an avl-tree to make it easier to work with the tree, and made my own output in the console (turned out pretty good, I think :D)
+6 - NonLinear equations
+7 - Function approximation
+8 - Calculation of integral
+9 - QuickSort, Files, BinarySearch

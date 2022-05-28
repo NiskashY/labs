@@ -2,6 +2,7 @@
 #include <iomanip>
 #include "stack.h"
 #include "individualTask.h"
+
 /*
     Перенести из созданного списка в новый список все элементы,
     находящиеся между вершиной и максимальным элементом.
@@ -19,7 +20,9 @@ int main() {
 
     while (true) {
         system("cls");
-        std::cout << "\t\tTask: move elements in new stack from begin - maximum\n0 - Run Tests.\n1 - Creat new stack.\n2 - Add.\n3 - View.\n4 - Delete Last Element.\n5 - Clear.\n6 - Sort.\n7 - Individual Task.\nelse - Exit.\n\nYour choice: ";
+        std::cout << "\t\tTask: move elements in new stack from begin - maximum\n\n";
+        stack->view();
+        std::cout << "\n0 - Run Tests.\n1 - Creat new stack.\n2 - Add.\n3 - Delete Last Element.\n4 - Clear.\n5 - Sort.\n6 - Individual Task.\nelse - Exit.\n\nYour choice : ";
         int choice = CheckNum();
 
         switch (choice) {
@@ -32,7 +35,7 @@ int main() {
                 break;
             }
             case 1: case 2: {
-                if (choice == 1 && stack->GetBegin() != nullptr) {
+                if (choice == 1 && stack->GetHead() != nullptr) {
                     std::cout << "Are you sure you want to delete not empty stack? 1 - y, else - n: ";
                     int tmp = CheckNum();
                     if (tmp != 1)
@@ -45,22 +48,18 @@ int main() {
                 break;
             }
             case 3: {
-                stack->view();
-                break;
-            }
-            case 4: {
                 stack->pop();
                 break;
             }
-            case 5: {
+            case 4: {
                 stack->clear();
                 break;
             }
-            case 6: {
+            case 5: {
                 stack->Sort();
                 break;
             }
-            case 7: {
+            case 6: {
                 IndividualTask(stack);
                 break;
             }
@@ -76,7 +75,7 @@ int main() {
 }
 
 void IndividualTask(Stack*& stack, bool isItTest) {
-    if (stack->GetBegin() == nullptr) {
+    if (stack->GetHead() == nullptr) {
         std::cout << "Stack is empty!\n";
         return;
     }
@@ -84,7 +83,7 @@ void IndividualTask(Stack*& stack, bool isItTest) {
     std::cout << "(Before dividing Stack) ";
     stack->view();
 
-    Stack* new_stack = MoveElementsFromTo(stack, FindMax(&stack));
+    Stack* new_stack = MoveElementsFromTo(stack, FindMax(stack));
 
     std::cout << std::left << std::setw(24) << "(New Stack) ";
     new_stack->view();

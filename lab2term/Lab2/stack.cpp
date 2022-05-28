@@ -1,28 +1,20 @@
 #include "stack.h"
 
-void Stack::push(int info) {
-    Stack* tmp = new Stack(info);
-    // Добавляю во временную переменную следующий элемент стэка, а затем делаю действия уже с основным стэком
-    tmp->next = begin;
-    next = begin;
+void Stack::push(const int& info) {
+    Node* node_new = new Node(info);
+    node_new->next = head;
+    head = node_new;
 
-    tmp->begin = new Stack();
-    begin = tmp;
 }
 
 void Stack::pop(bool isNeedToPrintMessage) {
-    if (begin != nullptr) {
-        Stack* tmp1 = begin;
-        Stack* tmp2 = next;
-        begin = next;
+    if (head != nullptr) {
+        Node* old_head_node = head;
+        head = head->next;
 
-        if (next != nullptr) {
-            info_ = next->info_;
-            next = next->next;
-        }
+        delete old_head_node;
+        old_head_node = nullptr;
 
-        delete tmp1, tmp2;
-        tmp1 = tmp2 = nullptr;
         if (isNeedToPrintMessage)
             std::cout << "Delete last element: Done!\n";
     }
@@ -32,30 +24,31 @@ void Stack::pop(bool isNeedToPrintMessage) {
 }
 
 void Stack::view() {
-    Stack* tmp = begin;
+    Node* tmp_head = head;
     bool first = true;
 
     std::cout << "Stack view: ";
 
-    if (tmp == nullptr) {
+    if (tmp_head == nullptr) {
         std::cout << "nothing to show :(";
     }
 
-    while (tmp != nullptr) {
+    while (tmp_head != nullptr) {
         if (!first) {
             std::cout << ", ";
         }
         first = false;
-        std::cout << tmp->info_;
-        tmp = tmp->next;
+
+        std::cout << tmp_head->info_;
+        tmp_head = tmp_head->next;
     }
 
     std::cout << "\n";
 }
 
 void Stack::peek() {
-    if (begin != nullptr) {
-        std::cout << begin->info_ << std::endl;
+    if (head) {
+        std::cout << head->info_ << std::endl;
     }
     else {
         std::cout << "Peek: stack is empty!\n";
@@ -63,17 +56,12 @@ void Stack::peek() {
 }
 
 void Stack::clear(bool isNeedToPrintMessage) {
-
-    // this != nullptr - плохо
-    if (isNeedToPrintMessage && (this == nullptr || begin == nullptr))
+    if (!head && isNeedToPrintMessage) {
         std::cout << "Nothing to clear!\n";
-    else {
-        while (this != nullptr && begin != nullptr) {
-            Stack* tmp = begin;
-            begin = next;
-            if (next != nullptr)
-                next = begin->next;
-            delete tmp;
+    }
+    else if (head) {
+        while (head) {  // while stack not empty
+            pop(false);
         }
 
         if (isNeedToPrintMessage)
@@ -82,12 +70,14 @@ void Stack::clear(bool isNeedToPrintMessage) {
 }
 
 void Stack::Sort() {
-    Stack* limit = nullptr, * tmp, * t = begin;
-
-    if (begin == nullptr || begin->next == nullptr) {
+    if (!head) {
         std::cout << "Sort: stack is empty!\n";
         return;
     }
+
+    Node* limit = nullptr;
+    Node* tmp = nullptr;
+    Node* t = head;
 
     std::cout << "Sort: Sort of stack - ";
     for (; t->next != limit;) {

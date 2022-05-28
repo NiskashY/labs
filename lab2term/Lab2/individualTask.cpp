@@ -1,81 +1,66 @@
 #include "individualTask.h"
 
-bool isMaximumBeginInvalid(Stack* (&stack), Stack* (&max)) {
-    const char* ERROR_MESSAGE = "New stack will be empty, because ";
-    if (stack->GetBegin() == max) {
-        std::cout << ERROR_MESSAGE << "Maximum = begin or no elements in the stack\n";
+bool isMaximumBeginInvalid(const Node* const& stack, const Node* const& max) {  // first const - for addres, second const - for value
+    const char* kErrorMsg = "New stack will be empty, because ";
+    const char* kMaxEqualBegin = "Maximum = Head";
+    const char* kNoElements = "No elements between Maximum and Head";
+
+    if (stack == max) {
+        std::cout << "\n\t\t" << kErrorMsg << kMaxEqualBegin << "\n\n";
         return true;
     }
-    else if (stack->GetBegin()->GetNext() == max) {
-        std::cout << ERROR_MESSAGE << "No elements between maximum and begin\n";
+    else if (stack->next == max) {
+        std::cout << "\n\t\t" << kErrorMsg << kNoElements << "\n\n";
         return true;
     }
 
     return false;
 }
 
-Stack* FindMax(Stack** copy) {
-    Stack* p = nullptr, * max = nullptr;
+Node* FindMax(Stack*& stack) {
+    Node* stack_head = stack->GetHead();
+    Node* max_node = stack_head;
 
-    p = (*copy)->GetBegin();
-    max = (*copy)->GetBegin();
-
-    while (p != nullptr) {
-
-        if (p->GetInfo() > max->GetInfo()) {
-            max = p;
+    while (stack_head) {
+        if (stack_head->info_ > max_node->info_) {
+            max_node = stack_head;
         }
-
-        p = p->GetNext();
+        stack_head = stack_head->next;
     }
 
-    //	std::cout << "Max: " << max->GetInfo() << std::endl;
-    return max;
+     return max_node;
 }
 
-void NewReverseStack(Stack* (&old), Stack* (&ref), Stack* (maximum) = nullptr) {
+void NewReverseStack(Stack* (&old), Stack* (&destination), const Node*const& (maximum) = nullptr) {
 
-    while (old/*->GetNext()*/ != nullptr && old->GetBegin() != nullptr) {
-        if (maximum != nullptr && old->GetInfo() == maximum->GetInfo()) {
+    while (old->GetHead()) {  // old/*->GetNext()*/ != nullptr /*&& old->GetBegin() != nullptr*/
+        if (maximum && old->GetInfo() == maximum->info_) {
             break;
         }
-        ref->push(old->GetInfo());
+        destination->push(old->GetInfo());
         old->pop(false);
     }
 
 }
 
-Stack* MoveElementsFromTo(Stack* (&old_), Stack* maximum) {
-    // Создаю две переменные, чтобы stack получился не вверх ногами. Не могу использовать повторно old, т.к. это влияет на основной stack
+Stack* MoveElementsFromTo(Stack*& old_stack, const Node* const& maximum) { // old - copy of stack
+    // Создаю две переменные, чтобы stack получился не вверх ногами.
+    
+    // Изначально result = nullptr, чтобы вернуть это из функции, если нет элементов для Task
     Stack* reverse_tmp = new Stack();
     Stack* result = new Stack();
-
-
-    if (isMaximumBeginInvalid(old_, maximum)) {
+    if (isMaximumBeginInvalid(old_stack->GetHead(), maximum)) {
         return result;
     }
 
-    Stack* old = old_->GetNext();
-    NewReverseStack(old, reverse_tmp, maximum);
 
-    reverse_tmp = reverse_tmp->GetBegin();
+
+    Node* old_head = old_stack->GetHead();
+    old_stack->SetHead(old_stack->GetNext()); // go to the next element (begin -> element after begin), because of task
+
+    NewReverseStack(old_stack, reverse_tmp, maximum);
     NewReverseStack(reverse_tmp, result);
-
+    old_stack->push(old_head->info_);
 
     return result;
-    /*
-    Some tests
-
-    std::cout << "(Old_st in cns Stack 1) ";
-    old_stack->view();
-    std::cout << "(Old_st in cns Stack 2) ";
-    old_stack->view();
-    std::cout << "(Old_st in cns Stack 3) ";
-    old_stack->view();
-    std::cout << "(NewOld in cns Stack 4) ";
-    old->view();
-    std::cout << "(NewU   in cns Stack 5) ";
-    result->view();
-
-*/
 }

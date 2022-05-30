@@ -7,40 +7,56 @@ enum class Direction {
     BACK
 };
 
-class Queue {
-private:
-    int info_ = 0; // information
+void SwapViewDirection(Direction&);
 
-    Queue* end = nullptr; // last element
-    Queue* begin = nullptr; // peek of Queue / or current element
-    Queue* prev = nullptr; // prev element
-    Queue* next = nullptr; // next element
+struct Node {
+    int info_ = 0;
+    Node* prev = nullptr;
+    Node* next = nullptr;
+
+    Node() = default;
+
+    Node(const int& info) : info_(info) {}
+
+    Node* GetDestinationNode(const Direction&); // get next or prev node (depends from paramentr direction).
+};
+
+void ConnectNextPrevNodes(Node*&); // connect next and prev nodes
+
+class Queue {   // double linked list
+private:
+    Node* head = nullptr;   // beginning of the queue
+    Node* tail = nullptr;   // end of the queue
 
 public:
 
-    explicit Queue(int i) { info_ = i; }
-
     Queue() = default;
 
-    int GetInfo() const { return info_; }
-    
-    Queue* GetBegin() const { return begin; }
-    
-    Queue* GetNext() const { return next; }
-    
-    Queue* GetEnd() const { return end; }
+    explicit Queue(const int& info) {
+        head = new Node();
+        head->info_ = info; 
+        tail = head;    // tail and head point to the same element when creating
+    }
+
+    int GetInfo() const { return head->info_; }
+    Node* GetHead() const { return head; }
+    Node* GetNext() const { return head->next; }
+    Node* GetPrev() const { return head->prev; }
+    Node* GetTail() const { return tail; }
 
     // Funtions for working with queue
 
-    void push_back(int info);
-    void push_front(int info);
+    void push_back(const int& info);
+    void push_front(const int& info);
     void pop_front(bool isNeedToPrintMessage = true);
     void pop_back(bool isNeedToPrintMessage = true);
-    void pop(int element, bool isNeedToPrintMessage = true);
-    void view();
-    void reverse_view();
+    void pop(const int& element, bool isNeedToPrintMessage = true);
+    void view(const Direction& direction = Direction::FRONT);
     void peek();
     void clear(bool isNeedToPrintMessage = true);
-    void Sort();
+    void sort();
+    bool empty() const;
 
 };
+
+void ShowViewHeader(const Direction&, const Node* const);

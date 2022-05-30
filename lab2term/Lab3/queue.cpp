@@ -1,76 +1,70 @@
 #include "queue.h"
 
-void Queue::push_front(int info) {
-    Queue* tmp = new Queue(info);
-    // Добавляю во временную переменную следующий элемент стэка, а затем делаю действия уже с основным стэком
-    if (end == nullptr) {
-
-        tmp->next = begin;
-        tmp->prev = nullptr;
-        tmp->begin = new Queue();
-        
-        next = begin;
-        begin = end = tmp;
+#pragma region NodeSection
+void SwapViewDirection(Direction& view_direction) {
+    if (view_direction == Direction::FRONT) {
+        view_direction = Direction::BACK;
     }
     else {
-        begin->prev = tmp;
-
-        tmp->end = end;
-        tmp->next = begin;
-        tmp->prev = nullptr;
-        tmp->begin = new Queue();
-        
-        next = begin;
-        begin = tmp;
+        view_direction = Direction::FRONT;
     }
 }
 
-void Queue::push_back(int info) {
-    Queue* tmp = new Queue(info);
-    // Добавляю во временную переменную следующий элемент стэка, а затем делаю действия уже с основным стэком
-    if (end == nullptr) {
-        tmp->next = begin;
-        tmp->prev = nullptr;
-        tmp->begin = new Queue();
 
-        begin = end = tmp;
+Node* Node::GetDestinationNode(const Direction& direction) {
+    if (direction == Direction::BACK) {
+        return prev;
     }
-    else {
-        tmp->next = nullptr;
-        tmp->prev = end;
-        tmp->begin = new Queue();
-        
-        
-        // это в том случае, если в queue только один элемент -> инициализируем next значением tmp
-        // если next != nullptr -> оно инициализируется в части end->next ... т.к. там УЖЕ есть связь между элементами
-        if (next == nullptr)
-            next = tmp;
+    return next;
+}
 
-        // присваивает end->next = tpm, чтобы не нарушить порядок, 
-        // а затем у end'a устанавливаем настоящий конец        
-        end->next = tmp;
-        end = end->next;
+void ConnectNextPrevNodes(Node*& node_pointer) { // connect next and prev nodes
+    Node* next_node = node_pointer->next;
+    node_pointer = node_pointer->prev;
+    node_pointer->next = next_node;
+    next_node->prev = node_pointer;
+}
+#pragma endregion
+
+#pragma region queueSection
+
+void Queue::push_front(const int& info) {
+    Node* new_node = new Node(info);
+    if (head) {             // if there is at least one item in the queue
+        head->prev = new_node;
+    }
+    new_node->next = head;
+    head = new_node;
+    if (tail == nullptr) {  // if no elements in queue
+        tail = head;
+    }
+}
+
+void Queue::push_back(const int& info) {
+    Node* new_node = new Node(info);
+    if (tail) {             // if there is at least one item in the queue
+        tail->next = new_node;
+    }
+    new_node->prev = tail;
+    tail = new_node;
+    if (empty()) {  // if no elements in queue
+        head = tail;
     }
 }
 
 void Queue::pop_front(bool isNeedToPrintMessage) {
-    if (begin != nullptr) {
-        Queue* tmp1 = begin;
-        Queue* tmp2 = next;
+    if (head) {
+        Node* old_node = head;
+        head = head->next;
+        delete old_node;
+        old_node = nullptr;
 
-        begin = next;
-
-        if (next != nullptr) {
-            info_ = next->info_;
-            next = next->next;
-            begin->prev = nullptr;
+        if (head == nullptr) { // if we delete head -> in tail garbage -> we need to assign tail to nullptr
+            tail = nullptr;
         }
-
-        delete tmp1, tmp2;
-        tmp1 = tmp2 = nullptr;
-
-        if (begin == nullptr)
-            end = nullptr;
+        else { // if at leas one node exist 
+            head->prev = nullptr;
+        }
 
         if (isNeedToPrintMessage)
             std::cout << "Delete first element: Done!\n";
@@ -81,18 +75,17 @@ void Queue::pop_front(bool isNeedToPrintMessage) {
 }
 
 void Queue::pop_back(bool isNeedToPrintMessage) {
-    if (begin != nullptr) {
-        Queue* tmp1 = end;
+    if (head) {
+        Node* old_node = tail;
+        tail = tail->prev;
+        delete old_node;
+        old_node = nullptr;
 
-        end = end->prev;
-
-        if (end != nullptr) {
-            end->end = end;
-
-            if (end->next == next)
-                next = nullptr;
-            
-            end->next = nullptr;
+        if (tail == nullptr) { // if we delete tail -> in head garbage -> we need to assign head to nullptr
+            head = nullptr;
+        }
+        else {  // if at leas one node exist 
+            tail->next = nullptr;
         }
 
         if (isNeedToPrintMessage)
@@ -103,129 +96,93 @@ void Queue::pop_back(bool isNeedToPrintMessage) {
     }
 }
 
-void Queue::pop(int element, bool isNeedToPrintMessage) {
-    if (begin != nullptr) {
-
+void Queue::pop(const int& element, bool isNeedToPrintMessage) {
+    if (head) {
         bool isPopSomeElement = false;
         // я конечно был на лекциях, но я хочу удалять все случаи совпадения, а не только 1-ый.
-        Queue* tmp = next;
+        Node* node_pointer = head->next;
 
-        while (tmp != nullptr && tmp->next != nullptr) { // tmp != для одного элемента.
-            if (tmp->info_ == element) {
-                Queue* next_tmp = tmp->next;
-                Queue* prev_tmp = tmp->prev;
-                Queue* del_tmp = tmp;
-
-                tmp = prev_tmp;
-                tmp->next = next_tmp;
-                next_tmp->prev = tmp;
-                next = tmp->next; // делаю для того, чтобы в this у next != непонятно чему. 
-                                  // У begin - ok, а у next без этого не ок, т.к. связь для next не устанавливаб вот сложно объяснил но да ладно
-
-                delete del_tmp;
-
+        while (node_pointer->next) { 
+            if (node_pointer->info_ == element) {
+                Node* current_node = node_pointer;
+                ConnectNextPrevNodes(node_pointer); // connect next and prev nodes
+                delete current_node;
+                current_node = nullptr;
                 isPopSomeElement = true;
             }
-            tmp = tmp->next;
+            node_pointer = node_pointer->next;
         }
-       next = begin->next;
-
-       if (end->info_ == element) {
-           pop_back(false);
-           isPopSomeElement = true;
-       }
-
-       if (begin->info_ == element) {
+       
+       if (head->info_ == element) {
            pop_front(false);
            isPopSomeElement = true;
        }
        
-       if (!isPopSomeElement)
+       if (tail->info_ == element) {
+           pop_back(false);
+           isPopSomeElement = true;
+       }
+       
+       if (!isPopSomeElement) {
            std::cout << "No such element in queue\n";
-       else if (isNeedToPrintMessage)
-            std::cout << "Delete element " << element << ": Done!\n";
+       }
+       else if (isNeedToPrintMessage) {
+           std::cout << "Delete element " << element << ": Done!\n";
+       }
     }
     else if (isNeedToPrintMessage) {
         std::cout << "Delete element: queue is empty!\n";
     }
 }
 
-void Queue::view() {
-    Queue* tmp = begin;
+void Queue::view(const Direction& view_direction) {
+    Node* node_pointer = (view_direction == Direction::FRONT ? head : tail); // set the beginning from which we want to look
+    
+    ShowViewHeader(view_direction, node_pointer);
+
     bool first = true;
-
-    std::cout << "Queue view: ";
-
-    if (tmp == nullptr) {
-        std::cout << "nothing to show :(";
-    }
-
-    while (tmp != nullptr) {
+    while (node_pointer != nullptr) {
         if (!first) {
             std::cout << ", ";
         }
         first = false;
-        std::cout << tmp->info_;
-        tmp = tmp->next;
+        std::cout << node_pointer->info_;
+        node_pointer = node_pointer->GetDestinationNode(view_direction); // get next or prev node (depends from paramentr direction).
     }
-
-    std::cout << "\n";
-}
-
-void Queue::reverse_view() {
-    Queue* tmp = end;
-    bool first = true;
-
-    std::cout << "Queue reverse view: ";
-
-    if (tmp == nullptr) {
-        std::cout << "nothing to show :(";
-    }
-
-    while (tmp != nullptr) {
-        if (!first) {
-            std::cout << ", ";
-        }
-        first = false;
-        std::cout << tmp->info_;
-        tmp = tmp->prev;
-    }
-
     std::cout << "\n";
 }
 
 void Queue::peek() {
-    if (end != nullptr) {
-        std::cout << end->info_ << std::endl;
+    if (tail) {
+        std::cout << tail->info_ << std::endl;
     }
     else {
-        std::cout << "Peek: queue is empty!\n";
+        std::cout << "Peek: Queue is empty!\n";
     }
 }
 
 void Queue::clear(bool isNeedToPrintMessage) {
-
-    // this != nullptr - плохо
-    if (isNeedToPrintMessage && (this == nullptr || begin == nullptr))
+    if (isNeedToPrintMessage && empty()) {
         std::cout << "Nothing to clear!\n";
-    else {
-        while (this != nullptr && begin != nullptr) {
-            Queue* tmp = begin;
-            begin = next;
-            if (next != nullptr)
-                next = begin->next;
-            delete tmp;
+    }
+    else if (head) {
+        while (head) {
+            Node* old_node = head;
+            head = head->next;
+            delete old_node;
+            old_node = nullptr;
         }
-        end = nullptr;
-        if (isNeedToPrintMessage)
+        tail = head = nullptr;  // after delete in tail we have garbage -> we need to assign to nullptr.
+        if (isNeedToPrintMessage) {
             std::cout << "Clear: now queue is empty!\n";
+        }
     }
 }
 
-void Queue::Sort() {
-    Queue* limit = nullptr, * tmp, * t = begin;
+void Queue::sort() {
+    Node* limit = nullptr, * tmp, * t = head;
 
-    if (begin == nullptr || begin->next == nullptr) {
+    if (head == nullptr || head->next == nullptr) {
         std::cout << "Sort: queue is empty or queue has only one element!\n";
         return;
     }
@@ -244,3 +201,19 @@ void Queue::Sort() {
 
     std::cout << "Done!\n";
 }
+
+bool Queue::empty() const {
+    return head == nullptr;
+}
+
+void ShowViewHeader(const Direction& view_direction, const Node* const node_pointer) {   // Show some text before view of queue
+    const char* const kViewDir = (view_direction == Direction::FRONT ? "(Forward)" : "(Reverse)");
+    const char* const kQueueView = "Queue view: ";
+    const char* const kEmpty = "nothing to show :(";
+    std::cout << kViewDir << ' ' << kQueueView;
+    if (!node_pointer) {
+        std::cout << kEmpty;
+    }
+}
+
+#pragma endregion

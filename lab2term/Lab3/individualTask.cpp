@@ -1,24 +1,19 @@
 #include "individualTask.h"
 
-int FindMax(Queue*& copy) {
-    Queue* p = nullptr, * max = nullptr;
-
-    p = copy->GetBegin();
-    max = copy->GetBegin();
-
-    if (p == nullptr) { // check if queue is empty
-        throw std::runtime_error("No elements in queue\n");
+int FindMax(const Queue& queue) {
+    if (queue.empty()) {
+        throw std::runtime_error("Pop/FindMax: queue is empty!\n");
     }
 
-    while (p != nullptr) {
+    Node* stack_head = queue.GetHead();
+    Node* max_node = stack_head;
 
-        if (p->GetInfo() > max->GetInfo()) {
-            max = p;
+    while (stack_head) {
+        if (stack_head->info_ > max_node->info_) {
+            max_node = stack_head;
         }
-
-        p = p->GetNext();
+        stack_head = stack_head->next;
     }
 
-    //	std::cout << "Max: " << max->GetInfo() << std::endl;
-    return max->GetInfo();
+    return max_node->info_;
 }

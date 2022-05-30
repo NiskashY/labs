@@ -1,4 +1,4 @@
 #pragma once
 #include "queue.h"
 
-int FindMax(Queue*& copy);
+int FindMax(const Queue&);

@@ -4,7 +4,7 @@ int my::Split(BusFlight*& arr_flights, const int& left_boarder, const int& right
 	int pivot_boarder = left_boarder;
 
 	for (int i = left_boarder; i < right_boarder; ++i) {
-		if (arr_flights[i] < bus_flight) {
+		if (arr_flights[i] <= bus_flight) {
 			my::swap(arr_flights[i], arr_flights[pivot_boarder]);
 			++pivot_boarder;
 		}
@@ -15,7 +15,7 @@ int my::Split(BusFlight*& arr_flights, const int& left_boarder, const int& right
 
 // TODO:
 void my::QuickSort(BusFlight*& arr_flights, const int& left_boarder, const int& right_boarder) {
-	if (right_boarder - left_boarder < 2) {
+	if (right_boarder - left_boarder < 1) {
 		return;
 	}
 
@@ -23,7 +23,7 @@ void my::QuickSort(BusFlight*& arr_flights, const int& left_boarder, const int& 
 
 	int split_boarder = my::Split(arr_flights, left_boarder, right_boarder, pivot);
 
-	my::QuickSort(arr_flights, left_boarder, split_boarder);
+	my::QuickSort(arr_flights, left_boarder, split_boarder - 1);
 	my::QuickSort(arr_flights, split_boarder, right_boarder);
 }
 

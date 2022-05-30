@@ -1,7 +1,7 @@
 #include <iostream>
 #include "reader.h"
 #include "my_functions.h"
-
+#include "bus_service.h"
 
 // add colors.h from airlines ticket sales
 
@@ -82,12 +82,17 @@ void MenuSectionSort(int& choice) {
 	BusFlight* buses = nullptr;
 	int number_of_records = ReadFromFile(buses);
 
+	std::cout << "\n-------Before-------\n";
+	ShowAllBusFlights(buses, number_of_records);
+
 	if (choice == 1) {
 		my::Sort(buses, number_of_records);
 	}
 	else {
 		my::QuickSort(buses, 0, number_of_records);
 	}
+
+	std::cout << "\n-------After-------\n";
 
 	ShowAllBusFlights(buses, number_of_records);
 	delete[] buses;

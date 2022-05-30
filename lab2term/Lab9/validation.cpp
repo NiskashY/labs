@@ -14,19 +14,19 @@ int InputBusNumber() {
 	return bus_number;
 }
 
-void InputDestination(char* destination) { // return reference in order to not call copy-constructor
+void InputDestination(char* destination) {
 	const char kInputDestination[] = "Input Destination: ";
 	std::cout << kInputDestination;
 	std::cin >> destination;
 }
 
-void InputDeparture(int& departure_time) { // return reference in order to not call copy-constructor
+void InputDeparture(int& departure_time) { 
 	const char kInputDeparture[] = "Input Departure Time: ";
 	std::cout << kInputDeparture;
 	std::cin >> departure_time;
 }
 
-void InputArrival(int& arrival_time) { // return reference in order to not call copy-constructor
+void InputArrival(int& arrival_time) { 
 	const char kInputArrival[] = "Input Arrival Time: ";
 	std::cout << kInputArrival;
 	std::cin >> arrival_time;

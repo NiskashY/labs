@@ -133,10 +133,12 @@ void Tree::remove(Information& info) {
 }
 
 Node* RemoveMin(Node* node) {
+	// Min can only be a leaf, otherwise it is not minimal and we need to go to the next element on the left
+	// or (if the left element does not exist - so our cur_node is min) we need to put a node on the right instead of cur_node. 
+	// In this case we don't delete the node, we just need to replace our cur_node with the right node!*
 	if (node == nullptr) {
 		return nullptr;
-	}
-
+	} 
 	if (node->left == nullptr) {
 		return node->right;
 	}

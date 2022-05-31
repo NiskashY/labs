@@ -104,21 +104,22 @@ Node* Tree::remove(Node* node, Information& info) {
 		node->left = remove(node->left, info);
 	}
 	else { // if info == node->info_
-		Node* left = node->left;
-		Node* right = node->right;
+		Node* node_left = node->left;
+		Node* node_right = node->right;
 		delete node;
+		node = nullptr;
 
-		if (right == nullptr) {
-			return left;
+		if (node_right == nullptr) {
+			return node_left;
 		}
 
-		Node* minimum = minKey(right);
-		// Выстраиваем логику: удаляемое заменяется на минимум в правом дереве, правое избавляется от минимума, левое остаётся без изменений.
-		minimum->right = RemoveMin(right);
-		minimum->left = left;
+		Node* minimum = minKey(node_right);
+		// Выстраиваем логику: удаляемое заменяется на минимум в правом дереве
+		// правое избавляется от минимума, левое остаётся без изменений.
+		minimum->right = RemoveMin(node_right);
+		minimum->left = node_left;
 		return BalanceTree(minimum);
 	}
-
 
 	return BalanceTree(node);
 }
@@ -128,6 +129,7 @@ void Tree::remove(Information& info) {
 		return;
 	}
 	root = remove(root, info);
+	std::cout << "Removed node with key " << info.age << '\n';
 }
 
 Node* RemoveMin(Node* node) {
@@ -216,12 +218,14 @@ void Tree::view() {
 void Tree::clear(Node* leaf) {
 	if (leaf) {
 		clear(leaf->left);
+		leaf->left = nullptr;
 		clear(leaf->right);
+		leaf->right = nullptr;
 		delete leaf;
 	}
 
-	if (leaf == root) {
-		root = nullptr; // Set root = nullptr to show that tree is empty;
+	if (leaf == root) { // when tree is cleared, root will contain garbage (as a leaf), so i need to set this parameters as nullptr
+		leaf = root = nullptr; // Set root = nullptr to show that tree is empty;	
 	}
 }
 
@@ -244,14 +248,14 @@ Node* Tree::search(Information& info, bool isNeedToPrintMessage){
 	while (tmp != nullptr) {
 		if (tmp->info_ == info) {
 			if (isNeedToPrintMessage) {
-				std::cout << "Search find this node: " << tmp->info_;
+				std::cout << "Search find this node: " << tmp->info_ << '\n';
 				std::cout << "With LEFT child: ";
 				
 				if (tmp->left != nullptr)
 					std::cout << tmp->left->info_ << '\n';
 				else std::cout << "nullptr.\n";
 				
-				std::cout << "And with RIGHT child: ";
+				std::cout << "With RIGHT child: ";
 				if (tmp->right != nullptr)
 					std::cout << tmp->right->info_ << '\n';
 				else 

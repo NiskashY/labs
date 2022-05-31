@@ -1,21 +1,9 @@
 #include "information.h"
 
-double CheckNum() {
-	double var;
-
-	while (!(std::cin >> var) || std::cin.get() != '\n') {
-		std::cout << "Error! Something go wrong ReEnter: ";
-		std::cin.clear();
-		while (std::cin.get() != '\n');
-	}
-
-	return var;
-}
-
 std::istream& operator>>(std::istream& in, Information& info) {
 	do {
 		std::cout << "Input Age [0;100]: ";
-		info.age = CheckNum();
+		CheckNum(info.age);
 	} while (info.age < 0 || info.age > 100);
 
 	std::cout << "Input Favorite Color: ";
@@ -24,7 +12,7 @@ std::istream& operator>>(std::istream& in, Information& info) {
 }
 
 std::ostream& operator<<(std::ostream& out, Information& info) {
-	out << "Age = " << info.age << ". Favorite color: " << info.favorite_color << '\n';
+	out << "Age = " << info.age << ". Favorite color: " << info.favorite_color;
 	return out;
 }
 

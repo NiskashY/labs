@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 
 #include "information.h"
 #include "tree.h"
@@ -9,25 +8,24 @@
 4. Task: getHeight of the tree.
 */
 
-bool ShowEmptyMenu(Tree*&);
-bool ShowMenu(Tree*&);
-void InsertInMenu(Tree*&);
-void SearchInMenu(Tree*&);
-void RemoveInMenu(Tree*&);
-void TraversalInMenu(Tree*&, const std::string&);
-void RandomElements(Tree*&, int);
+bool ShowEmptyMenu(Tree&);
+bool ShowMenu(Tree&);
+void InsertInMenu(Tree&);
+void SearchInMenu(Tree&);
+void RemoveInMenu(Tree&);
+void TraversalInMenu(Tree&, const char* const&);
+void RandomElements(Tree&, int);
 
-
-// for 2^17 elements - 107 second for view.
-// for 10 elements - 0.007 seconds for view;
-// for 2^17 elements - 0.835 seconds for INSERT!!!;
+// for 2^17 elements - 107 second for VIEW.
+// for 10 elements - 0.007 seconds for VIEW;
+// for 2^17 elements - 0.835 seconds for INSERT;
 
 int main() {
-	Tree* tree = new Tree();
+	Tree tree;
 	bool isNeedToExit = false;
 	while (!isNeedToExit) {
 		system("cls");
-		if (tree->empty()) {
+		if (tree.empty()) {
 			isNeedToExit = ShowEmptyMenu(tree);
 		}
 		else {
@@ -41,13 +39,16 @@ int main() {
 	return 0;
 }
 
-bool ShowEmptyMenu(Tree*& tree) {
-	const std::string TASK = "\t\t\tTASK: Get height of the tree";
-	const std::string EMPTY_MENU = TASK + "\n\n0 - RunTest(Random, 2^10 elements)\n1 - Insert.\nelse - Exit.\nYour Choice: ";
+bool ShowEmptyMenu(Tree& tree) {
+	const char* const kTask = "\t\t\tTASK: Get height of the tree";
+	const char* const  kEmptyMenu = "0 - RunTest(Random, 2 ^ 10 elements)\n1 - Insert.\nelse - Exit.\n\nYour Choice : ";
 
-	std::cout << "Tree is empty.\n";
-	std::cout << EMPTY_MENU;
-	int choice = CheckNum();
+	std::cout << kTask << "\n\n";
+	tree.view();
+	std::cout << '\n' << kEmptyMenu;
+	int choice = 0;
+	CheckNum(choice);
+	std::cout << '\n';
 
 	switch (choice) {
 		case 0: {
@@ -67,11 +68,16 @@ bool ShowEmptyMenu(Tree*& tree) {
 	return false;
 }
 
-bool ShowMenu(Tree*& tree) {
-	const std::string TASK = "\t\t\tTASK: Get height of the tree";
-	const std::string MENU = TASK + "\n\n0 - RunTest(Random, 2^10 elements)\n1 - Insert.\n2 - Search.\n3 - Remove.\n4 - View.\n5 - Clear.\n6 - Traversal.\n7 - Individual.\nelse - Exit.\nYour Choice: ";
-	std::cout << MENU;
-	int choice = CheckNum();
+bool ShowMenu(Tree& tree) {
+	const char* const kTask = "\t\t\tTASK: Get height of the tree";
+	const char* const kMenu = "0 - RunTest(Random, 2 ^ 10 elements)\n1 - Insert.\n2 - Search.\n3 - Remove.\n4 - Clear.\n5 - Traversal.\n6 - Individual.\nelse - Exit.\n\nYour Choice : ";
+
+	std::cout << kTask << "\n\n";
+	tree.view();
+	std::cout << '\n' << kMenu;
+	int choice = 0;
+	CheckNum(choice);
+	std::cout << '\n';
 
 	switch (choice) {
 		case 0: {
@@ -91,19 +97,15 @@ bool ShowMenu(Tree*& tree) {
 			break;
 		}
 		case 4: {
-			tree->view();
+			tree.clear(tree.GetRoot());
 			break;
 		}
 		case 5: {
-			tree->clear(tree->GetRoot());
+			TraversalInMenu(tree, kTask);
 			break;
 		}
 		case 6: {
-			TraversalInMenu(tree, TASK);
-			break;
-		}
-		case 7: {
-			std::cout << "Height of the tree - " << GetHeight(tree->GetRoot()) << '\n';
+			std::cout << "Height of the tree - " << GetHeight(tree.GetRoot()) << '\n';
 			break;
 		}
 		default: {
@@ -113,24 +115,26 @@ bool ShowMenu(Tree*& tree) {
 	}
 	return false;
 }
-void RandomElements(Tree*& tree, int amount) {
+
+void RandomElements(Tree& tree, int amount) {
 	while (amount--) {
 		int tmp = rand() % 100 + 1;
 		std::cout << "Insert key = " << tmp << "...\n";
 		Information inf = { tmp, "some color..." };
-		tree->insert(inf);
+		tree.insert(inf);
 	}
 }
 
-void InsertInMenu(Tree*& tree) {
+void InsertInMenu(Tree& tree) {
 	Information information;
 	std::cout << "Input amount of information you want to insert: ";
-	int amount = CheckNum();
+	int amount = 0;
+	CheckNum(amount);
 
 	if (amount > 10) { // Suggest the user to fill the tree with random elements
 		std::cout << "Do you want to insert " << amount << " random elements? YES - 1, NO - else: ";
 		int choice = 0;
-		choice = CheckNum();
+		CheckNum(choice);
 		if (choice == 1) {
 			srand(time(NULL));
 			RandomElements(tree, amount);
@@ -143,49 +147,49 @@ void InsertInMenu(Tree*& tree) {
 		std::cout << "\n#" << amount + 1 << "\n";
 		std::cin >> information;
 
-		if (!tree->insert(information))
+		if (!tree.insert(information))
 			std::cout << "Done!";
 	}
 }
 
-void SearchInMenu(Tree*& tree) {
+void SearchInMenu(Tree& tree) {
 	std::cout << "Input key for search:\n";
-	int key;
-	key = CheckNum();
+	int key = 0;
+	CheckNum(key);
 
 	Information tmp = { key, "" };
-	tree->search(tmp);
+	tree.search(tmp);
 }
 
-void RemoveInMenu(Tree*& tree) {
+void RemoveInMenu(Tree& tree) {
 	std::cout << "Input key for remove:\n";
-	int key;
-	key = CheckNum();
+	int key = 0;
+	CheckNum(key);
 
 	Information tmp = { key, "" };
-	tree->remove(tmp);
-	std::cout << "Removed node with key " << tmp.age << '\n';
+	tree.remove(tmp);
 }
 
-void TraversalInMenu(Tree*& tree, const std::string& TASK) {
+void TraversalInMenu(Tree& tree, const char* const& TASK) {
 	system("cls");
-	std::cout << TASK + "\n\nShow LEFT-ROOT-RIGHT - 1\nShow ROOT-LEFT-RIGHT - 2\nShow LEFT-RIGHT-ROOT - 3\nBack - else\nYour choice: ";
-	int choice_tmp = CheckNum();
+	std::cout << TASK << "\n\nShow LEFT-ROOT-RIGHT - 1\nShow ROOT-LEFT-RIGHT - 2\nShow LEFT-RIGHT-ROOT - 3\nBack - else\nYour choice: ";
+	int choice_tmp = 0;
+	CheckNum(choice_tmp);
 
 	switch (choice_tmp) {
 	case 1: {
 		std::cout << "Show LEFT-ROOT-RIGHT: ";
-		ShowLeftRootRight(tree->GetRoot());
+		ShowLeftRootRight(tree.GetRoot());
 		break;
 	}
 	case 2: {
 		std::cout << "Show ROOT-LEFT-RIGHT: ";
-		ShowRootLeftRight(tree->GetRoot());
+		ShowRootLeftRight(tree.GetRoot());
 		break;
 	}
 	case 3: {
 		std::cout << "Show LEFT-RIGHT-ROOT: ";
-		ShowLeftRightRoot(tree->GetRoot());
+		ShowLeftRightRoot(tree.GetRoot());
 		break;
 	}
 	}

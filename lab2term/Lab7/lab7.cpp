@@ -27,8 +27,8 @@ int main() {
 	double h = 0;
 	double h1 = 0;
 	double* m_x = nullptr;
-	const std::string& kTask = "\t\tTASK: e^x / x^3 - sin(x)^3";
-	const std::string& kMenu = "\n1 - Input Parameters\n2 - Calculate\nelse - exit\nYour choice: ";
+	const char* const& kTask = "\t\tTASK: e^x / x^3 - sin(x)^3";
+	const char* const& kMenu = "\n1 - Input Parameters\n2 - Calculate\nelse - exit\nYour choice: ";
 
 	while (true) {
 		system("cls");
@@ -118,7 +118,7 @@ double FindH(const double& a, const double& b, const int& amount) { // amount ==
 
 bool Method(double& xt, double* m_x, int& m, double& result) {
 	if (xt < m_x[0] || xt > m_x[m - 1]) {
-		const std::string& kError = "xt outside the table!";
+		const char* const& kError = "xt outside the table!";
 		std::cout << kError << '\n';
 		return false;
 	} else {
@@ -135,19 +135,19 @@ bool Method(double& xt, double* m_x, int& m, double& result) {
 }
 
 double CalculateN2(double& x_i_prev, double& x_i, double& x_i_next, double& xt) {
-	double y_i_prev = Function(x_i_prev);
-	double y_i = Function(x_i);
-	double y_i_next = Function(x_i_next);
+	const double& y_i_prev = Function(x_i_prev);
+	const double& y_i = Function(x_i);
+	const double& y_i_next = Function(x_i_next);
 
-	double diff_y_prev_cur = y_i - y_i_prev;
-	double diff_y_next_cur = y_i - y_i_next;
-	double diff_x_prev_cur = x_i - x_i_prev;
-	double diff_x_cur_next = x_i - x_i_next;
-	double diff_x_prev_next = x_i_prev - x_i_next;
-	double diff_xt_prev = xt - x_i_prev;
-	double diff_xt_cur = xt - x_i;
+	const double& diff_y_prev_cur = y_i - y_i_prev;
+	const double& diff_y_next_cur = y_i - y_i_next;
+	const double& diff_x_prev_cur = x_i - x_i_prev;
+	const double& diff_x_cur_next = x_i - x_i_next;
+	const double& diff_x_prev_next = x_i_prev - x_i_next;
+	const double& diff_xt_prev = xt - x_i_prev;
+	const double& diff_xt_cur = xt - x_i;
 
-	double N1 = y_i_prev + diff_xt_prev * (diff_y_prev_cur / diff_x_prev_cur);
+	const double& N1 = y_i_prev + diff_xt_prev * (diff_y_prev_cur / diff_x_prev_cur);
 
 	return N1 + diff_xt_prev * diff_xt_cur *
 		((diff_y_prev_cur / diff_x_prev_cur - diff_y_next_cur / diff_x_cur_next)

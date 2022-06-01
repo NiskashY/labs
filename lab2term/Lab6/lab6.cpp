@@ -20,7 +20,7 @@ int main() {
 	double b = 7;
 	double h = 0.1;
 
-	const std::string kMenu = "1 - Input A B H\n2 - Find Simple Roots\n3 - Find Special Roots\nanother symbol - EXIT\nYour choice: ";
+	const char* const kMenu = "1 - Input A B H\n2 - Find Simple Roots\n3 - Find Special Roots\nanother symbol - EXIT\nYour choice: ";
 	while (true) {
 		system("cls");
 		char choice;

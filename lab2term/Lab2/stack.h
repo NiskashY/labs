@@ -2,8 +2,8 @@
 #include <iostream>
 
 struct Node {
-    Node* next = nullptr;
     int info_ = 0;
+    Node* next = nullptr;
 
     Node() = default;
 
@@ -45,6 +45,7 @@ public:
     void view();
     void peek();
     void clear(bool isNeedToPrintMessage = true);
-    void Sort();
+    void sort();
+    void reverse();
 
 };

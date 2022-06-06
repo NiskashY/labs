@@ -5,5 +5,5 @@
 
 bool isMaximumBeginInvalid(const Node* const&, const Node* const&);
 Node* FindMax(Stack*&);
-void NewReverseStack(Stack*&, Stack*&, const Node* const&);
+void GetStackBetweenBeginMaximum(Stack*&, Stack*&, const Node* const&);
 Stack* MoveElementsFromTo(Stack*&, const Node* const&);

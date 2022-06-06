@@ -22,7 +22,7 @@ int main() {
         system("cls");
         std::cout << "\t\tTask: move elements in new stack from begin - maximum\n\n";
         stack->view();
-        std::cout << "\n0 - Run Tests.\n1 - Creat new stack.\n2 - Add.\n3 - Delete Last Element.\n4 - Clear.\n5 - Sort.\n6 - Individual Task.\nelse - Exit.\n\nYour choice : ";
+        std::cout << "\n0 - Run Tests.\n1 - Creat new stack.\n2 - Add.\n3 - Delete Last Element.\n4 - Clear.\n5 - sort.\n6 - Individual Task.\n7 - Reverse Stack\nelse - Exit.\n\nYour choice : ";
         int choice = CheckNum();
 
         switch (choice) {
@@ -56,11 +56,16 @@ int main() {
                 break;
             }
             case 5: {
-                stack->Sort();
+                stack->sort();
                 break;
             }
             case 6: {
                 IndividualTask(stack);
+                break;
+            }
+            case 7: {
+                stack->reverse();
+                std::cout << "Done!" << '\n';
                 break;
             }
             default: {
@@ -137,7 +142,7 @@ void Test1() {
     std::cout << "1: ";
     stack->view();
 
-    stack->Sort();
+    stack->sort();
     std::cout << "2: ";
     stack->view();
 
@@ -145,7 +150,7 @@ void Test1() {
     stack->push(22131);
     stack->push(-1);
 
-    stack->Sort();
+    stack->sort();
     std::cout << "3: ";
     stack->view();
 
@@ -157,7 +162,7 @@ void Test1() {
     std::cout << "4: ";
     stack->view();
 
-    stack->Sort();
+    stack->sort();
     std::cout << "5: ";
     stack->view();
 
@@ -196,7 +201,7 @@ void Test2() {
     stack->view();
 
 
-    stack->Sort();
+    stack->sort();
 
     std::cout << "(BefPop &ASor) ";
     stack->view();

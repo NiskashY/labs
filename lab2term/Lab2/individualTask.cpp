@@ -31,7 +31,7 @@ Node* FindMax(Stack*& stack) {
      return max_node;
 }
 
-void NewReverseStack(Stack* (&old), Stack* (&destination), const Node*const& (maximum) = nullptr) {
+void GetStackBetweenBeginMaximum(Stack* (&old), Stack* (&destination), const Node*const& (maximum) = nullptr) {
 
     while (old->GetHead()) {  // old/*->GetNext()*/ != nullptr /*&& old->GetBegin() != nullptr*/
         if (maximum && old->GetInfo() == maximum->info_) {
@@ -40,26 +40,22 @@ void NewReverseStack(Stack* (&old), Stack* (&destination), const Node*const& (ma
         destination->push(old->GetInfo());
         old->pop(false);
     }
-
+    destination->reverse();
 }
 
 Stack* MoveElementsFromTo(Stack*& old_stack, const Node* const& maximum) { // old - copy of stack
-    // Создаю две переменные, чтобы stack получился не вверх ногами.
-    
     // Изначально result = nullptr, чтобы вернуть это из функции, если нет элементов для Task
-    Stack* reverse_tmp = new Stack();
+    
     Stack* result = new Stack();
     if (isMaximumBeginInvalid(old_stack->GetHead(), maximum)) {
         return result;
     }
 
-
-
     Node* old_head = old_stack->GetHead();
     old_stack->SetHead(old_stack->GetNext()); // go to the next element (begin -> element after begin), because of task
 
-    NewReverseStack(old_stack, reverse_tmp, maximum);
-    NewReverseStack(reverse_tmp, result);
+    GetStackBetweenBeginMaximum(old_stack, result, maximum); // Copy Stack from src to dest -> get flipped stack -> call stack->reverse()
+    
     old_stack->push(old_head->info_);
 
     return result;

@@ -69,9 +69,9 @@ void Stack::clear(bool isNeedToPrintMessage) {
     }
 }
 
-void Stack::Sort() {
+void Stack::sort() {
     if (!head) {
-        std::cout << "Sort: stack is empty!\n";
+        std::cout << "sort: stack is empty!\n";
         return;
     }
 
@@ -79,7 +79,7 @@ void Stack::Sort() {
     Node* tmp = nullptr;
     Node* t = head;
 
-    std::cout << "Sort: Sort of stack - ";
+    std::cout << "sort: sort of stack - ";
     for (; t->next != limit;) {
         for (tmp = t; tmp->next != limit; tmp = tmp->next) {
             if (tmp->info_ > tmp->next->info_) {
@@ -92,4 +92,19 @@ void Stack::Sort() {
     }
 
     std::cout << "Done!\n";
+}
+
+void Stack::reverse() {
+    Node* node_prev = nullptr;
+    Node* node_next = nullptr;
+
+    while (head) {
+        node_next = head->next;
+        head->next = node_prev;
+        node_prev = head;
+        if (!node_next) {
+            break;
+        }
+        head = node_next;
+    }
 }

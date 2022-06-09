@@ -1,6 +1,10 @@
 #pragma once
 #include <iostream>
 #include "check_num.h"
+#define CLEAR_LINE() (std::cout << "\033[2K")
+#define GO_UP_LINE() (std::cout << "\033[1A")
+
+void Clear(const int&);
 
 template<class T>
 bool IsLess(const T& x, const T& y) {

@@ -6,15 +6,17 @@
 #include "rpn.h"
 #include "tests.h"
 #include "validation_request.h"
+#include "MintLibString.h"
 
-void MenuCalculate(const std::string& request, const std::string& result);
-void MenuInput(std::string& request, std::string& result);
+
+void MenuCalculate(const mtl::string& request, const mtl::string& result);
+void MenuInput(mtl::string& request, mtl::string& result);
 
 int main() {
 	RunTests();
 
-	std::string request;
-	std::string result;
+	mtl::string request;
+	mtl::string result;
 	const char* kMenu = "Input request - 1\nCalculate - 2\nExit - else\nYour Choice: ";
 	const char* kEmpty = "Empty~";
 	while (true) {
@@ -25,7 +27,7 @@ int main() {
 		std::cout << kMenu;
 		
 		int choice = 0;
-		choice = CheckNum();
+		CheckNum(choice);
 
 		switch (choice) {
 			case 1: {
@@ -49,7 +51,7 @@ int main() {
 	return 0;
 }
 
-void MenuCalculate(const std::string& request, const std::string& result) {
+void MenuCalculate(const mtl::string& request, const mtl::string& result) {
 	if (request.empty()) {
 		std::cout << "Request is empty!\n";
 		return;
@@ -74,10 +76,10 @@ void MenuCalculate(const std::string& request, const std::string& result) {
 	delete[] symbols;
 }
 
-void MenuInput(std::string& request, std::string& result) {
+void MenuInput(mtl::string& request, mtl::string& result) {
 	std::cout << "\nInput request: ";
 	do {
-		getline(std::cin, request);
+		MintLib::getline(std::cin, request);
 	} while (!isRequestCorrect(request));
 
 	result = CreateReversePolishNotation(request);

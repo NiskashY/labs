@@ -6,5 +6,5 @@
 #include "stack.h"
 #include "rpn.h"
 
-bool isRequestCorrect(std::string&);
+bool isRequestCorrect(mtl::string&);
 bool isOperation(char i);

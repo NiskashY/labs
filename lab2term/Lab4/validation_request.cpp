@@ -4,7 +4,7 @@ bool isOperation(char i) {
 	return i == '+' || i == '-' || i == '*' || i == '/';
 }
 
-bool isRequestCorrect(std::string& request) {
+bool isRequestCorrect(mtl::string& request) {
 	if (request.empty()) {
 		std::cout << "Request is empty!\n";
 		return false;

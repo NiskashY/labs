@@ -1,24 +1,12 @@
 #include "rpn.h"
 
-double CheckNum() {
-	double var;
-
-	while (!(std::cin >> var) || std::cin.get() != '\n') {
-		std::cout << "Error! Something go wrong ReEnter: ";
-		std::cin.clear();
-		while (std::cin.get() != '\n');
-	}
-
-	return var;
-}
-
-void InputValueOfSymbols(Type*& symbols, const std::string& request, int& amount_of_symbols) {
+void InputValueOfSymbols(Type*& symbols, const mtl::string& request, int& amount_of_symbols) {
 	int index = 0;
 	for (const auto& i : request) {
 		if (i >= 'a' && i <= 'z' && !isInSymbols(symbols, i, index)) {
 			symbols[index].symbol = i;
 			std::cout << "Input '" << i << "' value: ";
-			symbols[index].value = CheckNum();
+			CheckNum(symbols[index].value);
 			index++;
 		}
 	}
@@ -44,7 +32,7 @@ int FindIndexSymbolValue(Type*& symbols, const int size, char item) {
 	return -1; // not exist;
 }
 
-double CalculateReversePolishNotation(const std::string& result, Type*& symbols, const int size, bool& isDenominator) {
+double CalculateReversePolishNotation(const mtl::string& result, Type*& symbols, const int size, bool& isDenominator) {
 	Stack<Type>* stack = new Stack<Type>();
 
 	for (auto& i : result) {
@@ -92,9 +80,9 @@ double CalculateReversePolishNotation(const std::string& result, Type*& symbols,
 	return stack->peek().value;
 }
 
-std::string CreateReversePolishNotation(std::string& request) {
+mtl::string CreateReversePolishNotation(mtl::string& request) {
 	Stack<char>* stack = new Stack<char>();
-	std::string result;
+	mtl::string result;
 
 	for (const auto& i : request) {
 		if (i <= 'z' && i >= 'a') {

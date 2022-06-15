@@ -1,20 +1,18 @@
 #include "rpn.h"
 
-void InputValueOfSymbols(Type*& symbols, const mtl::string& request, int& amount_of_symbols) {
-	int index = 0;
-	for (const auto& i : request) {
-		if (i >= 'a' && i <= 'z' && !isInSymbols(symbols, i, index)) {
-			symbols[index].symbol = i;
-			std::cout << "Input '" << i << "' value: ";
-			CheckNum(symbols[index].value);
-			index++;
+void InputValueOfSymbols(mtl::vector<Type>& symbols, const mtl::string& request) {
+	for (const auto& item : request) {
+		if (item >= 'a' && item <= 'z' && !isInSymbols(symbols, item)) {
+			std::cout << "Input '" << item << "' value: ";
+			double value = 0;
+			CheckNum(value);
+			symbols.push_back(Type{item, value});
 		}
 	}
-	amount_of_symbols = index;
 }
 
-bool isInSymbols(Type*& symbols, char character, int current_size) {
-	for (int i = 0; i < current_size; ++i) {
+bool isInSymbols(mtl::vector<Type>& symbols, char character) {
+	for (size_t i = 0; i < symbols.size(); ++i) {
 		if (symbols[i].symbol == character) {
 			return true;
 		}
@@ -22,24 +20,22 @@ bool isInSymbols(Type*& symbols, char character, int current_size) {
 	return false;
 }
 
-int FindIndexSymbolValue(Type*& symbols, const int size, char item) {
-	for (int i = 0; i < size; ++i) {
+int FindIndexSymbolValue(mtl::vector<Type>& symbols, char item) {
+	for (size_t i = 0; i < symbols.size(); ++i) {
 		if (symbols[i].symbol == item) {
 			return i;
 		}
 	}
-
 	return -1; // not exist;
 }
 
-double CalculateReversePolishNotation(const mtl::string& result, Type*& symbols, const int size, bool& isDenominator) {
+double CalculateReversePolishNotation(const mtl::string& result, mtl::vector<Type>& symbols, bool& isDenominator) {
 	Stack<Type>* stack = new Stack<Type>();
 
 	for (auto& i : result) {
 		if (i >= 'a' && i <= 'z') {
-			int index_tmp_first = FindIndexSymbolValue(symbols, size, i);
-			auto item = symbols[index_tmp_first].value;
-			stack->push({ i, item });
+			int i_index = FindIndexSymbolValue(symbols, i);
+			stack->push(Type{ i, symbols[i_index].value });
 		}
 		else {
 			auto first = stack->peek();

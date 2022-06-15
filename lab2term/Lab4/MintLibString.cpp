@@ -23,7 +23,6 @@ std::istream& MintLib::getline(std::istream& in, MintLib::string& dest) {
     return in;
 }
 
-
 MintLib::string operator +(MintLib::string lhs, const MintLib::string rhs) {
     lhs += rhs;
     return lhs;
@@ -124,5 +123,3 @@ char* MintLib::char_traits::assign(char* s, size_t n, const char& symbol) {
 }
 
 #pragma endregion
-
-

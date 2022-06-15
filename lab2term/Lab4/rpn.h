@@ -11,11 +11,11 @@ struct Type {
 };
 
 mtl::string CreateReversePolishNotation(mtl::string&);
-double CalculateReversePolishNotation(const mtl::string&, Type*&, int, bool&);
-int FindIndexSymbolValue(Type*& symbols, const int size, char item);
+double CalculateReversePolishNotation(const mtl::string&, mtl::vector<Type>&, bool&);
+int FindIndexSymbolValue(mtl::vector<Type>& symbols, char item);
 
-bool isInSymbols(Type*&, char, int);
-void InputValueOfSymbols(Type*&, const mtl::string&, int&);
+bool isInSymbols(mtl::vector<Type>&, char);
+void InputValueOfSymbols(mtl::vector<Type>&, const mtl::string&);
 
 template <class T>
 void CheckNum(T& var) {

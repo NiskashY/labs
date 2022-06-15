@@ -8,6 +8,7 @@
 #include "validation_request.h"
 #include "MintLibString.h"
 
+namespace mtl = MintLib;
 
 void MenuCalculate(const mtl::string& request, const mtl::string& result);
 void MenuInput(mtl::string& request, mtl::string& result);
@@ -28,6 +29,7 @@ int main() {
 		
 		int choice = 0;
 		CheckNum(choice);
+		std::cout << '\n';
 
 		switch (choice) {
 			case 1: {
@@ -51,37 +53,32 @@ int main() {
 	return 0;
 }
 
+void MenuInput(mtl::string& request, mtl::string& result) {
+	std::cout << "Input request: ";
+
+	do {
+		MintLib::getline(std::cin, request);
+		Clear();
+	} while (!(isRequestCorrect(request)));
+
+	result = CreateReversePolishNotation(request);
+	std::cout << "Result RevePN: " << result << '\n';
+}
+
 void MenuCalculate(const mtl::string& request, const mtl::string& result) {
 	if (request.empty()) {
 		std::cout << "Request is empty!\n";
 		return;
 	}
-
-	std::cout << "\nRequest: " << request << "\nRevers Polish: " << result << '\n';
-
-	// Array for symbols. In functions below i check
-	// for existing symbols in this array; 26 = letters in alphabet
-	Type* symbols = new Type[26]; 
-	int amount_of_symbols = 0;
-
+	
 	double answer = 0;
 	bool isDenominatorEqualZero = false;
 	do {
-		InputValueOfSymbols(symbols, request, amount_of_symbols);
-		answer = CalculateReversePolishNotation(result, symbols, amount_of_symbols, isDenominatorEqualZero);
+		mtl::vector<Type> symbols; // Array for symbols. In functions below i check for existing symbols in this array;
+		InputValueOfSymbols(symbols, request);
+		answer = CalculateReversePolishNotation(result, symbols, isDenominatorEqualZero);
 	} while (isDenominatorEqualZero);
 
 	std::cout << "\nAnswer: " << answer << '\n';
 
-	delete[] symbols;
-}
-
-void MenuInput(mtl::string& request, mtl::string& result) {
-	std::cout << "\nInput request: ";
-	do {
-		MintLib::getline(std::cin, request);
-	} while (!isRequestCorrect(request));
-
-	result = CreateReversePolishNotation(request);
-	std::cout << "Result RevePN: " << result << '\n';
 }

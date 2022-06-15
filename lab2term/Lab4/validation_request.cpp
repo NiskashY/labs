@@ -1,12 +1,19 @@
 #include "validation_request.h"
 
+void Clear(const int& errors) {
+	if (errors > 0) {
+		GO_UP_LINE();	// macros	-	validation.h
+		CLEAR_LINE();	// macros	-	validation.h
+	}
+}
+
 bool isOperation(char i) {
 	return i == '+' || i == '-' || i == '*' || i == '/';
 }
 
 bool isRequestCorrect(mtl::string& request) {
 	if (request.empty()) {
-		std::cout << "Request is empty!\n";
+		std::cout << "Request is empty! ReEnter: ";
 		return false;
 	}
 

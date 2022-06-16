@@ -1,37 +1,41 @@
 #include <iostream>
 #include "reader.h"
-#include "my_functions.h"
+#include "MintLibSort.h"
 #include "bus_service.h"
 
 // add colors.h from airlines ticket sales
 
-void MenuSectionView();
+namespace mtl = MintLib;
+
+void View();
 void MenuSectionSearch(int&);
 void MenuSectionSort(int&);
 
 int main() {
-	const char kMenu[] = "1 - Add\n2 - View\n3 - Search\n4 - Sort\nelse - exit\nYour Choice: ";
+	srand(time(NULL));	// for QuickSort();
+	const char kTask[] = "\t\t\tTask: ";
+	const char kMenu[] = "1 - Add\n2 - Search\n3 - Sort\nelse - exit\nYour Choice: ";
 
 	while (true) {
 		system("cls");
+		View();
+		std::cout << '\n';
+
 		int choice = 0;
 		std::cout << kMenu;
 		CheckNum(choice);
-		
+		std::cout << '\n';
+
 		switch (choice) {
 		case 1: {
 			AddBusFlight();
 			break;
 		}
 		case 2: {
-			MenuSectionView();
-			break;
-		}
-		case 3: {
 			MenuSectionSearch(choice);
 			break;
 		}
-		case 4: {
+		case 3: {
 			MenuSectionSort(choice);
 			break;
 		}
@@ -40,62 +44,65 @@ int main() {
 			return 0;
 		}
 		}
+		std::cout << '\n';
 		system("pause");
 	}
 	return 0;
 }
-
-void MenuSectionView() {
+	
+void View() {
+	BusViewer viewer;
 	BusFlight* buses = nullptr;
 	int number_of_records = ReadFromFile(buses);
-	ShowAllBusFlights(buses, number_of_records);
+	viewer.ShowAllBusFlights(buses, number_of_records);
 	delete[] buses;
 	buses = nullptr;
 }
 
 void MenuSectionSearch(int& choice) {
-	const char kMenuSearch[] = "\n1 - linear\nelse - binary\nYour Choice: ";
+	const char kMenuSearch[] = "1 - linear\nelse - binary\nYour Choice: ";
 	std::cout << kMenuSearch;
 	CheckNum(choice);
 
-	std::cout << "(KEY FOR SEARCH) ";
+	std::cout << "\n(KEY FOR SEARCH) ";
 	int time_tmp = 0;
 	InputArrival(time_tmp);
+	std::cout << '\n';
 
 	if (choice == 1) {
 		LinearSearch(time_tmp);
 	}
-	else {
+	else {	// TODO: lower_bound, upper_bound
+		BusViewer viewer;
 		BusFlight* buses = nullptr;
 		int number_of_records = ReadFromFile(buses);
-		my::QuickSort(buses, 0, number_of_records);
-		my::BinarySearch(buses, 0, number_of_records, time_tmp);
+		mtl::QuickSort(buses, 0, number_of_records);
+		mtl::pair<int, int> boarder = mtl::BinarySearch(buses, 0, number_of_records, time_tmp);
+		viewer.ShowAllBusFlights(buses, boarder.second, boarder.first);
 		delete[] buses;
 		buses = nullptr;
 	}
 }
 
 void MenuSectionSort(int& choice) {
-	const char kMenuSort[] = "\n1 - Selection\nelse - Quick\nYour Choice: ";
+	const char kMenuSort[] = "1 - Selection\nelse - Quick\nYour Choice: ";
 	std::cout << kMenuSort;
 	CheckNum(choice);
+
 	BusFlight* buses = nullptr;
 	int number_of_records = ReadFromFile(buses);
 
-	std::cout << "\n-------Before-------\n";
-	ShowAllBusFlights(buses, number_of_records);
-
 	if (choice == 1) {
-		my::Sort(buses, number_of_records);
+		mtl::Sort(buses, number_of_records);
 	}
 	else {
-		my::QuickSort(buses, 0, number_of_records);
+		mtl::QuickSort(buses, 0, number_of_records - 1);
 	}
 
-	std::cout << "\n-------After-------\n";
-
-	ShowAllBusFlights(buses, number_of_records);
+	std::cout << '\n' << std::right << std::setw(50) << "-------AfterSort-------" << '\n';
+	BusViewer viewer;
+	viewer.ShowAllBusFlights(buses, number_of_records);
+	
 	delete[] buses;
 	buses = nullptr;
-
 }

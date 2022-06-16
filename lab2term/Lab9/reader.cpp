@@ -1,5 +1,4 @@
 #include "reader.h"
-#include <vector>
 
 void Reader::close() {
 	fclose(file_pointer);
@@ -40,9 +39,11 @@ int ReadFromFile(BusFlight*& arr_flights) { // read data into arr_flights and re
 
 	const int kSizeOfStruct = sizeof(BusFlight);
 	int number_of_records = reader.GetAmountOfInformation(kSizeOfStruct);
+	if (arr_flights) {
+		delete[] arr_flights;
+	}
 	arr_flights = new BusFlight[number_of_records];
 	fread(arr_flights, kSizeOfStruct, number_of_records, reader.getFilePointer());
-
 	return number_of_records;
 }
 
@@ -64,11 +65,11 @@ void LinearSearch(const int& key) {
 
 	int number_of_records = reader.GetAmountOfInformation(sizeof(BusFlight));
 	BusFlight tmp;
+	BusViewer viewer;
 	for (int i = 0; i < number_of_records; ++i) {
 		fread(&tmp, sizeof(BusFlight), 1, reader.getFilePointer());
 		if (tmp.arrival_time_ == key) {
-			ShowBusFlight(tmp);
+			viewer.ShowBusFlight(tmp, i);
 		}
 	}
 }
-

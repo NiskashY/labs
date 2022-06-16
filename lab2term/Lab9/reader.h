@@ -1,11 +1,13 @@
 #pragma once
+
 #include <cstdio>
 #include <iostream>
+
 #include "bus_service.h"
 
 class Reader {
 private:
-	const char* kFileName = NULL;
+	const char* kFileName = nullptr;
 	FILE* file_pointer = nullptr;
 
 public:
@@ -23,7 +25,6 @@ public:
 
 	int GetAmountOfInformation(const int& information_size);
 
-	// maybe i will need reopen lateeeer :?
 };
 
 int ReadFromFile(BusFlight*&); // read data into arr_flights and return number of readen info

@@ -6,6 +6,7 @@
 #include <time.h> 
 
 #include "information.h"
+#include "MintLib.h"
 
 struct Node {
 	Node() = default;

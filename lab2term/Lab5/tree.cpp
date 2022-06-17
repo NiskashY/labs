@@ -1,5 +1,7 @@
 #include "tree.h"
 
+namespace mtl = MintLib;
+
 Tree::~Tree() {
 	clear();
 }
@@ -172,7 +174,7 @@ void Tree::view() const {
 	// but 2^4 = 16 -> because of 2 = 10 in binary -> 2^max_height = 2 << (max_height - 1) or 2^max_height = 1 << max_height
 	int size = (1 << max_height) - 1;
 
-	Node** arr = new Node*[size];
+	mtl::vector<Node*> arr(size);
 	arr[0] = tmp;
 
 	// i element -> left child - 2 * i + 1, right child - 2 * i + 2
@@ -212,12 +214,10 @@ void Tree::view() const {
 	}
 
 	clock_t end = clock();
-	double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+	double seconds = ((double)end - (double)start) / CLOCKS_PER_SEC;
 
 	std::cout << "Seconds for view: " << seconds << '\n';
 	std::cout << "___________________\n";
-
-	delete[] arr;
 }
 
 Node* Tree::clear(Node* leaf) {

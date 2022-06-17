@@ -146,7 +146,7 @@ Node* RemoveMin(Node* node) {
 		return node->right;
 	}
 	node->left = RemoveMin(node->left);
-	BalanceTree(node);
+	return BalanceTree(node);
 }
 
 // ----------------

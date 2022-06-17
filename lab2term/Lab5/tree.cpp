@@ -1,5 +1,8 @@
 #include "tree.h"
 
+Tree::~Tree() {
+	clear();
+}
 
 int GetHeight(Node* node) {
 	return node == nullptr ? 0 : node->height;
@@ -66,7 +69,7 @@ Node* BalanceTree(Node* node) {
 
 // ------Insert----------
 
-Node* Tree::insert(Node* node, Information& info, bool& isDuplicate) {
+Node* Tree::insert(Node* node, const Information& info, bool& isDuplicate) {
 	if (node == nullptr) {
 		return createLeaf(info);
 	}
@@ -85,7 +88,7 @@ Node* Tree::insert(Node* node, Information& info, bool& isDuplicate) {
 	return BalanceTree(node);
 }
 
-bool Tree::insert(Information& info) {
+bool Tree::insert(const Information& info) {
 	bool isDuplicate = false;
 	root = insert(root, info, isDuplicate);
 	return isDuplicate;
@@ -93,7 +96,7 @@ bool Tree::insert(Information& info) {
 
 // ------Remove----------
 
-Node* Tree::remove(Node* node, Information& info) {
+Node* Tree::remove(Node* node, const Information& info) {
 	if (node == nullptr)
 		return nullptr;
 
@@ -124,7 +127,7 @@ Node* Tree::remove(Node* node, Information& info) {
 	return BalanceTree(node);
 }
 
-void Tree::remove(Information& info) {
+void Tree::remove(const Information& info) {
 	if (!search(info, false)) {
 		return;
 	}
@@ -148,11 +151,11 @@ Node* RemoveMin(Node* node) {
 
 // ----------------
 
-bool Tree::empty() {
+bool Tree::empty() const {
 	return !root;
 }
 
-void Tree::view() {
+void Tree::view() const {
 	if (empty()) {
 		std::cout << "Tree is empty!\n";
 		return;
@@ -217,29 +220,29 @@ void Tree::view() {
 	delete[] arr;
 }
 
-void Tree::clear(Node* leaf) {
+Node* Tree::clear(Node* leaf) {
 	if (leaf) {
-		clear(leaf->left);
-		leaf->left = nullptr;
-		clear(leaf->right);
-		leaf->right = nullptr;
+		leaf->left = clear(leaf->left);
+		leaf->right = clear(leaf->right);
 		delete leaf;
+		leaf = nullptr;
 	}
+	return leaf;
+}
 
-	if (leaf == root) { // when tree is cleared, root will contain garbage (as a leaf), so i need to set this parameters as nullptr
-		leaf = root = nullptr; // Set root = nullptr to show that tree is empty;	
-	}
+void Tree::clear() {
+	root = clear(root);
 }
 
 Node* Tree::GetRoot() {
 	return root;
 }
 
-Node* Tree::createLeaf(Information& info) {
+Node* Tree::createLeaf(const Information& info) {
 	return new Node(info);
 }
 
-Node* Tree::search(Information& info, bool isNeedToPrintMessage){
+Node* Tree::search(const Information& info, bool isNeedToPrintMessage){
 	Node* tmp = root;
 
 	if (empty()) {
@@ -344,98 +347,3 @@ void ShowLeftRightRoot(Node* node) {
 	ShowLeftRightRoot(node->right);
 	std::cout << node->info_.age << ' ';
 }
-
-
-/*
-
-void GetTreeHeight(Node* tmp, int current_height, int& max_height) {
-
-	if (max_height < current_height)
-		max_height = current_height;
-
-	if (tmp) {
-		current_height++;
-		GetTreeHeight(tmp->left, current_height, max_height);
-
-		GetTreeHeight(tmp->right, current_height, max_height);
-	}
-}
-
-
-void FillArray(Information*& arr, Node* tmp, int& index) {
-	if (tmp == nullptr) {
-		return;
-	}
-
-	arr[index++] = tmp->info_;
-	FillArray(arr, tmp->left, index);
-	FillArray(arr, tmp->right, index);
-}
-
-void SortArr(Information*& arr, int real_amount_of_elements) {
-	for (int i = 0; i < real_amount_of_elements; ++i) {
-		for (int j = 0; j < real_amount_of_elements - 1; ++j) {
-			if (arr[j + 1] < arr[j]) {
-				auto x = arr[j];
-				arr[j] = arr[j + 1];
-				arr[j + 1] = x;
-			}
-		}
-	}
-}
-
-
-Node* Tree::makeBalance(Node* tmp, Information*& arr, int left, int right) {
-	if (left == right) {
-		tmp = nullptr;
-		return tmp;
-	}
-	int mid = (left + right) / 2;
-	Information x = arr[mid];
-
-	tmp = createLeaf(x);
-	tmp->left = makeBalance(tmp->left, arr, left, mid);
-	tmp->right = makeBalance(tmp->right, arr, mid + 1, right);
-
-	return tmp;
-}
-
-if (empty()) { // if tree is empty
-		root = createLeaf(info);
-	}
-	else {
-		Node* tmp = root;
-		while (true) {
-			if (tmp->info_ == info) {
-				std::cout << "{ " << info.age << ", " << info.favorite_color << " } node already exist in tree!\n";
-				break;
-			}
-			else if (tmp->info_ < info) {
-				if (tmp->right == nullptr) {
-					tmp->right = createLeaf(info);
-					break;
-				}
-				tmp = tmp->right;
-			}
-			else {
-				if (tmp->left == nullptr) {
-					tmp->left = createLeaf(info);
-					break;
-				}
-				tmp = tmp->left;
-			}
-		}
-
-
-		int height = 0;
-		int real_amount_of_elements = 0;
-		GetTreeHeight(root, 0, height);
-		int max_amount_of_elements = (2 << (height - 1)) - 1;
-		Information* all_keys = new Information[max_amount_of_elements];
-		FillArray(all_keys, root, real_amount_of_elements);
-		SortArr(all_keys, real_amount_of_elements);
-
-		clear(root);
-		root = makeBalance(root, all_keys, 0, real_amount_of_elements);
-	}
-*/

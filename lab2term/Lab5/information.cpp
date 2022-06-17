@@ -11,15 +11,15 @@ std::istream& operator>>(std::istream& in, Information& info) {
 	return in;
 }
 
-std::ostream& operator<<(std::ostream& out, Information& info) {
+std::ostream& operator<<(std::ostream& out, const Information& info) {
 	out << "Age = " << info.age << ". Favorite color: " << info.favorite_color;
 	return out;
 }
 
-bool operator<(Information& lhs, Information& rhs) {
+bool operator<(const Information& lhs, const Information& rhs) {
 	return lhs.age < rhs.age;
 }
 
-bool operator==(Information& lhs, Information& rhs) {
+bool operator==(const Information& lhs, const Information& rhs) {
 	return lhs.age == rhs.age;
 }

@@ -10,7 +10,7 @@
 struct Node {
 	Node() = default;
 	
-	Node(Information& info) : info_(info), height(1) {}
+	Node(const Information& info) : info_(info), height(1) {}
 
 	int height;
 	Information info_;
@@ -30,27 +30,25 @@ void ShowLeftRightRoot(Node*);
 class Tree {
 private:
 	Node* root = nullptr; // ~ begining of the tree
-	Node* insert(Node*, Information&, bool&);
-	Node* remove(Node*, Information&);
+	Node* insert(Node*, const Information&, bool&);
+	Node* remove(Node*, const Information&);
+	Node* clear(Node*);	// recursively clear Nodes
 
 public:
 	Tree() = default;
-	bool empty();
-	bool insert(Information&);
+	~Tree();
 
-	void view();
-	void clear(Node*);
-	void remove(Information&);
-
+	bool empty() const;
+	bool insert(const Information&);
+	
+	void view() const;
+	void remove(const Information&);
+	void clear();	// clear full tree
+	
 	Node* GetRoot();
-	Node* createLeaf(Information&);
-	Node* search(Information&, bool isNeedToPrintMessage = true);
+	Node* createLeaf(const Information&);
+	Node* search(const Information&, bool isNeedToPrintMessage = true);
 	Node* maxKey(bool isNeedToShowMessage = false);
 	Node* minKey(bool isNeedToShowMessage = false);
 	Node* minKey(Node*, bool isNeedToShowMessage = false);
-
 };
-
-//Node* makeBalance(Node*, Information*&, int, int);
-//void GetTreeHeight(Node*, int current_height, int&);
-

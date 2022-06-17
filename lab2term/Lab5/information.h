@@ -18,8 +18,8 @@ void CheckNum(T& var) {
 
 std::istream& operator>>(std::istream&, Information&);
 
-std::ostream& operator<<(std::ostream& out, Information& info);
+std::ostream& operator<<(std::ostream& out, const Information& info);
 
-bool operator<(Information& lhs, Information& rhs);
+bool operator<(const Information& lhs, const Information& rhs);
 
-bool operator==(Information& lhs, Information& rhs);
+bool operator==(const Information& lhs, const Information& rhs);

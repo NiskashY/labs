@@ -22,6 +22,7 @@ void RandomElements(Tree&, int);
 
 int main() {
 	Tree tree;
+
 	bool isNeedToExit = false;
 	while (!isNeedToExit) {
 		system("cls");
@@ -97,7 +98,8 @@ bool ShowMenu(Tree& tree) {
 			break;
 		}
 		case 4: {
-			tree.clear(tree.GetRoot());
+			tree.clear();
+			std::cout << "Cleared!\n";
 			break;
 		}
 		case 5: {

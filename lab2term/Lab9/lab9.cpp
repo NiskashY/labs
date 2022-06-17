@@ -13,8 +13,8 @@ void MenuSectionSort(int&);
 
 int main() {
 	srand(time(NULL));	// for QuickSort();
-	const char kTask[] = "\t\t\tTask: ";
-	const char kMenu[] = "1 - Add\n2 - Search\n3 - Sort\nelse - exit\nYour Choice: ";
+	const char kMenu[] = "1 - Add\n2 - Delete\n3 - Search\n4 - Sort\nelse - exit\nYour Choice: ";
+	const char kDone[] = "Done!";
 
 	while (true) {
 		system("cls");
@@ -29,13 +29,19 @@ int main() {
 		switch (choice) {
 		case 1: {
 			AddBusFlight();
+			std::cout << kDone << '\n';
 			break;
 		}
 		case 2: {
-			MenuSectionSearch(choice);
+			DeleteBusFlight(InputPosition());
+			std::cout << kDone << '\n';
 			break;
 		}
 		case 3: {
+			MenuSectionSearch(choice);
+			break;
+		}
+		case 4: {
 			MenuSectionSort(choice);
 			break;
 		}

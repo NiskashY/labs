@@ -17,3 +17,5 @@ void InputDestination(char*); // return reference in order to not call copy-cons
 void InputDeparture(int&);
 
 void InputArrival(int&);
+
+int InputPosition();

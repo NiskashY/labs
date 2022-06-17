@@ -31,3 +31,15 @@ void InputArrival(int& arrival_time) {
 	std::cout << kInputArrival;
 	std::cin >> arrival_time;
 }
+
+int InputPosition() {
+	int pos = 0;
+	std::cout << "Input Position: ";
+	do {
+		CheckNum(pos);
+		if (pos <= 0) {
+			std::cout << "Positon should be > 0! ReEnter: ";
+		}
+	} while (pos <= 0);
+	return pos;
+}

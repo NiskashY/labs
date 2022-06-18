@@ -71,7 +71,7 @@ bool ShowEmptyMenu(Tree& tree) {
 
 bool ShowMenu(Tree& tree) {
 	const char* const kTask = "\t\t\tTASK: Get height of the tree";
-	const char* const kMenu = "0 - RunTest(Random, 2 ^ 10 elements)\n1 - Insert.\n2 - Search.\n3 - Remove.\n4 - Clear.\n5 - Traversal.\n6 - Individual.\nelse - Exit.\n\nYour Choice : ";
+	const char* const kMenu = "0 - RunTest(Random, 2 ^ 10 elements)\n1 - Insert.\n2 - Search.\n3 - Remove.\n4 - Clear.\n5 - Traversal.\n6 - Individual.\n7 - Invert\nelse - Exit.\n\nYour Choice : ";
 
 	std::cout << kTask << "\n\n";
 	tree.view();
@@ -108,6 +108,10 @@ bool ShowMenu(Tree& tree) {
 		}
 		case 6: {
 			std::cout << "Height of the tree - " << GetHeight(tree.GetRoot()) << '\n';
+			break;
+		}
+		case 7: {
+			tree.invert();
 			break;
 		}
 		default: {

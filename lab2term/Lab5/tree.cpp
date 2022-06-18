@@ -153,6 +153,22 @@ Node* RemoveMin(Node* node) {
 
 // ----------------
 
+Node* Tree::invert(Node* node) {
+	if (node) {
+		node->left = invert(node->left);
+		node->right = invert(node->right);
+		mtl::swap(node->left, node->right);
+	}
+	return node;
+}
+
+void Tree::invert() {
+	root = invert(root);
+	view();
+	root = invert(root);
+}
+
+
 bool Tree::empty() const {
 	return !root;
 }

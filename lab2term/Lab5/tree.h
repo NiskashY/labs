@@ -34,6 +34,7 @@ private:
 	Node* insert(Node*, const Information&, bool&);
 	Node* remove(Node*, const Information&);
 	Node* clear(Node*);	// recursively clear Nodes
+	Node* invert(Node*);
 
 public:
 	Tree() = default;
@@ -45,7 +46,8 @@ public:
 	void view() const;
 	void remove(const Information&);
 	void clear();	// clear full tree
-	
+	void invert();
+
 	Node* GetRoot();
 	Node* createLeaf(const Information&);
 	Node* search(const Information&, bool isNeedToPrintMessage = true);

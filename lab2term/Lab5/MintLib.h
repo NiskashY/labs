@@ -4,6 +4,13 @@
 #include <deque>
 
 namespace MintLib {
+    template <class T>
+    void swap(T& lhs, T& rhs) {
+        T tmp = lhs;
+        lhs = rhs;
+        rhs = tmp;
+    }
+
     template<class T>  // simplest c++ 98 allocator
     struct allocator {
         typedef size_t size_type;
